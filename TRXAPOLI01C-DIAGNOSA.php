@@ -1,0 +1,76 @@
+<?php
+include "conf/config.php";
+?>
+<style>
+#screen {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#screen td, #screen th {
+    border: 1px solid #ddd;
+    padding: 4px;
+}
+
+
+#screen tr:nth-child(even){background-color: #f3f2f2;}
+
+#screen tr:hover {background-color: #ddd;}
+
+#screen th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #4CAF50;
+    color: black;
+}
+#screen tbody, #screen thead
+{
+    display:block;
+}
+#screen tbody 
+{
+  overflow: auto;
+  height: 200px;
+}
+</style>
+  <table id="screen">
+  <thead>
+  <tr>
+  <th style="width: 100px;">Kode</th>
+  <th style="width: 500px;">Diagnosa</th>
+  </tr>
+  </thead>
+  <tbody>
+<?php
+  $rawdata = $_POST['q'];
+  list($regicode, $diagcode) = explode("|",$rawdata);
+
+  $xquery = "SELECT DIAG_ICD_CODE AS ICD_CODE, DIAG_ICD_NOTE AS ICD_NAME
+            FROM diagmast WHERE DIAG_ICD_CODE LIKE '$diagcode%' AND DIAG_VIEW_STAT='Y' 
+            OR DIAG_ICD_NOTE LIKE '$diagcode%' AND DIAG_VIEW_STAT = 'Y'
+            OR DIAG_ICD_NOTE LIKE '%$diagcode%' AND DIAG_VIEW_STAT = 'Y'
+            ORDER BY DIAG_ICD_CODE";
+
+  $q = $db->query($xquery) or die("Gagal ambil data !!");
+  while ($k = $q->fetch(PDO::FETCH_ASSOC))
+  {
+    $outicdcode = $k['ICD_CODE'];
+    $outicdname = $k['ICD_NAME'];
+
+    echo '<tr>';
+
+    echo '<td style="width: 100px;" onClick="isidiagnosa(\''.$regicode.'\',\''.$outicdcode.'\',\''.$outicdname.'\');" 
+      style="cursor:pointer">'.$outicdcode.'</td>';
+
+    echo '<td style="width: 500px; text-align: left;" onClick="isidiagnosa(\''.$regicode.'\',\''.$outicdcode.'\',\''.$outicdname.'\');" 
+      style="cursor:pointer">'.$outicdname.'</td>';
+
+    echo '</tr>';
+  }
+?>
+  </tbody>
+  </table>
+
+

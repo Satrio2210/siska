@@ -1,0 +1,758 @@
+<!doctype html>
+<?php include "conf/config.php";
+//memulai session
+session_start();
+
+//cek adanya session
+if (ISSET($_SESSION['username']))
+{
+	$user = $_SESSION['username'];
+
+?>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sistem Informasi Klinik Pratama">
+<title>Input Item</title>
+<link rel="shortcut icon" href="img/icon.png">
+<link rel="stylesheet" href="css/pure/pure-min.css">
+<!--[if lte IE 8]>
+	<link rel="stylesheet" href="css/layouts/side-menu-old-ie.css">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+	<link rel="stylesheet" href="css/layouts/side-menu.css">
+<!--<![endif]-->
+<style type="text/css">
+  img {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  top: 0px;
+  left: 0px;
+ }
+</style>
+
+<style type="text/css">
+	div.footerdate {
+   position: fixed;
+   left: 50;
+   bottom: 50px;
+   width: 90%;
+   color: black;
+   text-align: right;
+}
+div.footertime {
+   position: fixed;
+   left: 50;
+   bottom: 20px;
+   width: 90%;
+   color: black;
+   text-align: right;
+}
+</style>
+</head>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script>
+$(document).ready(function() 
+{
+    setInterval(timestamp, 1000);
+});  
+    function timestamp() { $.ajax({ url: 'inc/timestamp.php', success: function(data) { $('#timestamp').html(data); }, }); }
+</script>
+
+<body onload="periksaakses('PASS_INVE_ENTR');">
+<div id="layout">
+	<!-- Menu toggle -->
+	<a href="#menu" id="menuLink" class="menu-link">
+        <!-- Hamburger icon -->
+        <span></span>
+    	</a>
+	<!-- Menu Kiri -->
+    	<div id="menu">
+        	<div class="pure-menu">
+
+            		<a class="pure-menu-heading" href="#"><?php echo $_SESSION['username'];?></a>
+				<ul class="pure-menu-list">
+
+
+              <li class="pure-menu-item" onclick="javascript: location.href = 'index.php'">
+                <a class="pure-menu-link">PERSEDIAAN</a>
+              </li>
+
+              <li class="pure-menu-item" onclick="javascript: location.href = 'TBLIUNIT00.php'">
+                <a class="pure-menu-link">Spesifikasi Item</a>
+              </li>
+
+              <li class="pure-menu-item menu-item-divided pure-menu-selected">
+                <a class="pure-menu-link">Master Item</a>
+              </li>
+
+              <li class="pure-menu-item" onclick="javascript: location.href = 'WAREMAST00.php'">
+                <a class="pure-menu-link">Ware House</a>
+              </li>
+
+              <li class="pure-menu-item" onclick="javascript: location.href = 'INVETRANS00.php'">
+                <a class="pure-menu-link">Transfer</a>
+              </li>
+
+              <li class="pure-menu-item" onclick="javascript: location.href = 'INVESTOCK00.php'">
+                <a class="pure-menu-link">Stock</a>
+              </li>
+
+              <li class="pure-menu-item" onclick="javascript: location.href = 'signout.php'">
+                <a class="pure-menu-link">EXIT</a>
+              </li>
+				</ul>
+		</div>
+    	</div><!-- div menu -->
+	
+	<!-- tampilan menu -->
+	<div id="main">
+        <div class="header">
+        <img align="right" 
+         height= "<?php echo $width_logo;?>" 
+         width= "<?php echo $height_logo;?>" 
+         src="img/logo.png" 
+         alt="">
+
+            <h1 id="login">Sistem Informasi Klinik Pratama</h1>
+            <h2>SISKA</h2>
+        </div><!-- div header -->
+
+		<div class="content">
+        <!-- Tab Menu -->
+          <div class="pure-menu pure-menu-horizontal">
+            <ul class="pure-menu-list">
+
+              <li class="pure-menu-item pure-menu-disabled">
+                Input Item
+              </li>
+
+              <li class="pure-menu-item pure-menu-selected" onclick="javascript: location.href = 'INVEMAST02.php'">
+                <a class="pure-menu-link">
+                Update Item
+                </a>
+              </li>
+
+              <li class="pure-menu-item pure-menu-selected" onclick="javascript: location.href = 'INVEMAST03.php'">
+                <a class="pure-menu-link">
+                Delete Item
+                </a>
+              </li>
+
+              <li class="pure-menu-item pure-menu-selected" onclick="javascript: location.href = 'INVEMAST04.php'">
+                <a class="pure-menu-link">
+                View Item
+                </a>
+              </li>
+
+
+            </ul>
+          </div>
+    <!-- Tab Menu -->
+    <!-- Form Input -->
+    <form name="frminvemast" class="pure-form pure-form-aligned" method="post" action="INVEMAST01E.php">
+      
+      <fieldset>
+        <div class="pure-control-group">
+          <label for="txtmastcode">No.Urut :</label>
+            <input type="text" 
+                name="txtmastcode" 
+                id="txtmastcode" 
+                maxlength ="4"
+                style="width: 80px;"
+                readonly="true">
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label for="txttypename">Kategori :</label>
+            
+            <input type="text" 
+                name="txttypename" 
+                id="txttypename" 
+                maxlength ="50"
+                style="width: 200px;"
+                autocomplete="off"
+                onkeyup="if (value.length > 0) 
+                  {
+                  ambiltypecode(this.value);
+                  } 
+                else 
+                  { 
+                  document.getElementById('tbltype').style.visibility = 'hidden';
+                  }"
+              >
+            <input type="hidden" name="hidtypecode" id="hidtypecode">
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label for="txtunitname">Unit Beli:</label>
+            <input type="text" 
+                name="txtunitname" 
+                id="txtunitname" 
+                maxlength ="50"
+                style="width: 200px;"
+                autocomplete="off"
+                onkeyup="if (value.length > 0) 
+                  {
+                  ambilunitcode(this.value);
+                  } 
+                else 
+                  { 
+                  document.getElementById('tblunit').style.visibility = 'hidden';
+                  }"
+              >
+            <input type="hidden" name="hidunitcode" id="hidunitcode">
+            <input type="hidden" name="hidsubunitname" id="hidsubunitname">
+
+          <label for="txtsaleunit">Unit Jual :</label>
+            <input type="text" 
+                name="txtsaleunit" 
+                id="txtsaleunit" 
+                maxlength ="50"
+                style="width: 200px;"
+                autocomplete="off"
+                onkeyup="
+                let retailunit = document.getElementById('hidsubunitname').value;
+                if (value.length > 0) 
+                  {
+                  ambilsaleunit(this.value,retailunit);
+                  } 
+                else 
+                  { 
+                  document.getElementById('tblunit').style.visibility = 'hidden';
+                  }"
+              >
+            <input type="hidden" name="hidsaleunit" id="hidsaleunit">
+            
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label for="txtspecname">Spesifikasi :</label>
+            <input type="text" 
+                name="txtspecname" 
+                id="txtspecname" 
+                maxlength ="50"
+                style="width: 200px;"
+                autocomplete="off"
+                onkeyup="if (value.length > 0) 
+                  {
+                  ambilspeccode(this.value);
+                  } 
+                else 
+                  { 
+                  document.getElementById('tblspec').style.visibility = 'hidden';
+                  }"
+              >
+            <input type="hidden" name="hidspeccode" id="hidspeccode">
+
+          <label for="txtvarnname">Segmentasi :</label>
+            <input type="text" 
+                name="txtvarnname" 
+                id="txtvarnname" 
+                maxlength ="50"
+                style="width: 200px;"
+                autocomplete="off"
+                onkeyup="if (value.length > 0) 
+                  {
+                  ambilvarncode(this.value);
+                  } 
+                else 
+                  { 
+                  document.getElementById('tblvarn').style.visibility = 'hidden';
+                  }"
+              >
+            <input type="hidden" name="hidvarncode" id="hidvarncode">
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+          <label for="optwithsrnm">Ada Serial Nomor :</label>
+            <input type="checkbox"
+              name="optwithsrnm" 
+              id="optwithsrnm"
+              value="true"
+              onclick="if (checked == true) 
+                  {
+                      document.getElementById('hidwithsrnm').value = 'Y';
+                  }   
+                ">
+            <input type="hidden" name="hidwithsrnm" id="hidwithsrnm">
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label>Tipe Barang :</label>
+
+            <input type="checkbox"
+            name="optstock" 
+            id="optstock"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optnonstock').checked = false;
+                      document.getElementById('optfixedasset').checked = false;
+                      document.getElementById('hidparttype').value = 'ST';
+                  }                
+                ">
+            Stock.
+
+            <input type="checkbox"
+            name="optnonstock" 
+            id="optnonstock"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optstock').checked = false;
+                      document.getElementById('optfixedasset').checked = false;
+                      document.getElementById('hidparttype').value = 'NS';
+                  }                
+                ">
+            Non Stock.
+
+            <input type="checkbox"
+            name="optfixedasset" 
+            id="optfixedasset"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optstock').checked = false;
+                      document.getElementById('optnonstock').checked = false;
+                      document.getElementById('hidparttype').value = 'FA';
+                  }                
+                ">
+            Fixed Asset.
+
+         <input type="hidden" name="hidparttype" id="hidparttype">   
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label>Estimasi Standar Biaya :</label>
+
+            <input type="checkbox"
+            name="optweight" 
+            id="optweight"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optvolume').checked = false;
+                      document.getElementById('hidcostfrgt').value = 'W';
+                  }                
+                ">
+            Berat.
+
+            <input type="checkbox"
+            name="optvolume" 
+            id="optvolume"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optweight').checked = false;
+                      document.getElementById('hidcostfrgt').value = 'V';
+                  }                
+                ">
+            Jumlah.
+
+            <input type="hidden" name="hidcostfrgt" id="hidcostfrgt">
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label for="txtpartname">Nama Barang :</label>
+            <input type="text" 
+                name="txtpartname" 
+                id="txtpartname" 
+                maxlength ="50"
+                style="width: 300px;"
+                onkeydown="if (event.keyCode == 13 && value.length > 0) document.getElementById('txtpartalias').focus()">         
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label for="txtpartalias">Manufaktur :</label>
+            <input type="text" 
+                name="txtpartalias" 
+                id="txtpartalias" 
+                maxlength ="50"
+                style="width: 300px;"
+                onkeydown="if (event.keyCode == 13 && value.length > 0) document.getElementById('txthousname').focus()">         
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label for="txthousname">Gudang Penerima :</label>
+            <input type="text" 
+                name="txthousname" 
+                id="txthousname" 
+                maxlength ="50"
+                autocomplete="off" 
+                style="width: 200px;"
+                onkeyup="if (value.length > 0) 
+                  {
+                  ambilhouscode(this.value);
+                  } 
+                else 
+                  { 
+                  document.getElementById('tblhous').style.visibility = 'hidden';
+                  }"
+              >
+            <input type="hidden" name="hidhouscode" id="hidhouscode">
+
+          <label for="txtstockmini">Minimum Stock :</label>
+            <input type="text" 
+              name="txtstockmini" 
+              id="txtstockmini"
+              value="0" 
+              maxlength ="10"
+              style="width: 60px;"
+              onkeydown="if (event.keyCode == 13 && value.length > 0)
+              {
+                if (isNaN(this.value)) { document.getElementById('txtstockmini').value = ''; document.getElementById('txtstockmini').focus(); }
+                else { document.getElementById('txtmainnote').focus(); }
+              }">         
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label for="txtmainnote">Note :</label>
+            <input type="text" 
+              name="txtmainnote" 
+              id="txtmainnote" 
+              maxlength ="100"
+              style="width: 500px;"
+              onkeydown="if (event.keyCode == 13 && value.length == 0) document.getElementById('txtmainnote').focus()">         
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label>Kalkulasi Harga :</label>
+
+            <input type="checkbox"
+            name="optprice" 
+            id="optprice"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optdiscount').checked = false;
+                      document.getElementById('hidmainpric').value = 'P';
+                  }                
+                ">
+            Price.
+
+            <input type="checkbox"
+            name="optdiscount" 
+            id="optdiscount"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optprice').checked = false;
+                      document.getElementById('hidmainpric').value = 'D';
+                  }                
+                ">
+            Discount.
+
+            <input type="hidden" name="hidmainpric" id="hidmainpric">
+
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+          <label>Tipe Garansi :</label>
+
+            <input type="checkbox"
+            name="optpartguarantee" 
+            id="optpartguarantee"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optserviceguarantee').checked = false;
+                      document.getElementById('optbothguarantee').checked = false;
+                      document.getElementById('optnonguarantee').checked = false;
+                      document.getElementById('hidgrtetype').value = 'P';
+                  }                
+                ">
+            Garansi Barang.
+
+            <input type="checkbox"
+            name="optserviceguarantee" 
+            id="optserviceguarantee"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optpartguarantee').checked = false;
+                      document.getElementById('optbothguarantee').checked = false;
+                      document.getElementById('optnonguarantee').checked = false;
+                      document.getElementById('hidgrtetype').value = 'S';
+                  }                
+                ">
+            Garansi Perbaikan.
+
+            <input type="checkbox"
+            name="optbothguarantee" 
+            id="optbothguarantee"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optpartguarantee').checked = false;
+                      document.getElementById('optserviceguarantee').checked = false;
+                      document.getElementById('optnonguarantee').checked = false;
+                      document.getElementById('hidgrtetype').value = 'B';
+                  }                
+                ">
+            Garansi Barang dan Perbaikan.
+
+            <input type="checkbox"
+            name="optnonguarantee" 
+            id="optnonguarantee"
+            value="true"
+            onclick="if (checked == true) 
+                  {
+                      document.getElementById('optpartguarantee').checked = false;
+                      document.getElementById('optserviceguarantee').checked = false;
+                      document.getElementById('optbothguarantee').checked = false;
+                      document.getElementById('hidgrtetype').value = 'N';
+                  }                
+                ">
+            Tidak ada Garansi.
+
+            <input type="hidden" name="hidgrtetype" id="hidgrtetype">
+            
+        </div><!-- pure-control-group -->
+
+        <div class="pure-control-group">
+
+            <label for="txtgrtelimt">Batas Hari Garansi :</label>
+              <input type="text" 
+                name="txtgrtelimt" 
+                id="txtgrtelimt" 
+                maxlength ="3"
+                value="1" 
+                style="width: 50px;"
+                onkeydown="if (event.keyCode == 13 && value.length > 0)
+                {
+                  if (isNaN(this.value)) { document.getElementById('txtgrtelimt').value = ''; document.getElementById('txtgrtelimt').focus(); }
+                  else { document.getElementById('txtexcercve').focus(); }
+                }">         
+
+            <label for="txtexcercve">Toleransi Kelebihan Barang :</label>
+              <input type="text" 
+                name="txtexcercve" 
+                id="txtexcercve" 
+                maxlength ="3"
+                value="0" 
+                style="width: 50px;"
+                onkeydown="if (event.keyCode == 13 && value.length > 0)
+                {
+                  if (isNaN(this.value)) { document.getElementById('txtexcercve').value = ''; document.getElementById('txtexcercve').focus(); }
+                  else { document.getElementById('txtlackrcve').focus(); }
+                }"> %        
+
+            <label for="txtlackrcve">Toleransi Kekurangan Barang :</label>
+              <input type="text" 
+                name="txtlackrcve" 
+                id="txtlackrcve" 
+                maxlength ="3"
+                value="0" 
+                style="width: 50px;"
+                onkeydown="if (event.keyCode == 13 && value.length > 0)
+                {
+                  if (isNaN(this.value)) { document.getElementById('txtlackrcve').value = ''; document.getElementById('txtlackrcve').focus(); }
+                  else { document.getElementById('txtlackrcve').focus(); }
+                }"> %        
+
+        </div><!-- pure-control-group -->
+      </fieldset>
+
+      <fieldset>
+        
+              <a class="pure-button pure-button-primary" 
+              onclick="javascript: if (document.getElementById('hidtypecode').value.length == 0 )
+                                    {
+                                        alert('Pilih Kategori Item'); 
+                                        document.getElementById('txttypename').value = '';
+                                        document.getElementById('txttypename').focus(); 
+                                    }
+
+                                    else if (document.getElementById('hidunitcode').value.length == 0 ) 
+                                    {
+                                        alert('Pilih Unit Satuan Beli Item'); 
+                                        document.getElementById('txtunitname').value = '';
+                                        document.getElementById('txtunitname').focus(); 
+                                    }
+
+                                    else if (document.getElementById('hidsaleunit').value.length == 0 ) 
+                                    {
+                                        alert('Pilih Unit Satuan Jual Item'); 
+                                        document.getElementById('txtsaleunit').value = '';
+                                        document.getElementById('txtsaleunit').focus(); 
+                                    }
+
+                                    else if (document.getElementById('hidspeccode').value.length == 0 ) 
+                                    {
+                                        alert('Pilih Spesifikasi Item'); 
+                                        document.getElementById('txtspecname').value = '';
+                                        document.getElementById('txtspecname').focus(); 
+                                    }
+
+                                    else if (document.getElementById('hidvarncode').value.length == 0 ) 
+                                    {
+                                        alert('Pilih Segmentasi Item'); 
+                                        document.getElementById('txtvarnname').value = '';
+                                        document.getElementById('txtvarnname').focus(); 
+                                    }
+
+                                    else if (document.getElementById('hidparttype').value.length == 0 ) 
+                                    {
+                                        alert('Pilih Alokasi Item sebagai Stock, Non Stock atau Asset'); 
+                                        document.getElementById('optstock').focus();
+                                    }
+
+                                    else if (document.getElementById('hidcostfrgt').value.length == 0 ) 
+                                    {
+                                        alert('Pilih Estimasi Biaya Item'); 
+                                        document.getElementById('optweight').focus();
+                                    }
+
+                                    else if (document.getElementById('txtpartname').value.length == 0 ) 
+                                    {
+                                        alert('Isi Nama Item'); 
+                                        document.getElementById('txtpartname').focus(); 
+                                    }
+
+                                    else if (document.getElementById('txtpartalias').value.length == 0 ) 
+                                    {
+                                        alert('Isi Nama Lain Item'); 
+                                        document.getElementById('txtpartalias').focus(); 
+                                    }
+
+                                    else if (document.getElementById('hidhouscode').value.length == 0 ) 
+                                    {
+                                        alert('Pilih Lokasi Penampung Barang Datang'); 
+                                        document.getElementById('txthousname').value = '';
+                                        document.getElementById('txthousname').focus(); 
+                                    }
+
+                                    else if (document.getElementById('txtstockmini').value == '0' ) 
+                                    {
+                                        alert('Isi Minimum Stok Barang'); 
+                                        document.getElementById('txtstockmini').value = '0';
+                                        document.getElementById('txtstockmini').focus(); 
+                                    }
+
+                                    else if (document.getElementById('txtmainnote').value.length == 0 ) 
+                                    {
+                                        alert('Isi keterangan Item'); 
+                                        document.getElementById('txtmainnote').value = '';
+                                        document.getElementById('txtmainnote').focus(); 
+                                    }
+
+                                    else if (document.getElementById('hidmainpric').value.length == 0 ) 
+                                    {
+                                        alert('Pilih pemilihan Kalkulasi Harga'); 
+                                        document.getElementById('optprice').focus();
+                                    }
+
+                                    else if (document.getElementById('hidgrtetype').value.length == 0 ) 
+                                    {
+                                        alert('Pilih pemilihan Garansi Item'); 
+                                        document.getElementById('optpartguarantee').focus();
+                                    }
+
+
+                                    else
+                                    {
+                                        document.frminvemast.submit();  
+                                    }
+        ">Submit</a>
+
+      </fieldset>
+
+      <fieldset>
+                <div id="tbltype" 
+          style="position: absolute; 
+                 top: 300px;
+                 left: calc(70% - 250px);
+                 background-color: white; 
+                 visibility: hidden; 
+                 z-index: 100">
+      </fieldset>
+      <fieldset>
+            <div id="tblunit" 
+          style="position: absolute; 
+                 top: 300px;
+                 left: calc(70% - 250px);
+                 background-color: white; 
+                 visibility: hidden; 
+                 z-index: 100">
+      </fieldset>
+      <fieldset>
+            <div id="tblspec" 
+          style="position: absolute; 
+                 top: 300px;
+                 left: calc(70% - 150px);
+                 background-color: white; 
+                 visibility: hidden; 
+                 z-index: 100">
+      </fieldset>
+      <fieldset>
+
+            <div id="tblvarn" 
+          style="position: absolute; 
+                 top: 300px;
+                 left: calc(70% - 150px);
+                 background-color: white; 
+                 visibility: hidden; 
+                 z-index: 100">
+      </fieldset>
+      <fieldset>          
+            <div id="tblhous" 
+          style="position: absolute; 
+                 top: 400px;
+                 left: calc(70% - 150px);
+                 background-color: white; 
+                 visibility: hidden; 
+                 z-index: 100">
+      </fieldset>
+
+
+    </form>
+    <!-- Form Input -->
+
+
+		</div><!-- div content -->
+<div class="footerdate">
+  	<span class="labelTime Time"><b>Date  :</b> <?php $tgl=date('d-m-Y'); echo $tgl;?></span>
+</div>
+<div class="footertime">
+	<span class = "labelTime Time" id="timestamp"></span>
+</div>
+
+
+    	</div><!-- div main -->
+</div><!-- div layout -->
+<script src="js/INVEMAST01.js"></script>
+<script src="js/ui.js"></script>
+
+</body>
+</html>
+<?php
+}
+else
+
+{
+  header("Location: "."signin.php");
+}
+?>
