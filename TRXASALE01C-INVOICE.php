@@ -48,7 +48,7 @@ if (isset($_POST['q']) && ($_POST['q'] != ''))
             else if ($xregipaym == 'B') { $regipaym = 'BPJS'; }
             else if ($xregipaym == 'A') { $regipaym = 'Asuransi'; }
             else if ($xregipaym == 'P') { $regipaym = 'Perusahaan'; }
-            else if ($xregipaym == 'H') { $regipaym = 'Halodoc'}
+            else if ($xregipaym == 'H') { $regipaym = 'Halodoc'; }
             else { $regipaym = 'Kosong';}
 
             $examhght = "$rview[EXAM_HGHT]";

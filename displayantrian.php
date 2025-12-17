@@ -788,7 +788,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
     </div>
 
     <!-- ResponsiveVoice (logic lama) -->
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=m2sKd8bb"></script>
+    <!-- <script src="https://code.responsivevoice.org/responsivevoice.js?key=m2sKd8bb"></script> -->
 
     <script>
         let lastPoliCalls = { PU: null, PG: null, KB: null };
@@ -973,34 +973,169 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
 
         //     return nama;
         // }
-        
+
         // === FUNGSI NORMALISASI NAMA (ANTI DIEJA) ===
         function normalizeNameForTTS(fullname) {
             if (!fullname) return "";
-    
+
             let name = fullname.trim();
-    
+
             // 1. Ubah titel
             name = name
                 .replace(/^An\.\s*/i, "Anak ")
                 .replace(/^Tn\.\s*/i, "Tuan ")
                 .replace(/^Ny\.\s*/i, "Nyonya ")
                 .replace(/^Nn\.\s*/i, "Nona ");
-    
+
             // 2. Hilangkan tanda baca biang spelling
             name = name.replace(/[.,;:]/g, " ");
-    
+
             // 3. Huruf kapital semua → Title Case
             name = name.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-    
+
             // 4. Rapihin spasi
             name = name.replace(/\s+/g, " ").trim();
-    
+
             return name;
         }
         // === END NORMALISASI ===
-        
-        // ====== LOGIC: LOKET OBAT (ENDPOINT lama get_last_call.php?channel=SALE) ======
+
+        // ================= LOGGER =================
+        function logCall(stage, payload = {}) {
+            const t = new Date().toLocaleTimeString();
+            console.log(`[SALE ${t}] ${stage}`, payload);
+        }
+
+        // ================= TTS INIT =================
+        let ttsVoice = null;
+
+        function initTTS() {
+            if (!('speechSynthesis' in window)) {
+                logCall('TTS NOT SUPPORTED');
+                return;
+            }
+
+            const pickVoice = () => {
+                const voices = speechSynthesis.getVoices() || [];
+                ttsVoice =
+                    voices.find(v => /id-ID/i.test(v.lang)) ||
+                    voices.find(v => /indones/i.test(v.name)) ||
+                    voices.find(v => /id/i.test(v.lang)) ||
+                    null;
+
+                logCall('VOICE READY', {
+                    voice: ttsVoice ? `${ttsVoice.name} (${ttsVoice.lang})` : 'DEFAULT'
+                });
+            };
+
+            pickVoice();
+            speechSynthesis.onvoiceschanged = pickVoice;
+        }
+        initTTS();
+
+        // ================= DING DONG (FADE OUT) =================
+        const dingAudio = new Audio('audio/tingting.mp3'); // <-- ubah path kalau beda folder
+        dingAudio.preload = 'auto';
+
+        function playDingFade(duration = 3.0, fadeTime = 1.0) {
+            // duration & fadeTime dalam DETIK
+            return new Promise((resolve) => {
+                dingAudio.pause();
+                dingAudio.currentTime = 0;
+                dingAudio.volume = 1;
+
+                logCall('DING PLAY', { duration, fadeTime });
+
+                dingAudio.play().catch((e) => {
+                    logCall('DING AUTOPLAY BLOCKED', { error: e?.message || e });
+                    resolve(); // lanjut ngomong aja
+                });
+
+                const fadeStart = Math.max(duration - fadeTime, 0);
+
+                setTimeout(() => {
+                    const steps = 10;
+                    let step = 0;
+                    const interval = (fadeTime * 1000) / steps;
+
+                    const fade = setInterval(() => {
+                        step++;
+                        dingAudio.volume = Math.max(1 - step / steps, 0);
+
+                        if (step >= steps) {
+                            clearInterval(fade);
+                            dingAudio.pause();
+                            dingAudio.currentTime = 0;
+                            dingAudio.volume = 1;
+                            logCall('DING END (FADE)');
+                            resolve();
+                        }
+                    }, interval);
+                }, fadeStart * 1000);
+            });
+        }
+
+        // ================= QUEUE SUARA =================
+        const callQueue = [];
+        let isProcessingQueue = false;
+
+        function enqueueCall(text, meta = {}) {
+            callQueue.push({ text, meta });
+            logCall('ENQUEUE', { ...meta, queue_len: callQueue.length });
+            processQueue();
+        }
+
+        async function processQueue() {
+            if (isProcessingQueue) return;
+            if (callQueue.length === 0) return;
+
+            isProcessingQueue = true;
+
+            const item = callQueue.shift();
+            const text = item.text;
+            const meta = item.meta || {};
+
+            logCall('START ITEM', { ...meta, remaining_queue: callQueue.length });
+
+            // 🔔 Ding dong dulu 
+            await playDingFade(3.0, 2.0);
+
+            // 🔊 TTS
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = ttsVoice?.lang || 'id-ID';
+            if (ttsVoice) u.voice = ttsVoice;
+
+            u.pitch = 1;
+            u.rate = 0.95;
+            u.volume = 1;
+
+            u.onstart = () => logCall('TTS START', meta);
+            u.onend = () => {
+                logCall('TTS END', meta);
+                isProcessingQueue = false;
+                processQueue();
+            };
+            u.onerror = (e) => {
+                logCall('TTS ERROR', { ...meta, error: e?.error || e });
+                isProcessingQueue = false;
+                processQueue();
+            };
+
+            speechSynthesis.speak(u);
+        }
+
+        // Optional: bersihin antrian suara (buat debug/emergency)
+        function clearVoiceQueue() {
+            logCall('CLEAR QUEUE', { queue_len_before: callQueue.length });
+            callQueue.length = 0;
+            speechSynthesis.cancel();
+            dingAudio.pause();
+            dingAudio.currentTime = 0;
+            dingAudio.volume = 1;
+            isProcessingQueue = false;
+        }
+
+        // ================== FETCH SALE (LOKET FARMASI) ==================
         function fetchSaleCall() {
             fetch('get_last_call.php?channel=SALE')
                 .then(r => r.json())
@@ -1013,31 +1148,68 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
                     const nomor = data.queue_no;
                     const namaRaw = data.patient_name || 'Pasien';
 
-                    // const convertedName = convertTitle(nama);
-                    // const numberEl = document.getElementById('loket-obat-code');
-                    // animateNumber(numberEl, nomor);
-                    const nama = normalizeNameForTTS(namaRaw);
+                    // ini fungsi lu yang udah ada sebelumnya
+                    const nama = normalizeNameForTTS ? normalizeNameForTTS(namaRaw) : namaRaw;
 
-                    document.getElementById('loket-obat-name').innerText = nama;
+                    // UI
+                    document.getElementById('loket-obat-name').innerText = namaRaw;
 
                     // highlight kartu loket
-                    highlightCard('card-obat');
+                    if (typeof highlightCard === 'function') highlightCard('card-obat');
 
-                    // suara seperti logic lama
+                    // teks panggilan
                     const text = "Atas nama " + nama + ", silakan menuju loket Farmasi.";
-                    if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
-                        responsiveVoice.cancel();
-                        responsiveVoice.speak(text, "Indonesian Female", {
-                            pitch: 1,
-                            rate: 0.95,
-                            volume: 1
-                        });
-                    }
 
-                    pingSoundIndicator();
+                    // LOG
+                    logCall('NEW CALL', { id: data.id, nomor, nama: namaRaw, channel: 'SALE', text_preview: text });
+
+                    // QUEUE SUARA
+                    enqueueCall(text, { id: data.id, nomor, nama: namaRaw, channel: 'SALE' });
+
+                    // indikator (kalau ada)
+                    if (typeof pingSoundIndicator === 'function') pingSoundIndicator();
                 })
-                .catch(err => console.error('Sale error:', err));
+                .catch(err => logCall('FETCH ERROR', { error: err?.message || err }));
         }
+
+        // // ====== LOGIC: LOKET OBAT (ENDPOINT lama get_last_call.php?channel=SALE) ======
+        // function fetchSaleCall() {
+        //     fetch('get_last_call.php?channel=SALE')
+        //         .then(r => r.json())
+        //         .then(data => {
+        //             if (!data || !data.id) return;
+        //             if (data.id == lastSaleId) return;
+
+        //             lastSaleId = data.id;
+
+        //             const nomor = data.queue_no;
+        //             const namaRaw = data.patient_name || 'Pasien';
+
+        //             // const convertedName = convertTitle(nama);
+        //             // const numberEl = document.getElementById('loket-obat-code');
+        //             // animateNumber(numberEl, nomor);
+        //             const nama = normalizeNameForTTS(namaRaw);
+
+        //             document.getElementById('loket-obat-name').innerText = nama;
+
+        //             // highlight kartu loket
+        //             highlightCard('card-obat');
+
+        //             // suara seperti logic lama
+        //             const text = "Atas nama " + nama + ", silakan menuju loket Farmasi.";
+        //             if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
+        //                 responsiveVoice.cancel();
+        //                 responsiveVoice.speak(text, "Indonesian Female", {
+        //                     pitch: 1,
+        //                     rate: 0.95,
+        //                     volume: 1
+        //                 });
+        //             }
+
+        //             pingSoundIndicator();
+        //         })
+        //         .catch(err => console.error('Sale error:', err));
+        // }
 
         // function fetchFarmCall() {
         //     fetch('get_last_call.php?channel=FARM')
@@ -1075,20 +1247,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
         //         })
         //         .catch(err => console.error('Sale error:', err));
         // }
-
-
-        // ====== LOGIC: NAMA PASIEN SEDANG DILAYANI (ENDPOINT lama get_current_patient.php) ======
-        // function fetchCurrentPatient() {
-        //     fetch('get_last_call.php?.php?channel=POLI')
-        //         .then(r => r.json())
-        //         .then(data => {
-        //             if (data && data.name) {
-        //                 document.getElementById('patient-name-PU').textContent = data.name;
-        //             }
-        //         })
-        //         .catch(err => console.error('Patient error:', err));
-        // }
-
 
         document.addEventListener('DOMContentLoaded', () => {
             updateClock();
