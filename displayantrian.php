@@ -424,6 +424,9 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease, opacity 0.3s ease;
+            max-width: 85%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* SUB POLI */
@@ -567,7 +570,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
             }
         }
 
-        /* FOOTER */
+        /* FOOTER
         .footer {
             background: var(--bg-card);
             border-radius: 18px;
@@ -599,6 +602,27 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
             font-size: 14px;
             color: var(--primary-dark);
             background: #e0f2fe;
+        } */
+
+        .footer {
+            padding: 10px 16px;
+            justify-content: stretch;
+        }
+
+        .footer .running-text-container {
+            width: 100%;
+            margin: 0;
+            border-radius: 14px;
+            /* ga usah 999 biar ga “capsule kependekan” */
+            overflow: hidden;
+        }
+
+        .footer .running-text-inner {
+            padding: 10px 0;
+            /* bikin tinggi enak */
+            font-size: 16px;
+            animation-duration: 40s;
+            /* boleh 25-40 sesuai selera */
         }
 
         /* Fade-in awal */
@@ -642,10 +666,235 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
             /* atau "contain" kalau mau full terlihat */
             border-radius: 18px;
         }
+
+        /* footer jam */
+        .footer-mini {
+            background: var(--bg-card);
+            border-radius: 999px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            border: 2px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
+            font-size: 18px;
+            color: var(--text-main);
+        }
+
+        .footer-mini span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* MARQUEE MULUS */
+        .marquee {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #0ea5e9;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, 0.4);
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            will-change: transform;
+            animation: marqueeMove 70s linear infinite;
+        }
+
+        .marquee-content {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .marquee-content span {
+            color: #e5f9ff;
+            font-size: 16px;
+            padding: 10px 0;
+            margin: 0 36px;
+            /* jarak antar kalimat */
+        }
+
+        .marquee:hover .marquee-track {
+            animation-play-state: paused;
+        }
+
+        /* geser setengah track (karena isi dobel) */
+        @keyframes marqueeMove {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ====== OVERLAY UNLOCK SUARA ====== */
+        #unlock-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .72);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            backdrop-filter: blur(6px);
+        }
+
+        #unlock-overlay.unlock-hide {
+            display: none;
+        }
+
+        #unlock-box {
+            width: min(560px, 92vw);
+            background: #fff;
+            border-radius: 18px;
+            padding: 22px 22px 18px;
+            border: 2px solid rgba(14, 165, 233, .35);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, .35);
+            text-align: center;
+        }
+
+        .unlock-title {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: .04em;
+            color: #0f172a;
+        }
+
+        .unlock-desc {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.45;
+        }
+
+        .unlock-btn {
+            margin-top: 14px;
+            width: 100%;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 16px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 10px 22px rgba(14, 165, 233, .35);
+            transition: transform .15s ease, opacity .15s ease;
+        }
+
+        .unlock-btn:active {
+            transform: scale(.98);
+        }
+
+        .unlock-btn[disabled] {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .unlock-note {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .unlock-mini {
+            margin-top: 12px;
+            text-align: left;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+
+        .unlock-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: #334155;
+            padding: 6px 0;
+        }
+
+        .unlock-toggle input {
+            transform: scale(1.1);
+        }
+
+        /* badge kecil pojok kanan bawah */
+        .audio-badge {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(148, 163, 184, .6);
+            background: rgba(255, 255, 255, .85);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, .18);
+            color: #64748b;
+            z-index: 999998;
+            opacity: .85;
+        }
+
+        .audio-badge.on {
+            border-color: #22c55e;
+            color: #16a34a;
+        }
+
+        .audio-badge.ping::after {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            border: 2px solid rgba(34, 197, 94, .7);
+            animation: ping 0.7s ease-out;
+        }
     </style>
 </head>
 
 <body>
+    <!-- ====== OVERLAY UNLOCK SUARA (WAJIB 1x KLIK) ====== -->
+    <div id="unlock-overlay">
+        <div id="unlock-box">
+            <div class="unlock-title">Aktifkan Suara Panggilan</div>
+            <div class="unlock-desc">
+                Klik tombol di bawah untuk mengaktifkan suara panggilan (ding + TTS).<br>
+                Browser biasanya memblokir audio sebelum ada interaksi.
+            </div>
+
+            <button id="btn-unlock-audio" class="unlock-btn" type="button">
+                🔊 AKTIFKAN SUARA
+            </button>
+
+            <div class="unlock-note" id="unlock-note">Status: menunggu klik…</div>
+
+            <div class="unlock-mini">
+                <label class="unlock-toggle">
+                    <input type="checkbox" id="unlock-test-tts" checked>
+                    <span>Test suara TTS (“Suara panggilan aktif”)</span>
+                </label>
+                <label class="unlock-toggle">
+                    <input type="checkbox" id="unlock-test-ding" checked>
+                    <span>Test ding (tingting)</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- indikator kecil (opsional) -->
+    <div class="audio-badge" id="audio-badge" title="Suara panggilan">
+        <i class="fa-solid fa-volume-high"></i>
+    </div>
+
     <div class="screen">
 
         <!-- HEADER -->
@@ -662,8 +911,8 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
                 </div>
             </div>
 
-            <!-- <div class="header-right">
-                <div class="summary-chip fade-in" id="chip-total">
+            <div class="header-right">
+                <!-- <div class="summary-chip fade-in" id="chip-total">
                     <div class="summary-label">Total Antrian</div>
                     <div class="summary-value" id="summary-total">0</div>
                 </div>
@@ -674,12 +923,12 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
                 <div class="summary-chip fade-in" id="chip-left">
                     <div class="summary-label">Sisa</div>
                     <div class="summary-value" id="summary-left">0</div>
-                </div>
+                </div> -->
 
                 <div class="sound-indicator" id="sound-indicator" title="Suara Panggilan">
                     <i class="fa-solid fa-volume-high"></i>
                 </div>
-            </div> -->
+            </div>
         </header>
 
         <!-- MAIN -->
@@ -748,13 +997,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
                     <div class="video-tag">-</div>
                 </div>
 
-                <!-- <div class="video-wrapper">
-                                    <div class="video-placeholder">
-                        <h2>AREA VIDEO</h2>
-                        <span>Pasang video edukasi / promosi layanan klinik di sini.</span>
-                    </div>
-                </div> -->
-
                 <div class="video-wrapper">
                     <video id="info-video" class="info-video" playsinline muted autoplay
                         controlslist="nodownload noplaybackrate">
@@ -762,29 +1004,47 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
                     </video>
                 </div>
 
-                <div class="running-text-container">
-                    <div class="running-text-inner" id="running-text">
-                        <span>Selamat datang di KPRJ Yemima Medika.</span>
-                        <span>Silakan tunggu nomor antrean Anda dipanggil.</span>
-                        <span>Gunakan masker dan tetap jaga jarak.</span>
-                        <span>Terima kasih atas kepercayaan Anda kepada kami.</span>
-                    </div>
+                <div class="footer-mini fade-in">
+                    <span>
+                        <div class="footer-pill">📅</div>
+                        <span id="footer-date">-</span>
+                    </span>
+                    <span>•</span>
+                    <span>
+                        <div class="footer-pill">⏱</div>
+                        <span id="footer-time">-</span>
+                    </span>
                 </div>
+
             </section>
         </main>
 
-        <!-- FOOTER -->
         <footer class="footer fade-in">
-            <span>
-                <div class="footer-pill">📅</div>
-                <span id="footer-date">-</span>
-            </span>
-            <span>•</span>
-            <span>
-                <div class="footer-pill">⏱</div>
-                <span id="footer-time">-</span>
-            </span>
+            <div class="marquee">
+                <div class="marquee-track" id="marquee-track">
+                    <div class="marquee-content" id="marquee-content">
+                        <SPAN>*</SPAN>
+                        <span>Selamat datang di KLINiK PRATAMA RAWAT JALAN YEMIMA MEDIKA</span>
+                        <SPAN>*</SPAN>
+                        <span>Melayani Pemeriksaan Dokter Umum - Dokter Gigi - Kebidanan - Laboratorium - Farmasi</span>
+                        <SPAN>*</SPAN>
+                        <span>Mohon menunggu hingga nomor antrean Anda dipanggil melalui layar dan suara
+                            panggilan</span>
+                        <SPAN>*</SPAN>
+                        <span>Gunakan masker, jaga jarak, dan patuhi protokol kesehatan demi kenyamanan bersama</span>
+                        <SPAN>*</SPAN>
+                        <span>Untuk informasi layanan dan promo kesehatan, ikuti Instagram kami di
+                            @klinikyemimamedika</span>
+                        <SPAN>*</SPAN>
+                        <span>Informasi & pendaftaran: Telp / WhatsApp 0811-8385-108 - Telepon 021-77814916</span>
+                        <SPAN>*</SPAN>
+                        <span>Terima kasih atas kepercayaan Anda kepada KPRJ Yemima Medika</span>
+                    </div>
+                    <!-- duplikat otomatis lewat JS (atau kamu bisa copy manual) -->
+                </div>
+            </div>
         </footer>
+
     </div>
 
     <!-- ResponsiveVoice (logic lama) -->
@@ -854,6 +1114,15 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
             return prefix + next;
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const content = document.getElementById('marquee-content');
+            const track = document.getElementById('marquee-track');
+            if (content && track) {
+                // duplikasi 1x untuk loop mulus
+                track.appendChild(content.cloneNode(true));
+            }
+        });
+
         // ====== LOGIC: STATS POLI (PAKAI endpoint lama ?ajax=stats) ======
         function fetchStats() {
             fetch('displayantrian.php?ajax=stats')
@@ -899,18 +1168,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
                                 document.getElementById('poli-umum-next').textContent = next;
                                 document.getElementById('poli-umum-remaining').textContent = sisa;
 
-                                // Suara panggilan Poli Umum (logic lama)
-                                // const text = `Poli Umum nomor ${lastNo}, silakan masuk ke ruang pemeriksaan.`;
-                                // if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
-                                //     responsiveVoice.cancel();
-                                //     responsiveVoice.speak(text, "Indonesian Female", {
-                                //         pitch: 1,
-                                //         rate: 0.9,
-                                //         volume: 1
-                                //     });
-                                // }
-
-                                pingSoundIndicator();
                             } else {
                                 // tetap update sisa kalau angka sama
                                 document.getElementById('poli-umum-remaining').textContent = sisa;
@@ -936,43 +1193,9 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
                         }
                     });
 
-                    // Update summary header
-                    const oldTotal = parseInt(document.getElementById('summary-total').textContent || 0, 10);
-                    const oldDip = parseInt(document.getElementById('summary-now').textContent || 0, 10);
-                    const oldSisa = parseInt(document.getElementById('summary-left').textContent || 0, 10);
-
-                    if (oldTotal !== totalAll) {
-                        document.getElementById('summary-total').textContent = totalAll;
-                        pulseChip('chip-total');
-                    }
-                    if (oldDip !== dipAll) {
-                        document.getElementById('summary-now').textContent = dipAll;
-                        pulseChip('chip-now');
-                    }
-                    if (oldSisa !== sisaAll) {
-                        document.getElementById('summary-left').textContent = sisaAll;
-                        pulseChip('chip-left');
-                    }
                 })
                 .catch(err => console.error('Stat error:', err));
         }
-
-        // function convertTitle(nama) {
-        //     let map = {
-        //         "Tn.": "Tuan",
-        //         "Ny.": "Nyonya",
-        //         "Nn.": "Nona",
-        //         "An.": "Anak"
-        //     };
-
-        //     let prefix = nama.substring(0, 3); // contoh: "Tn."
-
-        //     if (map[prefix]) {
-        //         return map[prefix] + " " + nama.substring(3);
-        //     }
-
-        //     return nama;
-        // }
 
         // === FUNGSI NORMALISASI NAMA (ANTI DIEJA) ===
         function normalizeNameForTTS(fullname) {
@@ -1033,47 +1256,224 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
         }
         initTTS();
 
-        // ================= DING DONG (FADE OUT) =================
-        const dingAudio = new Audio('audio/tingting.mp3'); // <-- ubah path kalau beda folder
+        // ================= DING (SATU KALI SAJA) =================
+        const dingAudio = new Audio('audio/tingting.mp3'); // path sesuai folder kamu
         dingAudio.preload = 'auto';
 
+        // ===== fallback beep (kalau mp3 gagal / diblok) =====
+        let audioCtx = null;
+        function beepFallback(ms = 220, freq = 880, volume = 0.12) {
+            try {
+                const Ctx = window.AudioContext || window.webkitAudioContext;
+                if (!Ctx) return Promise.resolve(false);
+
+                if (!audioCtx) audioCtx = new Ctx();
+                if (audioCtx.state === 'suspended') {
+                    return audioCtx.resume().then(() => beepFallback(ms, freq, volume));
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.value = volume;
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                setTimeout(() => {
+                    osc.stop();
+                    osc.disconnect();
+                    gain.disconnect();
+                }, ms);
+
+                return Promise.resolve(true);
+            } catch {
+                return Promise.resolve(false);
+            }
+        }
+
+        // ================= DING DONG (FADE OUT) =================
         function playDingFade(duration = 3.0, fadeTime = 1.0) {
-            // duration & fadeTime dalam DETIK
             return new Promise((resolve) => {
                 dingAudio.pause();
                 dingAudio.currentTime = 0;
                 dingAudio.volume = 1;
 
-                logCall('DING PLAY', { duration, fadeTime });
+                dingAudio.play().then(() => {
+                    const fadeStart = Math.max(duration - fadeTime, 0);
 
-                dingAudio.play().catch((e) => {
-                    logCall('DING AUTOPLAY BLOCKED', { error: e?.message || e });
-                    resolve(); // lanjut ngomong aja
+                    setTimeout(() => {
+                        const steps = 10;
+                        let step = 0;
+                        const interval = (fadeTime * 1000) / steps;
+
+                        const fade = setInterval(() => {
+                            step++;
+                            dingAudio.volume = Math.max(1 - step / steps, 0);
+
+                            if (step >= steps) {
+                                clearInterval(fade);
+                                dingAudio.pause();
+                                dingAudio.currentTime = 0;
+                                dingAudio.volume = 1;
+                                resolve();
+                            }
+                        }, interval);
+                    }, fadeStart * 1000);
+                }).catch(async () => {
+                    // kalau autoplay blocked, fallback beep pendek
+                    await beepFallback(220, 880, 0.12);
+                    resolve();
                 });
-
-                const fadeStart = Math.max(duration - fadeTime, 0);
-
-                setTimeout(() => {
-                    const steps = 10;
-                    let step = 0;
-                    const interval = (fadeTime * 1000) / steps;
-
-                    const fade = setInterval(() => {
-                        step++;
-                        dingAudio.volume = Math.max(1 - step / steps, 0);
-
-                        if (step >= steps) {
-                            clearInterval(fade);
-                            dingAudio.pause();
-                            dingAudio.currentTime = 0;
-                            dingAudio.volume = 1;
-                            logCall('DING END (FADE)');
-                            resolve();
-                        }
-                    }, interval);
-                }, fadeStart * 1000);
             });
         }
+
+        // ================= UNLOCK AUDIO (ANTI AUTOPLAY BLOCK) =================
+        let audioUnlocked = false;
+
+        function setUnlockNote(msg) {
+            const el = document.getElementById('unlock-note');
+            if (el) el.textContent = msg;
+        }
+
+        function showUnlockOverlay() {
+            const overlay = document.getElementById('unlock-overlay');
+            if (overlay) overlay.style.display = 'flex';
+        }
+
+        function hideUnlockOverlay() {
+            const overlay = document.getElementById('unlock-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+
+        function setBadge(on) {
+            const badge = document.getElementById('audio-badge');
+            if (!badge) return;
+            badge.classList.toggle('on', !!on);
+        }
+
+        function pingBadge() {
+            const badge = document.getElementById('audio-badge');
+            if (!badge) return;
+            badge.classList.add('ping');
+            setTimeout(() => badge.classList.remove('ping'), 800);
+        }
+
+        function testSpeakOnce(text = "Suara panggilan aktif.") {
+            return new Promise((resolve) => {
+                if (!('speechSynthesis' in window)) return resolve(false);
+
+                try { speechSynthesis.cancel(); } catch { }
+
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = ttsVoice?.lang || 'id-ID';
+                if (ttsVoice) u.voice = ttsVoice;
+
+                u.rate = 1.0;
+                u.pitch = 1.0;
+                u.volume = 1.0;
+
+                let done = false;
+                const finish = (ok) => {
+                    if (done) return;
+                    done = true;
+                    resolve(ok);
+                };
+
+                u.onend = () => finish(true);
+                u.onerror = () => finish(false);
+
+                try {
+                    speechSynthesis.speak(u);
+                    setTimeout(() => finish(false), 2500);
+                } catch {
+                    finish(false);
+                }
+            });
+        }
+
+        async function tryPlayDingQuick() {
+            try {
+                dingAudio.pause();
+                dingAudio.currentTime = 0;
+                dingAudio.volume = 1;
+                await dingAudio.play();
+                setTimeout(() => {
+                    dingAudio.pause();
+                    dingAudio.currentTime = 0;
+                }, 350);
+                return true;
+            } catch {
+                return await beepFallback(220, 880, 0.12);
+            }
+        }
+
+        async function unlockAudioOnce() {
+            if (audioUnlocked) return true;
+
+            const btn = document.getElementById('btn-unlock-audio');
+            const optTTS = document.getElementById('unlock-test-tts');
+            const optDing = document.getElementById('unlock-test-ding');
+
+            if (btn) btn.disabled = true;
+
+            // resume AudioContext biar beep bisa bunyi
+            try {
+                const Ctx = window.AudioContext || window.webkitAudioContext;
+                if (Ctx) {
+                    if (!audioCtx) audioCtx = new Ctx();
+                    if (audioCtx.state === 'suspended') await audioCtx.resume();
+                }
+            } catch { }
+
+            let dingOk = true;
+            let ttsOk = true;
+
+            if (!optDing || optDing.checked) {
+                setUnlockNote("Status: test bunyi ding...");
+                dingOk = await tryPlayDingQuick();
+            }
+
+            if (!optTTS || optTTS.checked) {
+                setUnlockNote("Status: test TTS...");
+                ttsOk = await testSpeakOnce("Suara panggilan aktif.");
+            }
+
+            if (dingOk || ttsOk) {
+                audioUnlocked = true;
+                setUnlockNote("Status: suara aktif ✅");
+                setBadge(true);
+                pingBadge();
+                hideUnlockOverlay();
+
+                // kalau ada panggilan numpuk, jalanin lagi
+                setTimeout(() => {
+                    try { processQueue(); } catch { }
+                }, 150);
+
+                return true;
+            }
+
+            audioUnlocked = false;
+            setBadge(false);
+            setUnlockNote("Status: gagal. Coba klik lagi atau cek output audio Windows.");
+            if (btn) btn.disabled = false;
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // tampilkan overlay dari awal
+            showUnlockOverlay();
+            setBadge(false);
+
+            const btn = document.getElementById('btn-unlock-audio');
+            if (btn) btn.addEventListener('click', unlockAudioOnce);
+
+            const badge = document.getElementById('audio-badge');
+            if (badge) badge.addEventListener('click', showUnlockOverlay);
+        });
 
         // ================= QUEUE SUARA =================
         const callQueue = [];
@@ -1088,6 +1488,8 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
         async function processQueue() {
             if (isProcessingQueue) return;
             if (callQueue.length === 0) return;
+
+            if (!audioUnlocked) return;
 
             isProcessingQueue = true;
 
@@ -1117,6 +1519,13 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
             };
             u.onerror = (e) => {
                 logCall('TTS ERROR', { ...meta, error: e?.error || e });
+
+                // kalau error, anggap audio perlu unlock ulang
+                audioUnlocked = false;
+                setBadge(false);
+                showUnlockOverlay();
+                setUnlockNote("Status: suara bermasalah. Klik AKTIFKAN SUARA lagi.");
+
                 isProcessingQueue = false;
                 processQueue();
             };
@@ -1172,82 +1581,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
                 .catch(err => logCall('FETCH ERROR', { error: err?.message || err }));
         }
 
-        // // ====== LOGIC: LOKET OBAT (ENDPOINT lama get_last_call.php?channel=SALE) ======
-        // function fetchSaleCall() {
-        //     fetch('get_last_call.php?channel=SALE')
-        //         .then(r => r.json())
-        //         .then(data => {
-        //             if (!data || !data.id) return;
-        //             if (data.id == lastSaleId) return;
-
-        //             lastSaleId = data.id;
-
-        //             const nomor = data.queue_no;
-        //             const namaRaw = data.patient_name || 'Pasien';
-
-        //             // const convertedName = convertTitle(nama);
-        //             // const numberEl = document.getElementById('loket-obat-code');
-        //             // animateNumber(numberEl, nomor);
-        //             const nama = normalizeNameForTTS(namaRaw);
-
-        //             document.getElementById('loket-obat-name').innerText = nama;
-
-        //             // highlight kartu loket
-        //             highlightCard('card-obat');
-
-        //             // suara seperti logic lama
-        //             const text = "Atas nama " + nama + ", silakan menuju loket Farmasi.";
-        //             if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
-        //                 responsiveVoice.cancel();
-        //                 responsiveVoice.speak(text, "Indonesian Female", {
-        //                     pitch: 1,
-        //                     rate: 0.95,
-        //                     volume: 1
-        //                 });
-        //             }
-
-        //             pingSoundIndicator();
-        //         })
-        //         .catch(err => console.error('Sale error:', err));
-        // }
-
-        // function fetchFarmCall() {
-        //     fetch('get_last_call.php?channel=FARM')
-        //         .then(r => r.json())
-        //         .then(data => {
-        //             if (!data || !data.id) return;
-        //             if (data.id == lastSaleId) return;
-
-        //             lastSaleId = data.id;
-
-        //             const nomor = data.queue_no;
-        //             const nama = data.patient_name || 'Pasien';
-
-        //             const convertedName = convertTitle(nama);
-        //             // const numberEl = document.getElementById('loket-obat-code');
-        //             // animateNumber(numberEl, nomor);
-
-        //             document.getElementById('loket-obat-name').innerText = nama;
-
-        //             // highlight kartu loket
-        //             highlightCard('card-obat');
-
-        //             // suara seperti logic lama
-        //             const text = "Atas nama " + convertedName + ", silakan menuju loket Farmasi.";
-        //             if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
-        //                 responsiveVoice.cancel();
-        //                 responsiveVoice.speak(text, "Indonesian Female", {
-        //                     pitch: 1,
-        //                     rate: 0.95,
-        //                     volume: 1
-        //                 });
-        //             }
-
-        //             pingSoundIndicator();
-        //         })
-        //         .catch(err => console.error('Sale error:', err));
-        // }
-
         document.addEventListener('DOMContentLoaded', () => {
             updateClock();
             setInterval(updateClock, 1000);
@@ -1280,13 +1613,6 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
                 });
             }
 
-            // fetchCurrentPatient();
-            // setInterval(fetchCurrentPatient, 5000);
-
-            // Auto refresh tiap 60 menit (biar aman)
-            // setInterval(() => {
-            //     location.reload();
-            // }, 3600000);
         });
 
         // ====== PLAYLIST VIDEO ======
