@@ -1261,7 +1261,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
             });
 
             fetchStats();
-            setInterval(fetchStats, 3000);
+            setInterval(fetchStats, 2000);
 
             fetchSaleCall();
             setInterval(fetchSaleCall, 2000);
@@ -1284,9 +1284,9 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'stats') {
             // setInterval(fetchCurrentPatient, 5000);
 
             // Auto refresh tiap 60 menit (biar aman)
-            setInterval(() => {
-                location.reload();
-            }, 3600000);
+            // setInterval(() => {
+            //     location.reload();
+            // }, 3600000);
         });
 
         // ====== PLAYLIST VIDEO ======
