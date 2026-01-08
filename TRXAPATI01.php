@@ -347,8 +347,8 @@ $(document).ready(function()
 	            value="true"
 	            onclick="if (checked == true) 
 	                  {
-                        let mydate = document.getElementById('tglmainbirt').value;
-                        periksatanggal(mydate);
+                        // let mydate = document.getElementById('tglmainbirt').value;
+                        // periksatanggal(mydate);
 	                      document.getElementById('optfemale').checked = false;
 	                      document.getElementById('hidmaingend').value = 'M';
 	                  }                
@@ -360,8 +360,8 @@ $(document).ready(function()
 	            value="true"
 	            onclick="if (checked == true) 
 	                  {
-                        let mydate = document.getElementById('tglmainbirt').value;
-                        periksatanggal(mydate);
+                        // let mydate = document.getElementById('tglmainbirt').value;
+                        // periksatanggal(mydate);
 
 	                      document.getElementById('optmale').checked = false;
 	                      document.getElementById('hidmaingend').value = 'F';
@@ -373,7 +373,7 @@ $(document).ready(function()
 	              type="hidden">
 
         <label for="tglmainbirt">Tanggal Lahir :</label>
-          <input type="date" name="tglmainbirt" id="tglmainbirt" onchange="periksatanggal(this.value);">
+          <input type="date" name="tglmainbirt" id="tglmainbirt">
 
 
       	</div><!-- pure-control-group -->
