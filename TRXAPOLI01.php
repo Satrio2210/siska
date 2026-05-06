@@ -591,6 +591,20 @@ if (isset($_SESSION['username'])) {
 
                     }
         ">Submit</a>
+
+                      <!-- Dropdown Pilihan Surat -->
+            <select id="jenis_surat" class="pure-input-1-2">
+              <option value="">-- CETAK SURAT --</option>
+              <option value="SKBW">SKBW</option>
+              <option value="SURAT_SEHAT">Surat Sehat</option>
+              <option value="SURAT_KETERANGAN">Surat Keterangan</option>
+            </select>
+
+            <!-- Tombol Cetak -->
+            <button type="button" class="pure-button button-view" onclick="cetakSurat()">
+              Cetak
+            </button>
+
             </fieldset>
             <h2> REKAM MEDIS </h2>
             <fieldset>

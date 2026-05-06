@@ -1,4 +1,4 @@
-assets/videos/*
+/assets/
 *.mp4
 /yemimaX/
 /conf/config.php

@@ -67,7 +67,7 @@ include "inc/sanie.php";
                     (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC 
                     FROM investock 
                     WHERE INVE_WARE_CODE = '$gudang_farmasi' 
-                    AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) = 'ST'
+                    AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) IN ('ST', 'NS')
                     AND INVE_STOCK_QUTY > 0
                     AND INVE_VIEW_STAT IN ('R','Y')
                     ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";    
@@ -80,7 +80,7 @@ include "inc/sanie.php";
                   (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC 
                   FROM investock 
                   WHERE INVE_WARE_CODE = '$gudang_farmasi' 
-                  AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) = 'ST'
+                  AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) IN ('ST', 'NS')
                   AND INVE_STOCK_QUTY > 0
                   AND INVE_VIEW_STAT IN ('R','Y')
                   AND INVE_STOCK_CODE IN (SELECT TRXA_INVE_CODE FROM trxacust WHERE TRXA_CUST_TYPE='$regipaym' AND TRXA_VIEW_STAT='Y')
@@ -98,7 +98,7 @@ include "inc/sanie.php";
               FROM investock 
               WHERE INVE_STOCK_NAME LIKE '$kata%'
               AND INVE_WARE_CODE = '$gudang_farmasi'
-              AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) = 'ST'
+              AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) IN ('ST', 'NS')
               AND INVE_STOCK_QUTY > 0  
               AND INVE_VIEW_STAT IN ('R','Y')
               ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";        
@@ -112,7 +112,7 @@ include "inc/sanie.php";
               FROM investock 
               WHERE INVE_STOCK_NAME LIKE '$kata%'
               AND INVE_WARE_CODE = '$gudang_farmasi'
-              AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) = 'ST'
+              AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) IN ('ST', 'NS')
               AND INVE_STOCK_QUTY > 0  
               AND INVE_VIEW_STAT IN ('R','Y')
               -- AND INVE_STOCK_CODE IN (SELECT TRXA_INVE_CODE FROM trxacust WHERE TRXA_CUST_TYPE='$regipaym' AND TRXA_VIEW_STAT='Y')
