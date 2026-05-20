@@ -78,7 +78,7 @@ include "inc/sanie.php";
           TRXA_ENTR_DATE   
           FROM trxaregi 
           WHERE TRXA_REGI_STAT IN ('C','P')
-          AND TRXA_REGI_PAYM = 'U' 
+          AND (TRXA_REGI_PAYM = 'U' OR (TRXA_REGI_PAYM = 'B' AND TRXA_REGI_POLI = 'PG'))
           AND DATE(TRXA_ENTR_DATE) >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
           ORDER BY TRXA_ENTR_DATE DESC, 
           TRXA_ENTR_TIME DESC";
@@ -92,7 +92,7 @@ include "inc/sanie.php";
           TRXA_ENTR_DATE   
           FROM trxaregi 
           WHERE TRXA_REGI_STAT IN ('C','P')
-          AND TRXA_REGI_PAYM = 'U' 
+          AND (TRXA_REGI_PAYM = 'U' OR (TRXA_REGI_PAYM = 'B' AND TRXA_REGI_POLI = 'PG'))
           AND DATE(TRXA_ENTR_DATE) >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
           AND (SELECT PATI_MAIN_NAME FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) LIKE '%$kata%'
           ORDER BY TRXA_ENTR_DATE DESC, 
