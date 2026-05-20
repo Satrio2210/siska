@@ -141,6 +141,13 @@ $(document).ready(function()
                 Pasien Berobat
               </li>
 
+              <li class="pure-menu-item pure-menu-selected"
+								onclick="javascript: location.href = 'TRXAPATI07.php'">
+								<a class="pure-menu-link">
+									TTV & Antropometri
+								</a>
+							</li>
+<!-- 
               <li class="pure-menu-item pure-menu-selected" onclick="javascript: location.href = 'TRXAPATI03.php'">
                 <a class="pure-menu-link">
                 Ruangan
@@ -151,14 +158,7 @@ $(document).ready(function()
                 <a class="pure-menu-link">
                 Jadwal Dokter
                 </a>
-              </li>
-
-              <li class="pure-menu-item pure-menu-selected" onclick="javascript: location.href = 'TRXAPATI07.php'">
-                <a class="pure-menu-link">
-                Pasien Periksa 
-                </a>
-              </li>
-
+              </li> -->
             </ul>
           </div>
     <!-- Tab Menu -->
@@ -168,7 +168,7 @@ $(document).ready(function()
     	<fieldset>
 
       		<div class="pure-control-group">
-                <p><span style="color:red;">**Cari pasien dengan Nama Lengkap / 16 digit NIK</p>
+                <p><span style="color:red;">**Cari pasien dengan Nama Lengkap / Tanggal Lahir (Tahun-Bulan-Tanggal)</p>
         		<label for="txtsearch">Cari Pasien :</label>
               	<input type="text" 
             	  	name="txtsearch" 
@@ -275,7 +275,30 @@ $(document).ready(function()
               </select>
 
           <label for="optregipaym">Pembayaran :</label>
-              <select name="optregipaym" id="optregipaym" onchange="document.getElementById('txtregidoct').focus();">
+              <select name="optregipaym" id="optregipaym" style="color: red; font-weight: bold;" onchange="
+                  // --- TAMBAHAN LOGIKA WARNA ---
+                    if (this.value === '') {
+                        this.style.color = 'red'; // Kalau balik ke '- PILIH -', warnanya merah lagi
+                    } else {
+                        this.style.color = 'black'; // Kalau udah milih (Umum/BPJS dll), warnanya jadi hitam normal
+                    }
+                    // -----------------------------
+                  
+                  if (this.value === 'B') {
+                        document.getElementById('optcharge').checked = false;
+                        document.getElementById('optnocharge').checked = true;
+                        document.getElementById('hidregifee').value = 'N';
+
+                        document.getElementById('optcharge').disabled = true;
+                        document.getElementById('optnocharge').disabled = true;
+                    }else{
+                        document.getElementById('optcharge').checked = true;
+                        document.getElementById('optnocharge').checked = false;
+                        document.getElementById('hidregifee').value = 'Y';
+                    }
+                  document.getElementById('txtregidoct').focus();
+              ">
+                <option value="" >- PILIH -</option>
                 <option value="U">Umum</option>
                 <option value="B">BPJS</option>
                 <option value="A">Asuransi</option>

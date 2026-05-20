@@ -143,7 +143,11 @@ $(document).ready(function()
                 </a>
               </li>
 
-              <li class="pure-menu-item pure-menu-selected" onclick="javascript: location.href = 'TRXAPATI03.php'">
+              <li class="pure-menu-item pure-menu-disabled">
+									TTV & Antropometri
+							</li>
+
+              <!-- <li class="pure-menu-item pure-menu-selected" onclick="javascript: location.href = 'TRXAPATI03.php'">
                 <a class="pure-menu-link">
                 Ruangan
                 </a>
@@ -153,14 +157,7 @@ $(document).ready(function()
                 <a class="pure-menu-link">
                 Jadwal Dokter
                 </a>
-              </li>
-
-              <li class="pure-menu-item pure-menu-disabled">
-                Pasien Periksa
-              </li>
-
-
-
+              </li> -->
             </ul>
           </div>
     <!-- Tab Menu -->

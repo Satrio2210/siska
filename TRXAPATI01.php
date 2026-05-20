@@ -130,6 +130,13 @@ if (isset($_SESSION['username'])) {
 							</li>
 
 							<li class="pure-menu-item pure-menu-selected"
+								onclick="javascript: location.href = 'TRXAPATI07.php'">
+								<a class="pure-menu-link">
+									TTV & Antropometri
+								</a>
+							</li>
+
+							<!-- <li class="pure-menu-item pure-menu-selected"
 								onclick="javascript: location.href = 'TRXAPATI03.php'">
 								<a class="pure-menu-link">
 									Ruangan
@@ -141,16 +148,7 @@ if (isset($_SESSION['username'])) {
 								<a class="pure-menu-link">
 									Jadwal Dokter
 								</a>
-							</li>
-
-							<li class="pure-menu-item pure-menu-selected"
-								onclick="javascript: location.href = 'TRXAPATI07.php'">
-								<a class="pure-menu-link">
-									Pasien Periksa
-								</a>
-							</li>
-
-
+							</li>						 -->
 						</ul>
 					</div>
 					<!-- Tab Menu -->
