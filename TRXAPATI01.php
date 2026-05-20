@@ -51,6 +51,10 @@ if (isset($_SESSION['username'])) {
 				color: black;
 				text-align: right;
 			}
+
+			input[type="date"] {
+				color: #ff0000; /* Ganti kode #ff0000 dengan warna hex yang lu mau (ini merah) */
+			}
 		</style>
 	</head>
 	<script type="text/javascript" src="js/jquery.js"></script>
@@ -155,7 +159,7 @@ if (isset($_SESSION['username'])) {
 						<fieldset>
 
 							<div class="pure-control-group">
-								<p><span style="color:red;">**Cari pasien dengan Nama Lengkap / 16 digit NIK</span></p>
+								<p><span style="color:red;">**Cari pasien dengan Nama Lengkap / Tanggal Lahir (Tahun-Bulan-Tanggal)</span></p>
 								<label for="txtsearch">Cari Pasien :</label>
 								<input type="text" name="txtsearch" id="txtsearch" maxlength="50" style="width: 200px;"
 									onkeyup="if (value.length <= 25) 
@@ -290,7 +294,7 @@ if (isset($_SESSION['username'])) {
 
 								<input name="hidmaintitl" id="hidmaintitl" type="hidden">
 
-								<input type="text" name="txtmainname" id="txtmainname" maxlength="50" style="width: 400px;"
+								<input type="text" name="txtmainname" id="txtmainname" oninput="this.value = this.value.toUpperCase()" maxlength="50" style="width: 400px;"
 									autocomplete="off" onkeyup="if (event.keyCode == 222)
 						  {
 							alert('Single Quote Error');
@@ -325,8 +329,11 @@ if (isset($_SESSION['username'])) {
 					">
 								Perempuan.
 								<input name="hidmaingend" id="hidmaingend" type="hidden">
-
-								<label for="tglmainbirt">Tanggal Lahir :</label>
+								
+								<label for="tglmainbirt">
+									<span style="font-size: 11px; color: #ff0000; font-weight: normal;">(Bulan/Tanggal/Tahun</span><br>
+									Tanggal Lahir :
+								</label>
 								<input type="date" name="tglmainbirt" id="tglmainbirt">
 
 
@@ -395,7 +402,7 @@ if (isset($_SESSION['username'])) {
 							<div class="pure-control-group">
 
 								<label for="txtmainaddr">Alamat :</label>
-								<input type="text" name="txtmainaddr" id="txtmainaddr" maxlength="100" style="width: 500px;"
+								<input type="text" name="txtmainaddr" id="txtmainaddr" oninput="this.value = this.value.toUpperCase()" maxlength="100" style="width: 500px;"
 									autocomplete="off" onkeyup="if (event.keyCode == 222)
 						  {
 							alert('Single Quote Error');
@@ -409,11 +416,11 @@ if (isset($_SESSION['username'])) {
 							<div class="pure-control-group">
 
 								<label for="txtmainward">Kelurahan :</label>
-								<input type="text" name="txtmainward" id="txtmainward" maxlength="50" style="width: 200px;"
+								<input type="text" name="txtmainward" id="txtmainward" oninput="this.value = this.value.toUpperCase()" maxlength="50" style="width: 200px;"
 									onkeydown="if (event.keyCode == 13 && value.length > 0) document.getElementById('txtmaindist').focus()">
 
 								<label for="txtmaindist">Kecamatan :</label>
-								<input type="text" name="txtmaindist" id="txtmaindist" maxlength="50" style="width: 200px;"
+								<input type="text" name="txtmaindist" id="txtmaindist" oninput="this.value = this.value.toUpperCase()" maxlength="50" style="width: 200px;"
 									onkeydown="if (event.keyCode == 13 && value.length > 0) document.getElementById('txtmaincity').focus()">
 
 							</div><!-- pure-control-group -->
@@ -421,11 +428,11 @@ if (isset($_SESSION['username'])) {
 							<div class="pure-control-group">
 
 								<label for="txtmaincity">Kota :</label>
-								<input type="text" name="txtmaincity" id="txtmaincity" maxlength="50" style="width: 200px;"
+								<input type="text" name="txtmaincity" id="txtmaincity" oninput="this.value = this.value.toUpperCase()" maxlength="50" style="width: 200px;"
 									onkeydown="if (event.keyCode == 13 && value.length > 0) document.getElementById('txtmainprov').focus()">
 
 								<label for="txtmainprov">Provinsi :</label>
-								<input type="text" name="txtmainprov" id="txtmainprov" maxlength="50" style="width: 200px;"
+								<input type="text" name="txtmainprov" id="txtmainprov" oninput="this.value = this.value.toUpperCase()" maxlength="50" style="width: 200px;"
 									onkeydown="if (event.keyCode == 13 && value.length > 0) document.getElementById('txtmainreli').focus()">
 
 							</div><!-- pure-control-group -->
@@ -433,7 +440,7 @@ if (isset($_SESSION['username'])) {
 							<div class="pure-control-group">
 
 								<label for="txtmainreli">Agama :</label>
-								<input type="text" name="txtmainreli" id="txtmainreli" maxlength="50" style="width: 150px;"
+								<input type="text" name="txtmainreli" id="txtmainreli" oninput="this.value = this.value.toUpperCase()" maxlength="50" style="width: 150px;"
 									onkeydown="if (event.keyCode == 13 && value.length > 0) 
 				 {
 					 document.getElementById('optwni').checked = true;
@@ -476,7 +483,7 @@ if (isset($_SESSION['username'])) {
 								</select>
 
 								<label for="txtmainprof">Profesi :</label>
-								<input type="text" name="txtmainprof" id="txtmainprof" maxlength="50" style="width: 200px;"
+								<input type="text" name="txtmainprof" id="txtmainprof" oninput="this.value = this.value.toUpperCase()" maxlength="50" style="width: 200px;"
 									onkeydown="if (event.keyCode == 13 && value.length > 0) document.getElementById('optmaineduc').focus()">
 
 							</div><!-- pure-control-group -->
@@ -513,7 +520,7 @@ if (isset($_SESSION['username'])) {
 							<div class="pure-control-group">
 
 								<label for="txtmainprnt">Nama Ibu Kandung :</label>
-								<input type="text" name="txtmainprnt" id="txtmainprnt" maxlength="100" style="width: 200px;"
+								<input type="text" name="txtmainprnt" id="txtmainprnt" oninput="this.value = this.value.toUpperCase()" maxlength="100" style="width: 200px;"
 									onkeydown="if (event.keyCode == 13 && value.length > 0)
 				 {
 									if (document.getElementById('txtmainpidn').value.length == 0 )

@@ -167,11 +167,16 @@ function stateChangednomor() {
 
 // === periksa NIK pasien (cek duplikat + isi nama) ===
 var nikku;
+var loadedNIK = "";
 function periksanik(nik) {
   nik = (nik || '').trim();
 
   // cek hanya kalau panjang 16 digit biar gak spam request
   if (nik.length !== 16) return;
+
+  if (nik === loadedNIK){
+    return;
+  }
 
   nikku = buatajaxnik();
   var url = "TRXAPATI01X-NIK.php";
@@ -215,8 +220,8 @@ function stateChangedNIK() {
     }
 
     swal({
-      title: 'NIK Sudah Terdaftar',
-      text: 'Nama pasien otomatis diisi dari database. SILAHKAN TEKAN TOMBOL F5 DI KEYBOARD',
+      title: 'NIK SUDAH TERDAFAR!!',
+      text: 'NIK sudah terdaftar dengan Nama ' + (res.name || 'Tidak diketahui') + ' dengan Tanggal Lahir ' + (res.tgllahir || 'Tidak diketahui'),
       icon: 'warning',
     });
 
@@ -328,6 +333,8 @@ function isipaticode(outmastcode, outmainpidn, outmaintitl, outmainname, outmain
     document.getElementById("txtmastcode").value = outmastcode;
 
     document.getElementById('txtmainpidn').value = outmainpidn;
+    loadedNIK = outmainpidn;
+  
 
     document.getElementById('opttn').removeAttribute('disabled');
     document.getElementById('optny').removeAttribute('disabled');
