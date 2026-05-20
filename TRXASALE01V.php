@@ -69,7 +69,6 @@ include "inc/sanie.php";
     //$kata = '';
     $panjangkata = strlen($kata);
     if ($panjangkata == 0) {
-
       $xquery = "SELECT TRXA_REGI_CODE, TRXA_PATI_CODE, 
           (SELECT CONCAT(PATI_MAIN_TITL,' ',PATI_MAIN_NAME) FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) AS PATI_NAME,
           (SELECT PATI_MAIN_GEND FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) AS MAIN_GEND, 
@@ -77,8 +76,10 @@ include "inc/sanie.php";
           TRXA_REGI_DOCT, (SELECT PASS_USER_NAME FROM passiden WHERE PASS_USER_IDEN = TRXA_REGI_DOCT) AS REGI_DOCT,
           TRXA_REGI_POLI, (SELECT TBLA_POLI_NAME FROM tblapoli WHERE TBLA_POLI_CODE=TRXA_REGI_POLI) AS REGI_POLI,
           TRXA_ENTR_DATE   
-          FROM trxaregi WHERE TRXA_REGI_STAT IN ('C','P')
-          AND TRXA_ENTR_DATE > DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+          FROM trxaregi 
+          WHERE TRXA_REGI_STAT IN ('C','P')
+          AND TRXA_REGI_PAYM = 'U' 
+          AND DATE(TRXA_ENTR_DATE) >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
           ORDER BY TRXA_ENTR_DATE DESC, 
           TRXA_ENTR_TIME DESC";
     } else {
@@ -89,11 +90,11 @@ include "inc/sanie.php";
           TRXA_REGI_DOCT, (SELECT PASS_USER_NAME FROM passiden WHERE PASS_USER_IDEN = TRXA_REGI_DOCT) AS REGI_DOCT,
           TRXA_REGI_POLI, (SELECT TBLA_POLI_NAME FROM tblapoli WHERE TBLA_POLI_CODE=TRXA_REGI_POLI) AS REGI_POLI,
           TRXA_ENTR_DATE   
-          FROM trxaregi WHERE (SELECT PATI_MAIN_NAME FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) LIKE '$kata%'
-          AND TRXA_REGI_STAT IN ('C','P') 
-          OR (SELECT PATI_MAIN_NAME FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) LIKE '%$kata%'
-          AND TRXA_REGI_STAT IN ('C','P')
-          AND TRXA_ENTR_DATE > DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+          FROM trxaregi 
+          WHERE TRXA_REGI_STAT IN ('C','P')
+          AND TRXA_REGI_PAYM = 'U' 
+          AND DATE(TRXA_ENTR_DATE) >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+          AND (SELECT PATI_MAIN_NAME FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) LIKE '%$kata%'
           ORDER BY TRXA_ENTR_DATE DESC, 
           TRXA_ENTR_TIME DESC";
     }
