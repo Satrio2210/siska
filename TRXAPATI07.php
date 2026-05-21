@@ -244,6 +244,38 @@ $(document).ready(function()
 
           </div><!-- pure-control-group -->
 
+          <!-- new LP dan IMT -->
+          <div class="pure-control-group">
+
+            <label for="">Lingkar Perut :</label>
+                <input type="text" 
+                  name="" 
+                  id="" 
+                  maxlength ="10"
+                  style="width: 60px;"
+                  disabled
+
+                  onkeydown="if (event.keyCode == 13 && value.length > 0) 
+                            {
+
+                                  document.getElementById('').focus();
+                                }"> cm        
+
+            <label for="">IMT :</label>
+              <input type="text" 
+                  name="" 
+                  id="" 
+                  maxlength ="10"
+                  style="width: 60px;"
+                  disabled
+
+                onkeydown="if (event.keyCode == 13 && value.length > 0) 
+                            {
+                                  document.getElementById('').focus();
+                            }"> Kg/m2        
+
+          </div><!-- pure-control-group -->
+          <!-- end LP dan IMT -->
 
           <div class="pure-control-group">
 
@@ -270,6 +302,55 @@ $(document).ready(function()
                             {
                                   document.getElementById('txtexamtemp').focus();
                             "> Celcius        
+
+          </div><!-- pure-control-group -->
+
+          <!-- new rr dan hr -->
+          <div class="pure-control-group">
+
+            <label for="">Respiratory Rate :</label>
+              <input type="text" 
+                  name="" 
+                  id="" 
+                  maxlength ="10"
+                  style="width: 100px;"
+                  disabled
+
+                onkeydown="if (event.keyCode == 13 && value.length > 0) 
+                            {
+                                  document.getElementById('').focus();
+                            }"> / minute        
+
+            <label for="">Heart Rate :</label>
+              <input type="text" 
+                  name="" 
+                  id="" 
+                  maxlength ="10"
+                  style="width: 50px;"
+                  disabled
+
+                onkeydown="if (event.keyCode == 13 && value.length > 0) 
+                            {
+                                  document.getElementById('').focus();
+                            "> bpm        
+
+          </div><!-- pure-control-group -->
+          <!-- end RR dan HR -->
+           <!-- new Keluhan -->
+          <div class="pure-control-group">
+
+            <label for="">Keluhan :</label>
+              <input type="text" 
+                  name="" 
+                  id="" 
+                  maxlength ="100"
+                  style="width: 400px;"
+                  disabled
+
+                onkeydown="if (event.keyCode == 13 && value.length > 0) 
+                            {
+                                  document.getElementById('').focus();
+                            }">           
 
           </div><!-- pure-control-group -->
 
