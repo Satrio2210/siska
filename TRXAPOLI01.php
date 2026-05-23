@@ -287,8 +287,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* ===============================
-                                       MODERN MEDICAL LAYOUT
-                                    ================================ */
+                                                       MODERN MEDICAL LAYOUT
+                                                    ================================ */
 
       .split-layout {
         display: grid;
@@ -325,8 +325,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                               RIWAYAT PASIEN
-                            ========================= */
+                                               RIWAYAT PASIEN
+                                            ========================= */
 
       .history-grid {
         display: grid;
@@ -387,8 +387,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                       PEMERIKSAAN
-                    ========================= */
+                                       PEMERIKSAAN
+                                    ========================= */
 
       .exam-grid {
         display: grid;
@@ -457,8 +457,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                   DIAGNOSA
-                ========================= */
+                                   DIAGNOSA
+                                ========================= */
 
       .diagnosa-wrapper {
         position: relative;
@@ -501,8 +501,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-               SUBMIT SECTION
-            ========================= */
+                               SUBMIT SECTION
+                            ========================= */
 
       .submit-card {
         margin-top: 5px !important;
@@ -683,22 +683,22 @@ if (isset($_SESSION['username'])) {
           </div>
           <!-- Tab Menu -->
           <div class="medical-container"></div>
-          
-            <div class="medical-card" id="daftarPasien">
-              <div class="medical-title">
-                Daftar Pasien
-              </div>
-              <!-- <div id="tblscreen" style="position: absolute; 
+
+          <div class="medical-card" id="daftarPasien">
+            <div class="medical-title">
+              Daftar Pasien
+            </div>
+            <!-- <div id="tblscreen" style="position: absolute; 
                     top: 200px;
                     left: calc(80% - 300px);
                     background-color: white; 
                     visibility: hidden; 
                     z-index: 100">
               </div> -->
-              <div id="tblscreen">
-              </div>
+            <div id="tblscreen">
             </div>
-          
+          </div>
+
 
           <!-- Form Input -->
 
@@ -719,7 +719,7 @@ if (isset($_SESSION['username'])) {
 
                   <div class="form-group">
                     <label for="txtexamcode">No. Daftar :</label>
-                    <input type="text" name="txtexamcode" id="txtexamcode" maxlength="50" style="width: 250px;"
+                    <input type="text" name="txtexamcode" id="txtexamcode" maxlength="14" style="width: 250px;"
                       readonly="true">
                   </div>
 
@@ -783,12 +783,12 @@ if (isset($_SESSION['username'])) {
                   </div>
 
                   <div class="form-group">
-                    <label for="txtexamkeluh">
+                    <label for="txtexamcomp">
                       Keluhan Utama
                     </label>
 
-                    <textarea id="txtexamkeluh" name="txtexamkeluh" rows="3" disabled>BELUM DAPAT DI LIHAT!!!!
-                                              </textarea>
+                    <textarea id="txtexamcomp" name="txtexamcomp" rows="3" readonly="true">
+                                                              </textarea>
                   </div>
 
                   <br>
@@ -831,19 +831,19 @@ if (isset($_SESSION['username'])) {
                     </div>
 
                     <div class="form-group">
-                      <label for="">
+                      <label for="txtexamwaist">
                         Lingkar Perut (cm)
                       </label>
 
-                      <input type="text" name="" id="" maxlength="10" disabled>
+                      <input type="text" name="txtexamwaist" id="txtexamwaist" maxlength="10">
                     </div>
 
                     <div class="form-group">
-                      <label for="">
+                      <label for="txtexambmi">
                         IMT (kg/m2)
                       </label>
 
-                      <input type="text" name="" id="" maxlength="10" disabled>
+                      <input type="text" name="txtexambmi" id="txtexambmi" maxlength="10">
                     </div>
 
                     <div class="form-group">
@@ -863,19 +863,19 @@ if (isset($_SESSION['username'])) {
                     </div>
 
                     <div class="form-group">
-                      <label for="">
+                      <label for="txtexamrr">
                         Respiratory Rate (/minute)
                       </label>
 
-                      <input type="text" name="" id="" maxlength="10" disabled>
+                      <input type="text" name="txtexamrr" id="txtexamrr" maxlength="10">
                     </div>
 
                     <div class="form-group">
-                      <label for="">
+                      <label for="txtexamhr">
                         Heart Rate (bpm)
                       </label>
 
-                      <input type="text" name="" id="" maxlength="10" disabled>
+                      <input type="text" name="txtexamhr" id="txtexamhr" maxlength="10">
                     </div>
                   </div>
                 </div>
@@ -1162,18 +1162,31 @@ if (isset($_SESSION['username'])) {
                       Terapi Non Obat
                     </div>
 
-                    <select>
-                      <option value="minumairpth">
-                        Perbanyak Minum Air Putih
-                      </option>
-
-                      <option value="istirahat">
-                        Istirahat
-                      </option>
-
-                      <option value="olahraga">
-                        Olahraga
-                      </option>
+                    <select name="" id="" style="height: 35px; padding: 5px; font-size: 14px;">
+                      <option value="">- PILIH -</option>
+                      <optgroup label="Edukasi dan Modifikasi Gaya Hidup">
+                        <option value="">Konseling Diet / Gizi</option>
+                        <option value="">Edukasi Berhenti Merokok</option>
+                        <option value="">Aktifitas Fisik</option>
+                      </optgroup>
+                      <optgroup label="Terapi Fisik">
+                        <option value="">Terapi Panas / dingin</option>
+                        <option value="">Latihan Rentang Gerak</option>
+                        <option value="">Pemijatan</option>
+                      </optgroup>
+                      <optgroup label="Perawatan Luka dan Tindakan">
+                        <option value="">Perawatan Luka</option>
+                        <option value="">Imobilisasi</option>
+                        <option value="">Ekstraksi Corpus Alienum</option>
+                      </optgroup>
+                      <optgroup label="Terapi Psikologis">
+                        <option value="">Managemen Stres</option>
+                        <option value="">Konseling Psikologis</option>
+                      </optgroup>
+                      <optgroup label="Terapi Pendukung Lainnya">
+                        <option value="">Akupuntur / Akupresur</option>
+                        <option value="">Edukasi Postur</option>
+                      </optgroup>
                     </select>
 
                   </div>
@@ -1203,13 +1216,33 @@ if (isset($_SESSION['username'])) {
 
                     </div>
 
-                    <!-- HASIL SEARCH -->
-                    <div id="tbllistdiag" style="display:none;">
+                    <div id="tbllistdiag" style="
+                          width: 100%;
+                          background-color: white;
+                          display: none;
+                          margin-top: 10px;
+                          border-radius: 12px;
+                          overflow-y: auto;
+                          max-height: 250px;
+                      ">
                     </div>
 
-                    <!-- HASIL TERPILIH -->
-                    <div id="tbldiagnosa" style="display:none;">
+                    <div id="tbldiagnosa" style="
+                          width: 100%;
+                          background-color: white;
+                          display: none;
+                          margin-top: 14px;
+                          border-radius: 12px;
+                      ">
                     </div>
+
+                    <!-- HASIL SEARCH -->
+                    <!-- <div id="tbllistdiag" style="display:none;">
+                    </div> -->
+
+                    <!-- HASIL TERPILIH -->
+                    <!-- <div id="tbldiagnosa" style="display:none;">
+                    </div> -->
 
                   </div>
 
@@ -1354,9 +1387,16 @@ if (isset($_SESSION['username'])) {
                     var inexamhght = document.getElementById('txtexamhght').value;
                     var inexamwght = document.getElementById('txtexamwght').value;
 
+                    var inexamwaist = document.getElementById('txtexamwaist').value;
+                    var inexambmi = document.getElementById('txtexambmi').value;
+
                     var inexamblod = document.getElementById('txtexamblod').value;
                     var inexamtemp = document.getElementById('txtexamtemp').value;
 
+                    var inexamrr = document.getElementById('txtexamrr').value;
+                    var inexamhr = document.getElementById('txtexamhr').value;
+                    var inexamcomp = document.getElementById('txtexamcomp').value;
+                    
                     var inmedialle = document.getElementById('hidmedialle').value;
                     var infoodalle = document.getElementById('hidfoodalle').value;
                     var inchrodsse = document.getElementById('hidchrodsse').value;
@@ -1377,8 +1417,13 @@ if (isset($_SESSION['username'])) {
                         inexamdoct,
                         inexamhght,
                         inexamwght,
+                        inexamwaist,
+                        inexambmi,
                         inexamblod,
                         inexamtemp,
+                        inexamrr,
+                        inexamhr,
+                        inexamcomp,
                         inmedialle,
                         infoodalle,
                         inchrodsse,

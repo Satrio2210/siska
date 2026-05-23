@@ -7,12 +7,11 @@ session_start();
 //if (ISSET($_SESSION['username']))
 {
 
-include "conf/config.php";
-include "inc/sanie.php";
-if (isset($_POST['q']) && ($_POST['q'] != ''))
-    {
+    include "conf/config.php";
+    include "inc/sanie.php";
+    if (isset($_POST['q']) && ($_POST['q'] != '')) {
         $rawdata = xss_clean($_POST['q']);
-        list($regicode, $paticode) = explode("|",$rawdata);
+        list($regicode, $paticode) = explode("|", $rawdata);
 
         $view = "SELECT TRXA_REGI_CODE, TRXA_PATI_CODE, TRXA_REGI_DATE, 
                 (SELECT PATI_MAIN_NAME FROM patimast WHERE PATI_MAST_CODE=TRXA_PATI_CODE) AS MAIN_NAME,
@@ -24,8 +23,13 @@ if (isset($_POST['q']) && ($_POST['q'] != ''))
                 TRXA_REGI_PAYM,
                 (SELECT TRXA_EXAM_HGHT FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_HGHT,
                 (SELECT TRXA_EXAM_WGHT FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_WGHT,
+                (SELECT TRXA_EXAM_WAIST FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_WAIST,
+                (SELECT TRXA_EXAM_BMI FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_BMI,
                 (SELECT TRXA_EXAM_BLOD FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_BLOD,
                 (SELECT TRXA_EXAM_TEMP FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_TEMP,
+                (SELECT TRXA_EXAM_RR FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_RR,
+                (SELECT TRXA_EXAM_HR FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_HR,
+                (SELECT TRXA_EXAM_COMP FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_COMP,
 
                 (SELECT TRXA_MEDI_ALLE FROM trxaassm WHERE TRXA_ASSM_CODE=TRXA_REGI_CODE) AS MEDI_ALLE,
                 (SELECT TRXA_FOOD_ALLE FROM trxaassm WHERE TRXA_ASSM_CODE=TRXA_REGI_CODE) AS FOOD_ALLE,
@@ -43,8 +47,7 @@ if (isset($_POST['q']) && ($_POST['q'] != ''))
                 WHERE TRXA_REGI_CODE = '$regicode' AND TRXA_PATI_CODE = '$paticode' AND TRXA_VIEW_STAT = 'Y'";
 
         $qview = $db->query($view) or die("Gagal Ambil Data Admisi!!");
-        while ($rview = $qview->fetch(PDO::FETCH_ASSOC))  
-        {
+        while ($rview = $qview->fetch(PDO::FETCH_ASSOC)) {
             $regidate = date("d-m-Y", strtotime($rview['TRXA_REGI_DATE']));
             $mainname = "$rview[MAIN_NAME]";
             $mainage = "$rview[MAIN_AGE]";
@@ -62,21 +65,36 @@ if (isset($_POST['q']) && ($_POST['q'] != ''))
             $fullage = '' . $y . ' tahun ' . $m . ' bulan ' . $d . ' hari';
 
             $maingend = "$rview[MAIN_GEND]";
-            if ($maingend == 'M') { $gender = 'Laki Laki';}
-            else if ($maingend = 'F') { $gender = 'Perempuan';}
-            else { $gender = 'No Gender'; }
+            if ($maingend == 'M') {
+                $gender = 'Laki Laki';
+            } else if ($maingend = 'F') {
+                $gender = 'Perempuan';
+            } else {
+                $gender = 'No Gender';
+            }
 
             $xregipaym = "$rview[TRXA_REGI_PAYM]";
-            if ($xregipaym == 'U') { $regipaym = 'Umum'; }
-            else if ($xregipaym == 'B') { $regipaym = 'BPJS'; }
-            else if ($xregipaym == 'A') { $regipaym = 'Asuransi'; }
-            else if ($xregipaym == 'P') { $regipaym = 'Perusahaan'; }
-            else { $regipaym = 'Kosong';}
+            if ($xregipaym == 'U') {
+                $regipaym = 'Umum';
+            } else if ($xregipaym == 'B') {
+                $regipaym = 'BPJS';
+            } else if ($xregipaym == 'A') {
+                $regipaym = 'Asuransi';
+            } else if ($xregipaym == 'P') {
+                $regipaym = 'Perusahaan';
+            } else {
+                $regipaym = 'Kosong';
+            }
 
             $examhght = "$rview[EXAM_HGHT]";
             $examwght = "$rview[EXAM_WGHT]";
+            $examwaist = "$rview[EXAM_WAIST]";
+            $exambmi = "$rview[EXAM_BMI]";
             $examblod = "$rview[EXAM_BLOD]";
             $examtemp = "$rview[EXAM_TEMP]";
+            $examrr = "$rview[EXAM_RR]";
+            $examhr = "$rview[EXAM_HR]";
+            $examcomp = "$rview[EXAM_COMP]";
 
             $medialle = "$rview[MEDI_ALLE]";
             $foodalle = "$rview[FOOD_ALLE]";
@@ -91,8 +109,8 @@ if (isset($_POST['q']) && ($_POST['q'] != ''))
             $examdiag = "$rview[EXAM_DIAG]";
             $examprsc = "$rview[EXAM_PRSC]";
 
-            echo "|$regidate|$regicode|$paticode|$mainname|$fullage|$mainbirt|$mainaddr|$gender|$regipaym|$examhght|$examwght|$examblod|$examtemp|$medialle|$foodalle|$chrodsse|$othrdsse|$paticare|$patisurge|$patismoke|$examanam|$exambody|$examdiag|$examprsc|";    
+            echo "|$regidate|$regicode|$paticode|$mainname|$fullage|$mainbirt|$mainaddr|$gender|$regipaym|$examhght|$examwght|$examwaist|$exambmi|$examblod|$examtemp|$examrr|$examhr|$examcomp|$medialle|$foodalle|$chrodsse|$othrdsse|$paticare|$patisurge|$patismoke|$examanam|$exambody|$examdiag|$examprsc|";
         }
-   }
+    }
 }
 ?>

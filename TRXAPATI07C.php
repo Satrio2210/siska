@@ -21,8 +21,13 @@ if (isset($_POST['q']) && ($_POST['q'] != ''))
                 TRXA_REGI_DATE, TRXA_REGI_DOCT,
                 (SELECT TRXA_EXAM_HGHT FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_HGHT,
                 (SELECT TRXA_EXAM_WGHT FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_WGHT,
+                (SELECT TRXA_EXAM_WAIST FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_WAIST,
+                (SELECT TRXA_EXAM_BMI FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_BMI,
                 (SELECT TRXA_EXAM_BLOD FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_BLOD,
-                (SELECT TRXA_EXAM_TEMP FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_TEMP
+                (SELECT TRXA_EXAM_TEMP FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_TEMP,
+                (SELECT TRXA_EXAM_RR FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_RR,
+                (SELECT TRXA_EXAM_HR FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_HR,
+                (SELECT TRXA_EXAM_COMP FROM trxaexam WHERE TRXA_EXAM_CODE='$regicode') AS EXAM_COMP
 
                 FROM trxaregi 
           WHERE TRXA_REGI_CODE = '$regicode' AND TRXA_VIEW_STAT = 'Y'";
@@ -39,10 +44,15 @@ if (isset($_POST['q']) && ($_POST['q'] != ''))
             $regidoct = "$rview[TRXA_REGI_DOCT]";
             $examhght = "$rview[EXAM_HGHT]";
             $examwght = "$rview[EXAM_WGHT]";
+            $examwaist = "$rview[EXAM_WAIST]";
+            $exambmi = "$rview[EXAM_BMI]";
             $examblod = "$rview[EXAM_BLOD]";
             $examtemp = "$rview[EXAM_TEMP]";
+            $examrr = "$rview[EXAM_RR]";
+            $examhr = "$rview[EXAM_HR]";
+            $examcomp = "$rview[EXAM_COMP]";
 
-            echo "|$regicode|$paticode|$patiname|$patibirt|$patigend|$regidate|$regidoct|$examhght|$examwght|$examblod|$examtemp|";    
+            echo "|$regicode|$paticode|$patiname|$patibirt|$patigend|$regidate|$regidoct|$examhght|$examwght|$examwaist|$exambmi|$examblod|$examtemp|$examrr|$examhr|$examcomp|";    
         }
    }
 }

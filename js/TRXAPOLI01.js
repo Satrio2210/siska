@@ -35,8 +35,13 @@ function stateChangedAkses() {
 
       document.getElementById('txtexamhght').setAttribute('disabled', 'true');
       document.getElementById('txtexamwght').setAttribute('disabled', 'true');
+      document.getElementById('txtexamwaist').setAttribute('disabled', 'true');
+      document.getElementById('txtexambmi').setAttribute('disabled', 'true');
       document.getElementById('txtexamblod').setAttribute('disabled', 'true');
       document.getElementById('txtexamtemp').setAttribute('disabled', 'true');
+      document.getElementById('txtexamrr').setAttribute('disabled', 'true');
+      document.getElementById('txtexamhr').setAttribute('disabled', 'true');
+      document.getElementById('txtexamcomp').setAttribute('disabled', 'true');
 
       document.getElementById('optmedialle-no').setAttribute('disabled', 'true');
       document.getElementById('optmedialle-yes').setAttribute('disabled', 'true');
@@ -73,8 +78,13 @@ function stateChangedAkses() {
 
       document.getElementById('txtexamhght').setAttribute('disabled', 'true');
       document.getElementById('txtexamwght').setAttribute('disabled', 'true');
+      document.getElementById('txtexamwaist').setAttribute('disabled', 'true');
+      document.getElementById('txtexambmi').setAttribute('disabled', 'true');
       document.getElementById('txtexamblod').setAttribute('disabled', 'true');
       document.getElementById('txtexamtemp').setAttribute('disabled', 'true');
+      document.getElementById('txtexamrr').setAttribute('disabled', 'true');
+      document.getElementById('txtexamhr').setAttribute('disabled', 'true');
+      document.getElementById('txtexamcomp').setAttribute('disabled', 'true');
 
       document.getElementById('optmedialle-no').setAttribute('disabled', 'false');
       document.getElementById('optmedialle-yes').setAttribute('disabled', 'false');
@@ -114,11 +124,32 @@ function stateChangedAkses() {
 
 // inexamcode,inexamdoct,inexamhght,inexamwght,inexamblod,inexamtemp,inmedialle,infoodalle,inchrodsse,inothrdsse,inpaticare,inpatisurge,inpatismoke,inexamanam,inexambody,inexamdiag,inexamprsc
 var ajaxinput;
-function input(examcode, examdoct, examhght, examwght, examblod, examtemp, medialle, foodalle, chrodsse, othrdsse, paticare, patisurge, patismoke, examanam, exambody, examdiag, examprsc) {
+function input(examcode, examdoct, examhght, examwght, examwaist, exambmi, examblod, examtemp, examrr, examhr, examcomp, medialle, foodalle, chrodsse, othrdsse, paticare, patisurge, patismoke, examanam, exambody, examdiag, examprsc) {
   ajaxinput = buatajaxinput();
   var url = "TRXAPOLI01E.php";
   ajaxinput.onreadystatechange = stateChangedInput;
-  var params = "q=" + examcode + "|" + examdoct + "|" + examhght + "|" + examwght + "|" + examblod + "|" + examtemp + "|" + medialle + "|" + foodalle + "|" + chrodsse + "|" + othrdsse + "|" + paticare + "|" + patisurge + "|" + patismoke + "|" + examanam + "|" + exambody + "|" + examdiag + "|" + examprsc;
+  var params = "q=" + examcode + "|"
+    + examdoct + "|"
+    + examhght + "|"
+    + examwght + "|"
+    + examwaist + "|"
+    + exambmi + "|"
+    + examblod + "|"
+    + examtemp + "|"
+    + examrr + "|"
+    + examhr + "|"
+    + examcomp + "|"
+    + medialle + "|"
+    + foodalle + "|"
+    + chrodsse + "|"
+    + othrdsse + "|"
+    + paticare + "|"
+    + patisurge + "|"
+    + patismoke + "|"
+    + examanam + "|"
+    + exambody + "|"
+    + examdiag + "|"
+    + examprsc;
   //alert(params);
   ajaxinput.open("POST", url, true);
   ajaxinput.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -158,11 +189,26 @@ function stateChangedInput() {
     document.getElementById('txtexamwght').value = '';
     document.getElementById('txtexamwght').setAttribute('disabled', 'true');
 
+    document.getElementById('txtexamwaist').value = '';
+    document.getElementById('txtexamwaist').setAttribute('disabled', 'true');
+
+    document.getElementById('txtexambmi').value = '';
+    document.getElementById('txtexambmi').setAttribute('disabled', 'true');
+
     document.getElementById('txtexamblod').value = '';
     document.getElementById('txtexamblod').setAttribute('disabled', 'true');
 
     document.getElementById('txtexamtemp').value = '';
     document.getElementById('txtexamtemp').setAttribute('disabled', 'true');
+
+    document.getElementById('txtexamrr').value = '';
+    document.getElementById('txtexamrr').setAttribute('disabled', 'true');
+
+    document.getElementById('txtexamhr').value = '';
+    document.getElementById('txtexamhr').setAttribute('disabled', 'true');
+
+    document.getElementById('txtexamcomp').value = '';
+    document.getElementById('txtexamcomp').setAttribute('disabled', 'true');
 
     document.getElementById('optmedialle-no').checked = true;
     document.getElementById('optmedialle-yes').checked = false;
@@ -266,7 +312,9 @@ function stateChangedView() {
     if (data.length > 1) {
       //alert(data);
 
-      var res = data.split("|");
+      var res = data.split("|").map(function (item) {
+        return item.trim();
+      });
       document.getElementById("txtregidate").value = res[1];
 
       document.getElementById("txtexamcode").value = res[2];
@@ -296,21 +344,36 @@ function stateChangedView() {
       document.getElementById("txtexamwght").removeAttribute('disabled');
       document.getElementById("txtexamwght").value = res[11];
 
+      document.getElementById("txtexamwaist").removeAttribute('disabled');
+      document.getElementById("txtexamwaist").value = res[12];
+
+      document.getElementById("txtexambmi").removeAttribute('disabled');
+      document.getElementById("txtexambmi").value = res[13];
+
       document.getElementById("txtexamblod").removeAttribute('disabled');
-      document.getElementById("txtexamblod").value = res[12];
+      document.getElementById("txtexamblod").value = res[14];
 
       document.getElementById("txtexamtemp").removeAttribute('disabled');
-      document.getElementById("txtexamtemp").value = res[13];
+      document.getElementById("txtexamtemp").value = res[15];
+
+      document.getElementById("txtexamrr").removeAttribute('disabled');
+      document.getElementById("txtexamrr").value = res[16];
+
+      document.getElementById("txtexamhr").removeAttribute('disabled');
+      document.getElementById("txtexamhr").value = res[17];
+
+      document.getElementById("txtexamcomp").removeAttribute('disabled');
+      document.getElementById("txtexamcomp").value = res[18];
 
       document.getElementById('optmedialle-no').removeAttribute('disabled');
       document.getElementById('optmedialle-yes').removeAttribute('disabled');
-      document.getElementById('hidmedialle').value = res[14]
+      document.getElementById('hidmedialle').value = res[19]
 
-      if (res[14] == 'Y') {
+      if (res[19] == 'Y') {
         document.getElementById('optmedialle-no').checked = false;
         document.getElementById('optmedialle-yes').checked = true;
       }
-      else if (res[14] == 'N') {
+      else if (res[19] == 'N') {
         document.getElementById('optmedialle-no').checked = true;
         document.getElementById('optmedialle-yes').checked = false;
       }
@@ -321,13 +384,13 @@ function stateChangedView() {
 
       document.getElementById('optfoodalle-no').removeAttribute('disabled');
       document.getElementById('optfoodalle-yes').removeAttribute('disabled');
-      document.getElementById('hidfoodalle').value = res[15]
+      document.getElementById('hidfoodalle').value = res[20]
 
-      if (res[15] == 'Y') {
+      if (res[20] == 'Y') {
         document.getElementById('optfoodalle-no').checked = false;
         document.getElementById('optfoodalle-yes').checked = true;
       }
-      else if (res[15] == 'N') {
+      else if (res[20] == 'N') {
         document.getElementById('optfoodalle-no').checked = true;
         document.getElementById('optfoodalle-yes').checked = false;
       }
@@ -338,13 +401,13 @@ function stateChangedView() {
 
       document.getElementById('optchrodsse-no').removeAttribute('disabled');
       document.getElementById('optchrodsse-yes').removeAttribute('disabled');
-      document.getElementById('hidchrodsse').value = res[16]
+      document.getElementById('hidchrodsse').value = res[21]
 
-      if (res[16] == 'Y') {
+      if (res[21] == 'Y') {
         document.getElementById('optchrodsse-no').checked = false;
         document.getElementById('optchrodsse-yes').checked = true;
       }
-      else if (res[16] == 'N') {
+      else if (res[21] == 'N') {
         document.getElementById('optchrodsse-no').checked = true;
         document.getElementById('optchrodsse-yes').checked = false;
       }
@@ -355,13 +418,13 @@ function stateChangedView() {
 
       document.getElementById('optothrdsse-no').removeAttribute('disabled');
       document.getElementById('optothrdsse-yes').removeAttribute('disabled');
-      document.getElementById('hidothrdsse').value = res[17]
+      document.getElementById('hidothrdsse').value = res[22]
 
-      if (res[17] == 'Y') {
+      if (res[22] == 'Y') {
         document.getElementById('optothrdsse-no').checked = false;
         document.getElementById('optothrdsse-yes').checked = true;
       }
-      else if (res[17] == 'N') {
+      else if (res[22] == 'N') {
         document.getElementById('optothrdsse-no').checked = true;
         document.getElementById('optothrdsse-yes').checked = false;
       }
@@ -373,13 +436,13 @@ function stateChangedView() {
 
       document.getElementById('optpaticare-no').removeAttribute('disabled');
       document.getElementById('optpaticare-yes').removeAttribute('disabled');
-      document.getElementById('hidpaticare').value = res[18]
+      document.getElementById('hidpaticare').value = res[23]
 
-      if (res[18] == 'Y') {
+      if (res[23] == 'Y') {
         document.getElementById('optpaticare-no').checked = false;
         document.getElementById('optpaticare-yes').checked = true;
       }
-      else if (res[18] == 'N') {
+      else if (res[23] == 'N') {
         document.getElementById('optpaticare-no').checked = true;
         document.getElementById('optpaticare-yes').checked = false;
       }
@@ -390,13 +453,13 @@ function stateChangedView() {
 
       document.getElementById('optpatisurge-no').removeAttribute('disabled');
       document.getElementById('optpatisurge-yes').removeAttribute('disabled');
-      document.getElementById('hidpatisurge').value = res[19]
+      document.getElementById('hidpatisurge').value = res[24]
 
-      if (res[19] == 'Y') {
+      if (res[24] == 'Y') {
         document.getElementById('optpatisurge-no').checked = false;
         document.getElementById('optpatisurge-yes').checked = true;
       }
-      else if (res[19] == 'N') {
+      else if (res[24] == 'N') {
         document.getElementById('optpatisurge-no').checked = true;
         document.getElementById('optpatisurge-yes').checked = false;
       }
@@ -407,13 +470,13 @@ function stateChangedView() {
 
       document.getElementById('optpatismoke-no').removeAttribute('disabled');
       document.getElementById('optpatismoke-yes').removeAttribute('disabled');
-      document.getElementById('hidpatismoke').value = res[20]
+      document.getElementById('hidpatismoke').value = res[25]
 
-      if (res[20] == 'Y') {
+      if (res[25] == 'Y') {
         document.getElementById('optpatismoke-no').checked = false;
         document.getElementById('optpatismoke-yes').checked = true;
       }
-      else if (res[20] == 'N') {
+      else if (res[25] == 'N') {
         document.getElementById('optpatismoke-no').checked = true;
         document.getElementById('optpatismoke-yes').checked = false;
       }
@@ -425,18 +488,20 @@ function stateChangedView() {
 
 
       document.getElementById("txtexamanam").removeAttribute('disabled');
-      document.getElementById("txtexamanam").value = res[21];
+      document.getElementById("txtexamanam").value = res[26];
 
       document.getElementById("txtexambody").removeAttribute('disabled');
-      document.getElementById("txtexambody").value = res[22];
+      document.getElementById("txtexambody").value = res[27];
 
       document.getElementById("txtlistdiag").removeAttribute('disabled');
 
       document.getElementById("txtexamdiag").removeAttribute('disabled');
-      document.getElementById("txtexamdiag").value = res[23];
+      document.getElementById("txtexamdiag").value = res[28];
 
       document.getElementById("txtexamprsc").removeAttribute('disabled');
-      document.getElementById("txtexamprsc").value = res[24];
+      document.getElementById("txtexamprsc").value = res[29];
+
+      console.log(res);
 
       // document.getElementById("txtexamhght").focus();
 
@@ -449,8 +514,6 @@ function stateChangedView() {
     //}
   }
 }
-
-
 
 // Tampilkan data yang diinput dalam datable
 var drz;
@@ -717,8 +780,8 @@ function ambilscreendiagnosa(regicode) {
     asr.open("POST", url, true);
     //beberapa http header harus kita set kalau menggunakan POST
     asr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    asr.setRequestHeader("Content-length", params.length);
-    asr.setRequestHeader("Connection", "close");
+    // asr.setRequestHeader("Content-length", params.length);
+    // asr.setRequestHeader("Connection", "close");
     asr.send(params);
   }
 }

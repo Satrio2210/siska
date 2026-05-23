@@ -86,24 +86,33 @@ include "inc/sanie.php";
 
   #screen th:nth-child(2),
   #screen td:nth-child(2) {
-    width: 100px;
+    width: 90px;
     /* text-align: left; */
   }
 
   #screen th:nth-child(3),
   #screen td:nth-child(3) {
-    width: auto;
-    text-align: left;
+    width: 90px;
   }
 
   #screen th:nth-child(4),
   #screen td:nth-child(4) {
-    width: 150px;
+    width: auto;
   }
 
   #screen th:nth-child(5),
   #screen td:nth-child(5) {
-    width: 180px;
+    width: 70px;
+  }
+
+  #screen th:nth-child(6),
+  #screen td:nth-child(6) {
+    width: 150px;
+  }
+
+  #screen th:nth-child(7),
+  #screen td:nth-child(7) {
+    width: 150px;
   }
 
   /* STATUS BADGE */
@@ -130,6 +139,16 @@ include "inc/sanie.php";
   .status-done {
     background: #dcfce7;
     color: #15803d;
+  }
+
+  .status-old {
+    background: #fef3c7;
+    color: #b40909;
+  }
+
+  .status-now {
+    background: #dbeafe;
+    color: #1d4ed8;
   }
 
   /* ACTION */
@@ -198,6 +217,7 @@ include "inc/sanie.php";
     <thead>
       <tr>
         <th>Tgl Daftar</th>
+        <th>Terdaftar</th>
         <th>No. Antrian</th>
         <th>Nama Pasien</th>
         <th>Pembayaran</th>
@@ -272,6 +292,18 @@ ORDER BY TRXA_ENTR_DATE DESC, TRXA_ENTR_TIME DESC
         $nama_lengkap = $k['PATI_TITL'] . ' ' . $k['PATI_NAME'];
 
         echo '<td>' . $k['TRXA_REGI_DATE'] . ' ' . $k['TRXA_ENTR_TIME'] . '</td>';
+
+        $tanggal_daftar = $k['TRXA_REGI_DATE'];
+
+        if ($tanggal_daftar == $datenow) {
+          echo '<td><span class="status-badge status-now">Hari ini</span></td>';
+        } else {
+          $hasil_hitung_tanggal = hitungTanggal($tanggal_daftar, $datenow);
+
+
+          echo '<td><span class="status-badge status-old">' . $hasil_hitung_tanggal . ' hari lalu</span></td>';
+
+        }
 
         echo '<td>' . $noantri_full . '</td>';
         //echo '<td style="width: 150px; text-align: left;">'.$k['TRXA_REGI_CODE'].'</td>';
