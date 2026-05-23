@@ -75,7 +75,7 @@ if ($panjangkata == 0 )
               FROM trxaregi
               WHERE TRXA_REGI_STAT = 'W' 
               AND TRXA_VIEW_STAT = 'Y' 
-              AND DATE(TRXA_ENTR_DATE) >= CURDATE() - INTERVAL 2 DAYS 
+              AND DATE(TRXA_ENTR_DATE) >= CURDATE() - INTERVAL 2 DAY
               ORDER BY TRXA_ENTR_DATE DESC, TRXA_ENTR_TIME DESC"; 
 }
 else
@@ -91,7 +91,7 @@ else
               FROM trxaregi
               WHERE TRXA_REGI_STAT = 'W'
               AND TRXA_VIEW_STAT = 'Y' 
-              AND DATE(TRXA_ENTR_DATE) >= CURDATE() - INTERVAL 2 DAYS
+              AND DATE(TRXA_ENTR_DATE) >= CURDATE() - INTERVAL 2 DAY
               AND (
                   TRXA_PATI_CODE LIKE '%$kata%' 
                   OR (SELECT PATI_MAIN_NAME FROM patimast WHERE PATI_MAST_CODE=TRXA_PATI_CODE) LIKE '%$kata%' 
