@@ -152,6 +152,7 @@ if ($ketersediaan == 0) {
         ///var_dump($query_input);
         ///exit();
         $db->commit();
+        echo $noantri_full;
 } else {
         $update = "UPDATE trxaregi SET TRXA_REGI_FROM='$regifrom',
                     TRXA_REGI_PAYM='$regipaym',

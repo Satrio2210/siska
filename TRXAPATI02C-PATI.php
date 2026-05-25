@@ -5,7 +5,7 @@ include "conf/config.php";
 include "inc/sanie.php";
 ?>
 <style>
-#screen {
+  /* #screen {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
@@ -36,64 +36,101 @@ include "inc/sanie.php";
 {
   overflow: auto;
   height: 200px;
-}
-</style>
-  <table id="screen">
-  <thead>
-  <tr>
-  <th style="width: 100px;">R.M.</th>
-  <th style="width: 150px;">NAMA</th>
-  <th style="width: 100px;">LAHIR</th>
-  <th style="width: 150px;">IBU KANDUNG</th>
+} */
 
-  </tr>
-  </thead>
+  #screen {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #screen tr {
+    transition: .15s;
+    cursor: pointer;
+  }
+
+  #screen tr:hover {
+    background: #f0fdf4;
+  }
+
+  #screen td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+  }
+
+  .patient-name {
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  .patient-rm {
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  .patient-birth {
+    font-size: 12px;
+    color: #64748b;
+  }
+</style>
+<table id="screen">
   <tbody>
-<?php
-  $kata = $_POST['q'];
-  if (strlen($kata) == 1)
-  {
-  $xquery = "SELECT PATI_MAST_CODE, PATI_MAIN_PIDN, PATI_MAIN_NAME, PATI_MAIN_GEND, PATI_MAIN_BIRT, 
+    <?php
+    $kata = $_POST['q'];
+    if (strlen($kata) == 1) {
+      $xquery = "SELECT PATI_MAST_CODE, PATI_MAIN_PIDN, PATI_MAIN_NAME, PATI_MAIN_GEND, PATI_MAIN_BIRT, 
                     PATI_MAIN_BLOD, PATI_MAIN_ADDR, PATI_MAIN_PHNE, PATI_MAIN_PRNT 
             FROM patimast 
-            WHERE PATI_VIEW_STAT = 'Y' ORDER BY PATI_MAST_CODE";    
-  }
-  else
-  {
-  $xquery = "SELECT PATI_MAST_CODE, PATI_MAIN_PIDN, PATI_MAIN_NAME, PATI_MAIN_GEND, PATI_MAIN_BIRT, 
+            WHERE PATI_VIEW_STAT = 'Y' ORDER BY PATI_MAST_CODE";
+    } else {
+      $xquery = "SELECT PATI_MAST_CODE, PATI_MAIN_PIDN, PATI_MAIN_NAME, PATI_MAIN_GEND, PATI_MAIN_BIRT, 
                     PATI_MAIN_BLOD, PATI_MAIN_ADDR, PATI_MAIN_PHNE, PATI_MAIN_PRNT 
             FROM patimast 
             WHERE PATI_MAIN_PIDN LIKE '%$kata%' AND PATI_VIEW_STAT = 'Y'
             OR PATI_MAIN_NAME LIKE '$kata%' AND PATI_VIEW_STAT = 'Y'
             OR PATI_MAIN_BIRT LIKE '$kata%' AND PATI_VIEW_STAT = 'Y'
             OR PATI_MAIN_PRNT LIKE '$kata%' AND PATI_VIEW_STAT = 'Y'
-            ORDER BY PATI_MAST_CODE";        
-  }
+            ORDER BY PATI_MAST_CODE";
+    }
 
-$q = $db->query($xquery) or die("Gagal ambil data !!");
-while ($k = $q->fetch(PDO::FETCH_ASSOC))
-{
-  $outmastcode = $k['PATI_MAST_CODE'];
-  $outmainname = $k['PATI_MAIN_NAME'];
-  $outmaingend = $k['PATI_MAIN_GEND'];
-  $outmainbirt = formatTanggal($k['PATI_MAIN_BIRT']);
-  $outmainblod = $k['PATI_MAIN_BLOD'];
-  $outmainaddr = $k['PATI_MAIN_ADDR'];
-  $outmainphne = $k['PATI_MAIN_PHNE'];
+    $q = $db->query($xquery) or die("Gagal ambil data !!");
+    while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
+      $outmastcode = $k['PATI_MAST_CODE'];
+      $outmainname = $k['PATI_MAIN_NAME'];
+      $outmaingend = $k['PATI_MAIN_GEND'];
+      $outmainbirt = formatTanggal($k['PATI_MAIN_BIRT']);
+      $outmainblod = $k['PATI_MAIN_BLOD'];
+      $outmainaddr = $k['PATI_MAIN_ADDR'];
+      $outmainphne = $k['PATI_MAIN_PHNE'];
 
-echo '<tr>';
+      echo '<tr onclick="isipaticode(
+      \'' . $outmastcode . '\',
+      \'' . $outmainname . '\',
+      \'' . $outmaingend . '\',
+      \'' . $outmainbirt . '\',
+      \'' . $outmainblod . '\',
+      \'' . $outmainaddr . '\',
+      \'' . $outmainphne . '\'
+      )">';
 
-echo '<td style="width: 100px;" onClick="isipaticode(\''.$outmastcode.'\',\''.$outmainname.'\',\''.$outmaingend.'\',\''.$outmainbirt.'\',\''.$outmainblod.'\',\''.$outmainaddr.'\',\''.$outmainphne.'\');" 
-      style="cursor:pointer">'.$k['PATI_MAST_CODE'].'</td>';
-echo '<td style="width: 150px;" onClick="isipaticode(\''.$outmastcode.'\',\''.$outmainname.'\',\''.$outmaingend.'\',\''.$outmainbirt.'\',\''.$outmainblod.'\',\''.$outmainaddr.'\',\''.$outmainphne.'\');" 
-      style="cursor:pointer">'.$k['PATI_MAIN_NAME'].'</td>';
-echo '<td style="width: 100px;" onClick="isipaticode(\''.$outmastcode.'\',\''.$outmainname.'\',\''.$outmaingend.'\',\''.$outmainbirt.'\',\''.$outmainblod.'\',\''.$outmainaddr.'\',\''.$outmainphne.'\');" 
-      style="cursor:pointer">'.$k['PATI_MAIN_BIRT'].'</td>';
-echo '<td style="width: 150px;" onClick="isipaticode(\''.$outmastcode.'\',\''.$outmainname.'\',\''.$outmaingend.'\',\''.$outmainbirt.'\',\''.$outmainblod.'\',\''.$outmainaddr.'\',\''.$outmainphne.'\');" 
-      style="cursor:pointer">'.$k['PATI_MAIN_PRNT'].'</td>';
+      echo '
+      <td>
 
-echo '</tr>';
-}
-?>
+      <div class="patient-name">
+      ' . $k['PATI_MAIN_NAME'] . '
+      </div>
+
+      <div class="patient-rm">
+      RM : ' . $k['PATI_MAST_CODE'] . '
+      </div>
+
+      <div class="patient-birth">
+      ' . $k['PATI_MAIN_BIRT'] . '
+      </div>
+
+      </td>';
+      echo '</tr>';
+    }
+    ?>
   </tbody>
-  </table>
+</table>
