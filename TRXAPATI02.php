@@ -380,7 +380,7 @@ if (isset($_SESSION['username'])) {
                       </label>
 
                       <input type="text" name="txtsearch" id="txtsearch" class="form-control"
-                        placeholder="Cari Nama Pasien / Tanggal Lahir" onkeyup="
+                        placeholder="Cari Nama Pasien / Tanggal Lahir" autocomplete="off" onkeyup="
                         if (value.length > 1)
                         {
                           ambilpaticode(this.value);
@@ -503,7 +503,7 @@ if (isset($_SESSION['username'])) {
                       </label>
 
                       <input type="text" name="txtregidoct" id="txtregidoct" class="form-control"
-                        placeholder="Cari Dokter" onkeyup="
+                        placeholder="Cari Dokter" autocomplete="off" onkeyup="
                           if (value.length > 0)
                           {
                             ambildoctuser(this.value);
@@ -682,7 +682,7 @@ if (isset($_SESSION['username'])) {
                 📋 Daftar Pasien
               </div>
 
-              <input type="text" class="form-control" placeholder="Cari Pasien..."
+              <input type="text" class="form-control" placeholder="Cari Pasien..." autocomplete="off"
                 style="max-width:250px;margin-bottom:20px;" onkeyup="
                 if (value.length < 16)
                 {
