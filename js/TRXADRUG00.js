@@ -1,420 +1,378 @@
-  // periksa akses
-    var aksesku;
-  function periksaakses(fieldid)
-  {
-    aksesku = buatajaxakses();
-    var url="TRXADRUG01X-AKSES.php";
-    aksesku.onreadystatechange=stateChangedAkses;
-    var params = "q="+fieldid;
-    //alert('Parameter adalah '+fieldid);
-    aksesku.open("POST",url,true);
-    aksesku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    aksesku.setRequestHeader("Content-length", params.length);
-    aksesku.setRequestHeader("Connection", "close");
-    aksesku.send(params);
+var lastExamCode = '';
+var notifku;
 
-  }
+// periksa akses
+var aksesku;
+function periksaakses(fieldid) {
+  aksesku = buatajaxakses();
+  var url = "TRXADRUG01X-AKSES.php";
+  aksesku.onreadystatechange = stateChangedAkses;
+  var params = "q=" + fieldid;
+  //alert('Parameter adalah '+fieldid);
+  aksesku.open("POST", url, true);
+  aksesku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  aksesku.setRequestHeader("Content-length", params.length);
+  aksesku.setRequestHeader("Connection", "close");
+  aksesku.send(params);
 
-  function buatajaxakses()
-  {
-    if (window.XMLHttpRequest)
-    {
+}
+
+function buatajaxakses() {
+  if (window.XMLHttpRequest) {
     return new XMLHttpRequest();
-    }
-    if (window.ActiveXObject)
-    {
+  }
+  if (window.ActiveXObject) {
     return new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    return null;
   }
+  return null;
+}
 
-  function stateChangedAkses()
-  {
+function stateChangedAkses() {
   var data;
-  if (aksesku.readyState==4)
-    {
+  if (aksesku.readyState == 4) {
 
-    xdata=aksesku.responseText;
-    data=xdata.trim();
-    
-    if(data.length>1)
-      {
+    xdata = aksesku.responseText;
+    data = xdata.trim();
 
-        document.getElementById('txtstockcode').setAttribute('disabled','true');
-        document.getElementById('txtstockquty').setAttribute('disabled','true');
-        document.getElementById('txtsigna').setAttribute('disabled','true');
-        // document.getElementById('txtusage').setAttribute('disabled','true');
-        //var dokter = document.getElementById('hidprscdoct').value;
-        ambilregicode('X');
+    if (data.length > 1) {
 
-      }
-      else
-      {
-        document.getElementById('txtsearch').setAttribute('disabled','true');
-        document.getElementById('txtstockcode').setAttribute('disabled','true');
-        document.getElementById('txtstockquty').setAttribute('disabled','true');
-        document.getElementById('txtsigna').setAttribute('disabled','true');
-        // document.getElementById('txtusage').setAttribute('disabled','true');
+      document.getElementById('txtstockcode').setAttribute('disabled', 'true');
+      document.getElementById('txtstockquty').setAttribute('disabled', 'true');
+      document.getElementById('txtsigna').setAttribute('disabled', 'true');
+      // document.getElementById('txtusage').setAttribute('disabled','true');
+      //var dokter = document.getElementById('hidprscdoct').value;
+      ambilregicode('X');
+
+    }
+    else {
+      document.getElementById('txtsearch').setAttribute('disabled', 'true');
+      document.getElementById('txtstockcode').setAttribute('disabled', 'true');
+      document.getElementById('txtstockquty').setAttribute('disabled', 'true');
+      document.getElementById('txtsigna').setAttribute('disabled', 'true');
+      // document.getElementById('txtusage').setAttribute('disabled','true');
 
 
-      }
     }
   }
+}
 // end periksa akses  
 
 // ambil data pendaftaran
 var regiku;
-function ambilregicode(kata)
-{
-  if(kata.length > 5)
-  {
-    document.getElementById("tblregi").innerHTML = "";
-    document.getElementById("tblregi").style.visibility = "hidden";
+function ambilregicode(kata) {
+  if (kata.length > 20) {
+    return;
+    // document.getElementById("tblregi").innerHTML = "";
+    // document.getElementById("tblregi").style.visibility = "hidden";
   }
-  else
-  {
-  regiku = buatajaxregi();
-  //var url="TRXAPOLI04C-REGI.php";
-  var url="TRXADRUG00C-REGI.php";
-  regiku.onreadystatechange=stateChangedregi;
-  var params = "q="+kata;
-  regiku.open("POST",url,true);
-  regiku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  regiku.setRequestHeader("Content-length", params.length);
-  regiku.setRequestHeader("Connection", "close");
-  regiku.send(params);
+  else {
+    regiku = buatajaxregi();
+    //var url="TRXAPOLI04C-REGI.php";
+    var url = "TRXADRUG00C-REGI.php";
+    regiku.onreadystatechange = stateChangedregi;
+    var params = "q=" + kata;
+    regiku.open("POST", url, true);
+    regiku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    regiku.setRequestHeader("Content-length", params.length);
+    regiku.setRequestHeader("Connection", "close");
+    regiku.send(params);
   }
-} 
+}
 
-function buatajaxregi()
-{
-  if (window.XMLHttpRequest)
-  {
-  return new XMLHttpRequest();
+function buatajaxregi() {
+  if (window.XMLHttpRequest) {
+    return new XMLHttpRequest();
   }
-  if (window.ActiveXObject)
-  {
-  return new ActiveXObject("Microsoft.XMLHTTP");
+  if (window.ActiveXObject) {
+    return new ActiveXObject("Microsoft.XMLHTTP");
   }
   return null;
 }
 
-function stateChangedregi()
-{
-  var data;
-  if (regiku.readyState==4 && regiku.status==200)
-  {
-  data=regiku.responseText;
+// function stateChangedregi() {
+//   var data;
+//   if (regiku.readyState == 4 && regiku.status == 200) {
+//     data = regiku.responseText;
 
-      if(data.length>3)
-    {   
+//     if (data.length > 3) {
+//       document.getElementById("tblregi").innerHTML = data;
+//       // document.getElementById("tblregi").style.visibility = "";
+//     }
+//     else {
+//       document.getElementById("tblregi").innerHTML = "";
+//       // document.getElementById("tblregi").style.visibility = "hidden";
+//     }
+//   }
+// }
+
+function stateChangedregi() {
+  if (regiku.readyState == 4 && regiku.status == 200) {
+    var data = regiku.responseText;
+
     document.getElementById("tblregi").innerHTML = data;
-    document.getElementById("tblregi").style.visibility = "";
-    }
-    else  
-    {
-    document.getElementById("tblregi").innerHTML = "";
-    document.getElementById("tblregi").style.visibility = "hidden";
-    }
   }
 }
 
-function isiregi(outprsccode,outpaticode,outmainname,outmaingend,outmainage,outregipaym,outpaymcode,outregipoli,outexamprsc)
+function isiregi(outprsccode, outpaticode, outmainname, outmaingend, outmainage, outregipaym, outpaymcode, outregipoli, outexamprsc, outexamdiag) {
+  try {
+    document.getElementById("txtprsccode").value = outprsccode;
+    document.getElementById("txtpaticode").value = outpaticode;
+    document.getElementById("txtmainname").value = outmainname;
+    document.getElementById("txtmaingend").value = outmaingend;
+    document.getElementById("txtmainage").value = outmainage;
+    document.getElementById("txtregipaym").value = outregipaym;
+    document.getElementById("hidregipaym").value = outpaymcode;
+    document.getElementById("hidmediroom").value = outregipoli;
+    document.getElementById("txtexamprsc").value = outexamprsc;
+    document.getElementById("txtexamdiag").value = outexamdiag;
 
-{
-  try 
-  {
-  document.getElementById("txtprsccode").value = outprsccode;
-  document.getElementById("txtpaticode").value = outpaticode;
-  document.getElementById("txtmainname").value = outmainname;
-  document.getElementById("txtmaingend").value = outmaingend;
-  document.getElementById("txtmainage").value = outmainage;
-  document.getElementById("txtregipaym").value = outregipaym;
-  document.getElementById("hidregipaym").value = outpaymcode;
-  document.getElementById("hidmediroom").value = outregipoli;
-  document.getElementById("txtexamprsc").value = outexamprsc;
- 
-  ambilscreen(outprsccode);
-  
-  document.getElementById("txtstockcode").removeAttribute('disabled');
-  document.getElementById("txtstockquty").removeAttribute('disabled');
+    ambilscreen(outprsccode);
 
-  document.getElementById("txtsigna").removeAttribute('disabled');
-//   document.getElementById("txtusage").removeAttribute('disabled');
+    document.getElementById("txtstockcode").removeAttribute('disabled');
+    document.getElementById("txtstockquty").removeAttribute('disabled');
 
-  document.getElementById("txtsearch").value = '';
+    document.getElementById("txtsigna").removeAttribute('disabled');
+    //   document.getElementById("txtusage").removeAttribute('disabled');
 
-  document.getElementById("txtstockcode").focus();
-  document.getElementById("tblregi").style.visibility = "hidden";
-  document.getElementById("tblregi").innerHTML = "";
+    document.getElementById("txtsearch").value = '';
 
-  } 
-  catch(err){ alert(err.message); }
+    document.getElementById("txtstockcode").focus();
+    document.getElementById("inputresep").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+    // document.getElementById("tblregi").style.visibility = "hidden";
+    // document.getElementById("tblregi").innerHTML = "";
+
+  }
+  catch (err) { alert(err.message); }
 }
 
-    // ambil List Resep
-    
+// ambil List Resep
+
 var resepku;
-function ambilresep(kata,regipoli,regipaym)
-{
-  if(kata.length > 7)
-  {
+function ambilresep(kata, regipoli, regipaym) {
+  if (kata.length > 7) {
     document.getElementById("tblresep").innerHTML = "";
-    document.getElementById("tblresep").style.visibility = "hidden";
+    document.getElementById("tblresep").style.display = "none";
   }
-  else
-  {
-  resepku = buatajaxresep();
-  //var url="TRXAPOLI04C-RESEP.php";
-  var url="TRXADRUG00C-RESEP.php";
-  resepku.onreadystatechange=stateChangedResep;
-  var params = "q="+kata+"|"+regipoli+"|"+regipaym;
-  resepku.open("POST",url,true);
-  resepku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  resepku.setRequestHeader("Content-length", params.length);
-  resepku.setRequestHeader("Connection", "close");
-  resepku.send(params);
+  else {
+    resepku = buatajaxresep();
+    //var url="TRXAPOLI04C-RESEP.php";
+    var url = "TRXADRUG00C-RESEP.php";
+    resepku.onreadystatechange = stateChangedResep;
+    var params = "q=" + kata + "|" + regipoli + "|" + regipaym;
+    resepku.open("POST", url, true);
+    resepku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    resepku.setRequestHeader("Content-length", params.length);
+    resepku.setRequestHeader("Connection", "close");
+    resepku.send(params);
   }
-} 
+}
 
-function buatajaxresep()
-{
-  if (window.XMLHttpRequest)
-  {
-  return new XMLHttpRequest();
+function buatajaxresep() {
+  if (window.XMLHttpRequest) {
+    return new XMLHttpRequest();
   }
-  if (window.ActiveXObject)
-  {
-  return new ActiveXObject("Microsoft.XMLHTTP");
+  if (window.ActiveXObject) {
+    return new ActiveXObject("Microsoft.XMLHTTP");
   }
   return null;
 }
 
-function stateChangedResep()
-{
+function stateChangedResep() {
   var data;
-  if (resepku.readyState==4 && resepku.status==200)
-  {
-  data=resepku.responseText;
-    if(data.length>3)
-    {   
-    document.getElementById("tblresep").innerHTML = data;
-    document.getElementById("tblresep").style.visibility = "";
+  if (resepku.readyState == 4 && resepku.status == 200) {
+    data = resepku.responseText;
+    if (data.length > 3) {
+      document.getElementById("tblresep").innerHTML = data;
+      document.getElementById("tblresep").style.display = "block";
     }
-    else  
-    {
-    document.getElementById("tblresep").innerHTML = "";
-    document.getElementById("tblresep").style.visibility = "hidden";
+    else {
+      document.getElementById("tblresep").innerHTML = "";
+      document.getElementById("tblresep").style.display = "none";
     }
   }
 }
 
-function isiresep(outstockcode,outstockbtch,outstockname,outstockpric, outstockamnt)
+function isiresep(outstockcode, outstockbtch, outstockname, outstockpric, outstockamnt) {
+  try {
 
-{
-  try 
-  {
-  
-  document.getElementById("txtstockcode").value = outstockname;
+    document.getElementById("txtstockcode").value = outstockname;
 
-  document.getElementById("hidstockcode").value = outstockcode;
+    document.getElementById("hidstockcode").value = outstockcode;
 
-  document.getElementById("hidstockbtch").value = outstockbtch;
-  
-  document.getElementById("hidstockpric").value = outstockpric;
+    document.getElementById("hidstockbtch").value = outstockbtch;
 
-  document.getElementById("hidstockamnt").value = outstockamnt;
+    document.getElementById("hidstockpric").value = outstockpric;
 
-  document.getElementById("txtstockquty").focus();
-  document.getElementById("tblresep").style.visibility = "hidden";
-  document.getElementById("tblresep").innerHTML = "";
+    document.getElementById("hidstockamnt").value = outstockamnt;
 
-  } 
-  catch(err){ alert(err.message); }
+    document.getElementById("txtstockquty").focus();
+    document.getElementById("tblresep").style.display = "block";
+    document.getElementById("tblresep").innerHTML = "";
+
+  }
+  catch (err) { alert(err.message); }
 }
 
 // isi data signa
 var signaku;
-function ambilsignacode(kata)
-{
-  if(kata.length > 5)
-  {
+function ambilsignacode(kata) {
+  if (kata.length > 30) {
     document.getElementById("tblsigna").innerHTML = "";
-    document.getElementById("tblsigna").style.visibility = "hidden";
+    document.getElementById("tblsigna").style.display = "none";
   }
-  else
-  {
-  signaku = buatajaxsigna();
-  //var url="TRXAPOLI04C-SIGNA.php";
-  var url="TRXADRUG00C-SIGNA.php";
-  signaku.onreadystatechange=stateChangedsigna;
-  var params = "q="+kata;
-  signaku.open("POST",url,true);
-  signaku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  signaku.setRequestHeader("Content-length", params.length);
-  signaku.setRequestHeader("Connection", "close");
-  signaku.send(params);
+  else {
+    signaku = buatajaxsigna();
+    //var url="TRXAPOLI04C-SIGNA.php";
+    var url = "TRXADRUG00C-SIGNA.php";
+    signaku.onreadystatechange = stateChangedsigna;
+    var params = "q=" + kata;
+    signaku.open("POST", url, true);
+    signaku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    signaku.setRequestHeader("Content-length", params.length);
+    signaku.setRequestHeader("Connection", "close");
+    signaku.send(params);
   }
-} 
+}
 
-function buatajaxsigna()
-{
-  if (window.XMLHttpRequest)
-  {
-  return new XMLHttpRequest();
+function buatajaxsigna() {
+  if (window.XMLHttpRequest) {
+    return new XMLHttpRequest();
   }
-  if (window.ActiveXObject)
-  {
-  return new ActiveXObject("Microsoft.XMLHTTP");
+  if (window.ActiveXObject) {
+    return new ActiveXObject("Microsoft.XMLHTTP");
   }
   return null;
 }
 
-function stateChangedsigna()
-{
+function stateChangedsigna() {
   var data;
-  if (signaku.readyState==4 && signaku.status==200)
-  {
-  data=signaku.responseText;
+  if (signaku.readyState == 4 && signaku.status == 200) {
+    data = signaku.responseText;
 
-      if(data.length>3)
-    {   
-    document.getElementById("tblsigna").innerHTML = data;
-    document.getElementById("tblsigna").style.visibility = "";
+    if (data.length > 3) {
+      document.getElementById("tblsigna").innerHTML = data;
+      document.getElementById("tblsigna").style.display = "block";
     }
-    else  
-    {
+    else {
+      document.getElementById("tblsigna").innerHTML = "";
+      document.getElementById("tblsigna").style.display = "none";
+    }
+  }
+}
+
+function isisigna(outsgnacode, outsgnaname, outsgnausag) {
+  try {
+    document.getElementById("txtsigna").value = outsgnaname;
+
+    document.getElementById("hidsigna").value = outsgnacode;
+
+    document.getElementById("txtusage").value = outsgnausag;
+
+
+    document.getElementById("txtsigna").removeAttribute('disabled');
+
+    document.getElementById("txtsearch").value = '';
+
+    //   document.getElementById("txtusage").focus();
+    document.getElementById("tblsigna").style.display = "none";
     document.getElementById("tblsigna").innerHTML = "";
-    document.getElementById("tblsigna").style.visibility = "hidden";
-    }
+
   }
-}
-
-function isisigna(outsgnacode,outsgnaname)
-
-{
-  try 
-  {
-  document.getElementById("txtsigna").value = outsgnaname;
-  
-  document.getElementById("hidsigna").value = outsgnacode;
-   
- 
-  document.getElementById("txtsigna").removeAttribute('disabled');
-
-  document.getElementById("txtsearch").value = '';
-
-//   document.getElementById("txtusage").focus();
-  document.getElementById("tblsigna").style.visibility = "hidden";
-  document.getElementById("tblsigna").innerHTML = "";
-
-  } 
-  catch(err){ alert(err.message); }
+  catch (err) { alert(err.message); }
 }
 
 
-  // Input Data Posisi dari form ke Tabel 
- //  inprsccode,inprscdoct,instockcode,instockbtch,instockpric,instockquty,inprscconc, inprscsgna, inprscusag, inmediroom
-  var ajaxinput;
-  function input(prsccode,prscdoct,stockcode,stockbtch,stockpric,stockquty,prscconc,prscsgna,mediroom)
-  {
-    ajaxinput = buatajaxinput();
-    //var url="TRXAPOLI04E.php";
-    var url="TRXADRUG00E.php";
-    ajaxinput.onreadystatechange=stateChangedInput;
-    var params = "q="+prsccode+"|"+prscdoct+"|"+stockcode+"|"+stockbtch+"|"+stockpric+"|"+stockquty+"|"+prscconc+"|"+prscsgna+"|"+mediroom;
-    //alert(params);
-    ajaxinput.open("POST",url,true);
-    ajaxinput.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    //ajaxinput.setRequestHeader("Content-length", params.length);
-    //ajaxinput.setRequestHeader("Connection", "close");
-    ajaxinput.send(params);
-  }
+// Input Data Posisi dari form ke Tabel 
+//  inprsccode,inprscdoct,instockcode,instockbtch,instockpric,instockquty,inprscconc, inprscsgna, inprscusag, inmediroom
+var ajaxinput;
+function input(prsccode, prscdoct, stockcode, stockbtch, stockpric, stockquty, prscconc, prscsgna, mediroom) {
+  ajaxinput = buatajaxinput();
+  //var url="TRXAPOLI04E.php";
+  var url = "TRXADRUG00E.php";
+  ajaxinput.onreadystatechange = stateChangedInput;
+  var params = "q=" + prsccode + "|" + prscdoct + "|" + stockcode + "|" + stockbtch + "|" + stockpric + "|" + stockquty + "|" + prscconc + "|" + prscsgna + "|" + mediroom;
+  //alert(params);
+  ajaxinput.open("POST", url, true);
+  ajaxinput.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  //ajaxinput.setRequestHeader("Content-length", params.length);
+  //ajaxinput.setRequestHeader("Connection", "close");
+  ajaxinput.send(params);
+}
 
-  function buatajaxinput()
-  {
-    if (window.XMLHttpRequest)
-    {
+function buatajaxinput() {
+  if (window.XMLHttpRequest) {
     return new XMLHttpRequest();
-    }
-    if (window.ActiveXObject)
-    {
+  }
+  if (window.ActiveXObject) {
     return new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    return null;
   }
+  return null;
+}
 
-  function stateChangedInput()
-  {
-  if (ajaxinput.readyState==4)
-    {
+function stateChangedInput() {
+  if (ajaxinput.readyState == 4) {
 
-        document.getElementById('txtstockcode').value = '';
-        document.getElementById('hidstockcode').value = '';
-        document.getElementById('hidstockpric').value = '';
-        document.getElementById('hidstockamnt').value = '';
-        document.getElementById('txtstockquty').value = '1';
+    document.getElementById('txtstockcode').value = '';
+    document.getElementById('hidstockcode').value = '';
+    document.getElementById('hidstockpric').value = '';
+    document.getElementById('hidstockamnt').value = '';
+    document.getElementById('txtstockquty').value = '1';
 
-        document.getElementById('txtsigna').value = '';
-        document.getElementById('hidsigna').value = '';
+    document.getElementById('txtsigna').value = '';
+    document.getElementById('hidsigna').value = '';
 
-        // document.getElementById('txtusage').value = '';
+    // document.getElementById('txtusage').value = '';
 
 
-        var prsccode = document.getElementById('txtprsccode').value;
-        ambilscreen(prsccode);
+    var prsccode = document.getElementById('txtprsccode').value;
+    ambilscreen(prsccode);
 
-        document.getElementById('txtstockcode').focus();
+    document.getElementById('txtstockcode').focus();
 
-        //}
-    }
+    //}
   }
-  // Selesai Input Data
+}
+// Selesai Input Data
 
 // Tampilkan Data Order   yang telah di pilih pada tabel untuk di ubah pada form 
 var ajaxview
-function viewcode(tretcode,paticode)
-{
-  try 
-  {
+function viewcode(tretcode, paticode) {
+  try {
     ajaxview = buatajaxview();
-    var url="TRXAPOLI01C.php";
-    ajaxview.onreadystatechange=stateChangedView;
-    var params = "q="+regicode+"|"+paticode;
+    var url = "TRXAPOLI01C.php";
+    ajaxview.onreadystatechange = stateChangedView;
+    var params = "q=" + regicode + "|" + paticode;
     //alert(params);
-    ajaxview.open("POST",url,true);
+    ajaxview.open("POST", url, true);
     ajaxview.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajaxview.setRequestHeader("Content-length", params.length);
     ajaxview.setRequestHeader("Connection", "close");
     ajaxview.send(params);
 
-  } 
-  catch(err){ alert(err.message); }
+  }
+  catch (err) { alert(err.message); }
 }
 
-  function buatajaxview()
-  {
-    if (window.XMLHttpRequest)
-    {
+function buatajaxview() {
+  if (window.XMLHttpRequest) {
     return new XMLHttpRequest();
-    }
-    if (window.ActiveXObject)
-    {
-    return new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    return null;
   }
+  if (window.ActiveXObject) {
+    return new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  return null;
+}
 
-  function stateChangedView()
-  {
+function stateChangedView() {
   var data;
-  if (ajaxview.readyState==4)
-    {
-      data=ajaxview.responseText;
-      if(data.length>1)
-      {
-//      1        2          3       4        5         6        7        8         9         10       11
-//|$regicode|$paticode|$mainname|$fullage|$gender|$regipaym|$examhght|$examwght|$examblod|$examanam|$examdiag|
+  if (ajaxview.readyState == 4) {
+    data = ajaxview.responseText;
+    if (data.length > 1) {
+      //      1        2          3       4        5         6        7        8         9         10       11
+      //|$regicode|$paticode|$mainname|$fullage|$gender|$regipaym|$examhght|$examwght|$examblod|$examanam|$examdiag|
 
       var res = data.split("|");
       document.getElementById("txtexamcode").value = res[1];
@@ -446,110 +404,144 @@ function viewcode(tretcode,paticode)
 
       document.getElementById("txtexamhght").focus();
 
-      }      
-        //}
     }
+    //}
   }
+}
 
 
 
 // Tampilkan data yang diinput dalam datable
 var drz;
-function ambilscreen(prsccode)
-{
-  if(prsccode.length > 14)
-  {
-  document.getElementById("tblscreen").style.visibility = "hidden";
-  }
-  else
-  {
-  drz = buatajaxscreen();
-  //var url="TRXAPOLI04V.php";
-  var url="TRXADRUG00V.php";
-  drz.onreadystatechange=stateChangedscreen;
-  var params = "q="+prsccode;
-  //alert(params);
-  
-  drz.open("POST",url,true);
-  //beberapa http header harus kita set kalau menggunakan POST
-  drz.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  drz.setRequestHeader("Content-length", params.length);
-  drz.setRequestHeader("Connection", "close");
-  drz.send(params);
-  }
-} 
-
-  function buatajaxscreen()
-  {
-    if (window.XMLHttpRequest)
-    {
-    return new XMLHttpRequest();
-    }
-    if (window.ActiveXObject)
-    {
-    return new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    return null;
-  }
-
-function stateChangedscreen()
-{
-  var datapost;
-  if (drz.readyState==4 && drz.status==200)
-  {
-  datapost=drz.responseText;
-    if(datapost.length>0)
-    {
-    document.getElementById("tblscreen").innerHTML = datapost;
-    document.getElementById("tblscreen").style.visibility = "";
-    }
-    else  
-    {
-    document.getElementById("tblscreen").innerHTML = "";
+function ambilscreen(prsccode) {
+  if (prsccode.length > 14) {
     document.getElementById("tblscreen").style.visibility = "hidden";
+  }
+  else {
+    drz = buatajaxscreen();
+    //var url="TRXAPOLI04V.php";
+    var url = "TRXADRUG00V.php";
+    drz.onreadystatechange = stateChangedscreen;
+    var params = "q=" + prsccode;
+    //alert(params);
+
+    drz.open("POST", url, true);
+    //beberapa http header harus kita set kalau menggunakan POST
+    drz.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    drz.setRequestHeader("Content-length", params.length);
+    drz.setRequestHeader("Connection", "close");
+    drz.send(params);
+  }
+}
+
+function buatajaxscreen() {
+  if (window.XMLHttpRequest) {
+    return new XMLHttpRequest();
+  }
+  if (window.ActiveXObject) {
+    return new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  return null;
+}
+
+function stateChangedscreen() {
+  var datapost;
+  if (drz.readyState == 4 && drz.status == 200) {
+    datapost = drz.responseText;
+    if (datapost.length > 0) {
+      document.getElementById("tblscreen").innerHTML = datapost;
+      document.getElementById("tblscreen").style.visibility = "";
+    }
+    else {
+      document.getElementById("tblscreen").innerHTML = "";
+      document.getElementById("tblscreen").style.visibility = "hidden";
     }
   }
 }
 
 
 // Hapus 
-  var ajaxhapus;
-  function hapuscode(prsccode,stockcode)
-  {
-    ajaxhapus = buatajaxhapus();
-    //var url="TRXAPOLI04D.php";
-    var url="TRXADRUG00D.php";
-    ajaxhapus.onreadystatechange=stateChangedhapus;
-    var params = "q="+prsccode+"|"+stockcode;
-    //alert(params);
-    ajaxhapus.open("POST",url,true);
-    ajaxhapus.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    ajaxhapus.setRequestHeader("Content-length", params.length);
-    ajaxhapus.setRequestHeader("Connection", "close");
-    ajaxhapus.send(params);
-  }
+var ajaxhapus;
+function hapuscode(prsccode, stockcode) {
+  ajaxhapus = buatajaxhapus();
+  //var url="TRXAPOLI04D.php";
+  var url = "TRXADRUG00D.php";
+  ajaxhapus.onreadystatechange = stateChangedhapus;
+  var params = "q=" + prsccode + "|" + stockcode;
+  //alert(params);
+  ajaxhapus.open("POST", url, true);
+  ajaxhapus.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  ajaxhapus.setRequestHeader("Content-length", params.length);
+  ajaxhapus.setRequestHeader("Connection", "close");
+  ajaxhapus.send(params);
+}
 
-  function buatajaxhapus()
-  {
-    if (window.XMLHttpRequest)
-    {
+function buatajaxhapus() {
+  if (window.XMLHttpRequest) {
     return new XMLHttpRequest();
-    }
-    if (window.ActiveXObject)
-    {
+  }
+  if (window.ActiveXObject) {
     return new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    return null;
   }
+  return null;
+}
 
-  function stateChangedhapus()
-  {
+function stateChangedhapus() {
   var data;
-  if (ajaxhapus.readyState==4)
-    {
-        var inprsccode = document.getElementById('txtprsccode').value;
-        ambilscreen(inprsccode);
-        document.getElementById('txtstockcode').focus();
-    }
+  if (ajaxhapus.readyState == 4) {
+    var inprsccode = document.getElementById('txtprsccode').value;
+    ambilscreen(inprsccode);
+    document.getElementById('txtstockcode').focus();
   }
+}
 // Selesai hapus Data 
+
+// Cek Resep baru untuk notif
+function cekResepBaru() {
+  console.log('CEK NOTIF JALAN');
+  notifku = new XMLHttpRequest();
+
+  notifku.onreadystatechange = function () {
+
+    if (notifku.readyState == 4 &&
+      notifku.status == 200) {
+
+      var examCode =
+        notifku.responseText.trim();
+
+      console.log(
+        'Resep Baru : ' + examCode
+      );
+
+      if (lastExamCode != '') {
+
+        if (examCode != '' &&
+          examCode != lastExamCode) {
+
+          playNotif();
+
+          ambilregicode('X');
+        }
+      }
+
+      lastExamCode = examCode;
+    }
+  };
+
+  notifku.open(
+    "POST",
+    "TRXADRUG00C-NOTIF.php",
+    true
+  );
+
+  notifku.send();
+}
+
+setInterval(
+  cekResepBaru,
+  2000
+);
+
+
+
+

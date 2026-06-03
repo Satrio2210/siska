@@ -3,66 +3,83 @@ include "conf/config.php";
 include "inc/sanie.php";
 ?>
 <style>
-#screen {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
+  #screen {
     width: 100%;
-}
+    border-collapse: collapse;
+    table-layout: auto;
+    font-size: 12px;
+  }
 
-#screen td, #screen th {
-    border: 1px solid #ddd;
-    padding: 4px;
-}
+  #screen th {
+    background: #f8fafc;
+    padding: 8px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+  }
 
+  #screen td {
+    padding: 8px;
+    border-bottom: 1px solid #f1f5f9;
+  }
 
-#screen tr:nth-child(even){background-color: #f3f2f2;}
+  #screen tr:hover {
+    background: #f8fafc;
+    cursor: pointer;
+  }
 
-#screen tr:hover {background-color: #ddd;}
+  #screen th:nth-child(1),
+  #screen td:nth-child(1) {
+    width: 70%;
+  }
 
-#screen th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: center;
-    background-color: #4CAF50;
-    color: black;
-}
-#screen tbody, #screen thead
-{
-    display:block;
-}
-#screen tbody 
-{
-  overflow: auto;
-  height: 200px;
-}
+  #screen th:nth-child(2),
+  #screen td:nth-child(2) {
+    width: 10%;
+  }
+
+  #screen th:nth-child(3),
+  #screen td:nth-child(3) {
+    width: 20%;
+  }
+
+  .badge-stock-ok {
+    background: #dcfce7;
+    color: #166534;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 11px;
+  }
+
+  .badge-stock-low {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 11px;
+  }
 </style>
-  <table id="screen">
+<table id="screen">
   <thead>
-  <tr>
-        <!--<marquee style="color: red;" direction="RLEFT" scrollamount="10">-->
-        <!--  *HARGA YANG TERTARA ADALAH HARGA ASLI BUKAN HARGA RESEP-->
-        <!--</marquee>-->
-  <th style="width: 550px;">E-RESEP</th>
-  </tr>
-    <thead>
-        <tr>
-          <th style="width: 200px">Nama Obat</th>
-          <th style="width: 100px">Batch</th>
-          <th style="width: 100px">Update</th>
-          <th style="width: 100px">Harga/tab</th>
-    </thead>
+    <tr>
+      <!-- <th style="width: 200px">Nama Obat</th>
+        <th style="width: 100px">Batch</th>
+        <th style="width: 100px">Update</th>
+        <th style="width: 100px">Harga/tab</th> -->
+
+      <th>Obat</th>
+      <th>Stock</th>
+      <th>Harga</th>
   </thead>
+  
   <tbody>
-<?php
-  $rawdata = $_POST['q'];
-  list($kata, $regipoli, $regipaym) = explode("|",$rawdata);
+    <?php
+    $rawdata = $_POST['q'];
+    list($kata, $regipoli, $regipaym) = explode("|", $rawdata);
 
-  if (strlen($kata) == 1)
-  {
+    if (strlen($kata) == 1) {
 
-        if ($regipaym == 'U')
-        {
-          $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY, INVE_UPDT_DATE,
+      if ($regipaym == 'U') {
+        $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY, INVE_UPDT_DATE,
                     (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
                     (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC 
                     FROM investock 
@@ -70,12 +87,10 @@ include "inc/sanie.php";
                     AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) IN ('ST', 'NS')
                     AND INVE_STOCK_QUTY > 0
                     AND INVE_VIEW_STAT IN ('R','Y')
-                    ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";    
+                    ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";
 
-        }
-        else
-        {
-          $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY,  INVE_UPDT_DATE,
+      } else {
+        $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY,  INVE_UPDT_DATE,
                   (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
                   (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC 
                   FROM investock 
@@ -84,15 +99,12 @@ include "inc/sanie.php";
                   AND INVE_STOCK_QUTY > 0
                   AND INVE_VIEW_STAT IN ('R','Y')
                   AND INVE_STOCK_CODE IN (SELECT TRXA_INVE_CODE FROM trxacust WHERE TRXA_CUST_TYPE='$regipaym' AND TRXA_VIEW_STAT='Y')
-                  ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";    
-        }
+                  ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";
+      }
 
-  }
-  else
-  {
-        if ($regipaym == 'U')
-        {
-          $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY,  INVE_UPDT_DATE,
+    } else {
+      if ($regipaym == 'U') {
+        $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY,  INVE_UPDT_DATE,
               (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
               (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC   
               FROM investock 
@@ -101,12 +113,10 @@ include "inc/sanie.php";
               AND (SELECT INVE_PART_TYPE FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) IN ('ST', 'NS')
               AND INVE_STOCK_QUTY > 0  
               AND INVE_VIEW_STAT IN ('R','Y')
-              ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";        
+              ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";
 
-        }
-        else
-        {
-          $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY,  INVE_UPDT_DATE,
+      } else {
+        $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY,  INVE_UPDT_DATE,
               (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
               (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC   
               FROM investock 
@@ -116,44 +126,65 @@ include "inc/sanie.php";
               AND INVE_STOCK_QUTY > 0  
               AND INVE_VIEW_STAT IN ('R','Y')
               -- AND INVE_STOCK_CODE IN (SELECT TRXA_INVE_CODE FROM trxacust WHERE TRXA_CUST_TYPE='$regipaym' AND TRXA_VIEW_STAT='Y')
-              ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";        
+              ORDER by INVE_STOCK_CODE, INVE_UPDT_DATE DESC";
 
-        }  
+      }
 
-  }
-
-
-$q = $db->query($xquery) or die("Gagal ambil item Obat !!");
-while ($k = $q->fetch(PDO::FETCH_ASSOC))
-{
-  $outstockcode = $k['INVE_STOCK_CODE'];
-  $outstockbtch = $k['INVE_STOCK_BTCH'];
-  $outstockname = $k['INVE_STOCK_NAME'];
-  $outstockpric = $k['INVE_STOCK_PRIC'];
-  $outstockquty = $k['INVE_STOCK_QUTY'];
-
-$xprice = round($k['INVE_STOCK_PRIC']);
-$xint = (int)$xprice;
-
-$price = $xint;
-$sub_total = ($price * $profit) * 1.30;
-
-$finaltotal = pembulatan($sub_total);
-
-$viewprice = number_format(pembulatan($price), 0, '', '.');
-$viewtotal = number_format($sub_total, 0, '', '.');
+    }
 
 
-echo '<tr>';
-    echo '<td style="width: 200px;" onClick="isiresep(\''.$outstockcode.'\',\''.$outstockbtch.'\',\''.$outstockname.'\',\''.$outstockpric.'\',\''.$outstockquty.'\');" style="cursor:pointer">'.$k['INVE_STOCK_NAME'].' | '.$k['NAME_SPEC'].'</td>';
-    echo '<td style="width: 100px;" onClick="isiresep(\''.$outstockcode.'\',\''.$outstockbtch.'\',\''.$outstockname.'\',\''.$outstockpric.'\',\''.$outstockquty.'\');" style="cursor:pointer">'.$k['INVE_STOCK_BTCH'].'</td>';
-    echo '<td style="width: 100px;" onClick="isiresep(\''.$outstockcode.'\',\''.$outstockbtch.'\',\''.$outstockname.'\',\''.$outstockpric.'\',\''.$outstockquty.'\');" style="cursor:pointer">'.$k['INVE_UPDT_DATE'].'</td>';
-    echo '<td style="width: 100px;" onClick="isiresep(\''.$outstockcode.'\',\''.$outstockbtch.'\',\''.$outstockname.'\',\''.$outstockpric.'\',\''.$outstockquty.'\');" style="cursor:pointer">Rp. '.$viewtotal.'</td>';
+    $q = $db->query($xquery) or die("Gagal ambil item Obat !!");
+    while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
+      $outstockcode = $k['INVE_STOCK_CODE'];
+      $outstockbtch = $k['INVE_STOCK_BTCH'];
+      $outstockname = $k['INVE_STOCK_NAME'];
+      $outstockpric = $k['INVE_STOCK_PRIC'];
+      $outstockquty = $k['INVE_STOCK_QUTY'];
 
-echo '</tr>';
-}
-?>
+      $xprice = round($k['INVE_STOCK_PRIC']);
+      $xint = (int) $xprice;
+
+      $price = $xint;
+      $sub_total = ($price * $profit) * 1.30;
+
+      $finaltotal = pembulatan($sub_total);
+
+      $viewprice = number_format(pembulatan($price), 0, '', '.');
+      $viewtotal = number_format($sub_total, 0, '', '.');
+
+
+      echo '<tr  onClick="isiresep(\'' . $outstockcode . '\',\'' . $outstockbtch . '\',\'' . $outstockname . '\',\'' . $outstockpric . '\',\'' . $outstockquty . '\');" style="cursor:pointer">';
+
+      // echo '<td style="width: 200px;" onClick="isiresep(\'' . $outstockcode . '\',\'' . $outstockbtch . '\',\'' . $outstockname . '\',\'' . $outstockpric . '\',\'' . $outstockquty . '\');" style="cursor:pointer">' . $k['INVE_STOCK_NAME'] . ' | ' . $k['NAME_SPEC'] . '</td>';
+      // echo '<td style="width: 100px;" onClick="isiresep(\'' . $outstockcode . '\',\'' . $outstockbtch . '\',\'' . $outstockname . '\',\'' . $outstockpric . '\',\'' . $outstockquty . '\');" style="cursor:pointer">' . $k['INVE_STOCK_BTCH'] . '</td>';
+      // echo '<td style="width: 100px;" onClick="isiresep(\'' . $outstockcode . '\',\'' . $outstockbtch . '\',\'' . $outstockname . '\',\'' . $outstockpric . '\',\'' . $outstockquty . '\');" style="cursor:pointer">' . $k['INVE_UPDT_DATE'] . '</td>';
+      // echo '<td style="width: 100px;" onClick="isiresep(\'' . $outstockcode . '\',\'' . $outstockbtch . '\',\'' . $outstockname . '\',\'' . $outstockpric . '\',\'' . $outstockquty . '\');" style="cursor:pointer">Rp. ' . $viewtotal . '</td>';
+    
+      echo '<td>';
+
+      echo '<b>' . $k['INVE_STOCK_NAME'] . '</b><br>';
+      echo '<small>' . $k['NAME_SPEC'] . '</small>';
+
+      echo '</td>';
+
+      if ($outstockquty < 20) {
+        $stokbadge =
+          '<span class="badge-stock-low">
+    ' . $outstockquty . '
+    </span>';
+      } else {
+        $stokbadge =
+          '<span class="badge-stock-ok">
+    ' . $outstockquty . '
+    </span>';
+      }
+
+      echo '<td>' . $stokbadge . '</td>';
+
+      echo '<td style="text-align:right;">Rp ' . $viewtotal . '</td>';
+
+      echo '</tr>';
+    }
+    ?>
   </tbody>
-  </table>
-
-
+</table>
