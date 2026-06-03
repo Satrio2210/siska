@@ -10,14 +10,14 @@ include "conf/config.php";
   #screen {
     width: 100%;
     border-collapse: collapse;
-    table-layout:fixed;
+    table-layout: fixed;
     border-spacing: 0;
     font-size: 12px;
     font-family: inherit;
   }
 
   #screen th,
-  #screen td{
+  #screen td {
     white-space: nowrap;
   }
 
@@ -145,38 +145,51 @@ include "conf/config.php";
       //$kata = 'X';
       //list($kata, $dokter) = explode("|",$rawdata);
       
-      if (strlen($kata) == 1) {
-        $xquery = "SELECT TRXA_REGI_CODE, TRXA_PATI_CODE,
-                (SELECT CONCAT(PATI_MAIN_TITL,' ',PATI_MAIN_NAME) FROM patimast WHERE PATI_MAST_CODE=TRXA_PATI_CODE) AS MAIN_NAME,
-                (SELECT COUNT(*) FROM trxaprsc WHERE TRXA_PRSC_CODE = TRXA_REGI_CODE AND TRXA_VIEW_STAT='Y' ) AS CNT_RESEP,
-                (SELECT PATI_MAIN_BIRT FROM patimast WHERE PATI_MAST_CODE=TRXA_PATI_CODE) AS MAIN_AGE,
-                (SELECT PATI_MAIN_GEND FROM patimast WHERE PATI_MAST_CODE=TRXA_PATI_CODE) AS MAIN_GEND,
-                TRXA_REGI_LIST, TRXA_REGI_PAYM, TRXA_REGI_POLI,
-                (SELECT TRXA_EXAM_PRSC FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_PRSC,
-                (SELECT GROUP_CONCAT(TRXA_DIAG_NAME SEPARATOR ', ') FROM trxadiag WHERE TRXA_EXAM_CODE = TRXA_REGI_CODE) AS DIAGNOSA
-                FROM trxaregi
-                WHERE TRXA_REGI_POLI <> '$code_lab_room' 
-                -- AND TRXA_REGI_STAT IN ('C','W')
-                AND TRXA_REGI_STAT IN ('C')
-                AND TRXA_ENTR_DATE > DATE_SUB(CURDATE(), INTERVAL 2 DAY)
-                ORDER BY TRXA_ENTR_DATE DESC, TRXA_ENTR_TIME DESC";
-      } else {
-        $xquery = "SELECT TRXA_REGI_CODE, TRXA_PATI_CODE,
-                (SELECT CONCAT(PATI_MAIN_TITL,' ',PATI_MAIN_NAME) FROM patimast WHERE PATI_MAST_CODE=TRXA_PATI_CODE) AS MAIN_NAME,
-                (SELECT COUNT(*) FROM trxaprsc WHERE TRXA_PRSC_CODE = TRXA_REGI_CODE AND TRXA_VIEW_STAT='Y' ) AS CNT_RESEP,
-                (SELECT PATI_MAIN_BIRT FROM patimast WHERE PATI_MAST_CODE=TRXA_PATI_CODE) AS MAIN_AGE,
-                (SELECT PATI_MAIN_GEND FROM patimast WHERE PATI_MAST_CODE=TRXA_PATI_CODE) AS MAIN_GEND,
-                TRXA_REGI_LIST, TRXA_REGI_PAYM, TRXA_REGI_POLI,
-                (SELECT TRXA_EXAM_PRSC FROM trxaexam WHERE TRXA_EXAM_CODE=TRXA_REGI_CODE) AS EXAM_PRSC,
-                (SELECT GROUP_CONCAT(TRXA_DIAG_NAME SEPARATOR ', ') FROM trxadiag WHERE TRXA_EXAM_CODE = TRXA_REGI_CODE) AS DIAGNOSA
-                FROM trxaregi
-                WHERE (SELECT PATI_MAIN_NAME FROM patimast WHERE PATI_MAST_CODE=TRXA_PATI_CODE) LIKE '$kata%' 
-                AND TRXA_REGI_POLI <> '$code_lab_room' 
-                -- AND TRXA_REGI_STAT IN ('C','W')
-                AND TRXA_REGI_STAT IN ('C')
-                AND TRXA_ENTR_DATE > DATE_SUB(CURDATE(), INTERVAL 2 DAY)
-                ORDER BY TRXA_ENTR_DATE DESC, TRXA_ENTR_TIME DESC";
+      $xquery = " SELECT
+        r.TRXA_REGI_CODE, 
+        r.TRXA_PATI_CODE,
+        CONCAT(p.PATI_MAIN_TITL, ' ', p.PATI_MAIN_NAME) AS MAIN_NAME,
+        IFNULL(pr.CNT_RESEP, 0) AS CNT_RESEP,
+        p.PATI_MAIN_BIRT AS MAIN_AGE,
+        p.PATI_MAIN_GEND AS MAIN_GEND,
+        r.TRXA_REGI_LIST, 
+        r.TRXA_REGI_PAYM, 
+        r.TRXA_REGI_POLI,
+        e.TRXA_EXAM_PRSC AS EXAM_PRSC,
+        d.DIAGNOSA
+        FROM trxaregi r
+        -- Join ke tabel master pasien
+        JOIN patimast p ON p.PATI_MAST_CODE = r.TRXA_PATI_CODE
+    
+        -- Join ke tabel exam
+        LEFT JOIN trxaexam e ON e.TRXA_EXAM_CODE = r.TRXA_REGI_CODE
+    
+        -- Subquery JOIN untuk ngitung resep (biar data ga duplicate/cartesian)
+        LEFT JOIN (
+        SELECT TRXA_PRSC_CODE, COUNT(*) AS CNT_RESEP 
+        FROM trxaprsc 
+        WHERE TRXA_VIEW_STAT = 'Y' 
+        GROUP BY TRXA_PRSC_CODE
+        ) pr ON pr.TRXA_PRSC_CODE = r.TRXA_REGI_CODE
+    
+        -- Subquery JOIN untuk gabungin teks diagnosa
+        LEFT JOIN (
+        SELECT TRXA_EXAM_CODE, GROUP_CONCAT(TRXA_DIAG_NAME SEPARATOR ', ') AS DIAGNOSA 
+        FROM trxadiag 
+        GROUP BY TRXA_EXAM_CODE
+        ) d ON d.TRXA_EXAM_CODE = r.TRXA_REGI_CODE
+    
+        WHERE r.TRXA_REGI_POLI <> '$code_lab_room' 
+        AND r.TRXA_REGI_STAT = 'C'
+        AND r.TRXA_ENTR_DATE > DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+        ";
+      // 2. Tambahin filter pencarian (menggantikan logika IF-ELSE lu yang kepanjangan)
+      if (strlen($kata) != 1) {
+        // Lu ga perlu lagi subquery buat nyari nama, karena tabel patimast (p) udah di-JOIN
+        $xquery .= " AND p.PATI_MAIN_NAME LIKE '$kata%' ";
       }
+      // 3. Tambahin pengurutan data di akhir
+      $xquery .= " ORDER BY r.TRXA_ENTR_DATE DESC, r.TRXA_ENTR_TIME DESC";
 
       $q = $db->query($xquery) or die("Gagal ambil regis !!");
       while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
