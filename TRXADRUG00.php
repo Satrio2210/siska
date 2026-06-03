@@ -483,8 +483,7 @@ if (isset($_SESSION['username'])) {
 
   </audio>
 
-  <body onLoad="periksaakses('PASS_DRUG_ENTR'); 
-">
+  <body onLoad="periksaakses('PASS_DRUG_ENTR');">
     <div id="layout">
       <!-- Menu toggle -->
       <a href="#menu" id="menuLink" class="menu-link">
@@ -712,7 +711,7 @@ if (isset($_SESSION['username'])) {
 
         </div><!-- div main -->
       </div><!-- div layout -->
-      <script src="js/TRXADRUG00.js?v=<?php echo filemtime('TRXADRUG00.js');?>"></script>
+      <script src="js/TRXADRUG00.js?v=<?php echo time(); ?>"></script>
       <script src="js/ui.js"></script>
       <script>
         function playNotif() {

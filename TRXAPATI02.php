@@ -728,7 +728,7 @@ if (isset($_SESSION['username'])) {
       </div><!-- div main -->
     </div><!-- div layout -->
 
-    <script src="js/TRXAPATI02.js?v=<?php echo filemtime('TRXAPATI02.js');?>"></script>
+    <script src="js/TRXAPATI02.js?v=<?php echo time(); ?>"></script>
     <script src="js/ui.js"></script>
 
   </body>
