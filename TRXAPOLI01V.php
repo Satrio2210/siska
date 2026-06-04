@@ -34,7 +34,7 @@ include "inc/sanie.php";
 
   #screen th {
     padding: 16px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     text-align: center;
     border: none;
@@ -71,7 +71,9 @@ include "inc/sanie.php";
   /* CELL */
   #screen td {
     padding: 14px 12px;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
     border-bottom: 1px solid #edf2f7;
     text-align: center;
     vertical-align: middle;

@@ -95,8 +95,8 @@ if (isset($_SESSION['username'])) {
         background: #fff;
         border-radius: 18px;
         padding: 16px 18px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
-        border: 1px solid #edf2f7;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+        border: 3px solid #cbd5e1;
       }
 
       .card-title {
@@ -124,7 +124,7 @@ if (isset($_SESSION['username'])) {
       .form-label {
         font-size: 13px;
         font-weight: 600;
-        color: #64748b;
+        color: #43474d;
         margin-bottom: 6px;
       }
 
@@ -135,6 +135,7 @@ if (isset($_SESSION['username'])) {
         padding: 0 14px;
         font-size: 13px;
         transition: .2s;
+        font-weight: 500;
       }
 
       textarea.form-control {
@@ -562,14 +563,14 @@ if (isset($_SESSION['username'])) {
                         Biaya Admin
                       </label>
 
-                      <!-- <select name="hidregifee" id="hidregifee" class="form-control" readonly>
+                      <select name="hidregifee" id="hidregifee" class="form-control">
 
                         <option value="">- PILIH -</option>
                         <option value="Y">Ya</option>
                         <option value="N">Tidak</option>
 
-                      </select> -->
-                      <input type="text" id="txtregifeeview" class="form-control" readonly>
+                      </select>
+                      <!-- <input type="text" id="txtregifeeview" class="form-control" autocomplete="off"> -->
 
                       <input type="hidden" id="hidregifee">
 
@@ -622,9 +623,9 @@ if (isset($_SESSION['username'])) {
                       Simpan
                     </button>
 
-                    <button type="reset" class="btn-modern btn-reset">
+                    <!-- <button type="reset" class="btn-modern btn-reset">
                       Reset
-                    </button>
+                    </button> -->
 
                     <button type="button" onclick="location.reload();" class="btn-modern btn-refresh">
                       Refresh

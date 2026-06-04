@@ -65,71 +65,100 @@ include "inc/sanie.php";
 
   .patient-rm {
     font-size: 11px;
-    color: #64748b;
+    color: #43474d;
+  }
+
+  .patient-addr {
+    font-size: 14px;
+    color: #43474d;
   }
 
   .patient-birth {
-    font-size: 12px;
-    color: #64748b;
+    font-size: 14px;
+    color: #43474d;
   }
 </style>
 <table id="screen">
   <tbody>
     <?php
-    $kata = $_POST['q'];
-    if (strlen($kata) == 1) {
-      $xquery = "SELECT PATI_MAST_CODE, PATI_MAIN_PIDN, PATI_MAIN_NAME, PATI_MAIN_GEND, PATI_MAIN_BIRT, 
-                    PATI_MAIN_BLOD, PATI_MAIN_ADDR, PATI_MAIN_PHNE, PATI_MAIN_PRNT 
-            FROM patimast 
-            WHERE PATI_VIEW_STAT = 'Y' ORDER BY PATI_MAST_CODE";
-    } else {
-      $xquery = "SELECT PATI_MAST_CODE, PATI_MAIN_PIDN, PATI_MAIN_NAME, PATI_MAIN_GEND, PATI_MAIN_BIRT, 
-                    PATI_MAIN_BLOD, PATI_MAIN_ADDR, PATI_MAIN_PHNE, PATI_MAIN_PRNT 
-            FROM patimast 
-            WHERE PATI_MAIN_PIDN LIKE '%$kata%' AND PATI_VIEW_STAT = 'Y'
-            OR PATI_MAIN_NAME LIKE '$kata%' AND PATI_VIEW_STAT = 'Y'
-            OR PATI_MAIN_BIRT LIKE '$kata%' AND PATI_VIEW_STAT = 'Y'
-            OR PATI_MAIN_PRNT LIKE '$kata%' AND PATI_VIEW_STAT = 'Y'
-            ORDER BY PATI_MAST_CODE";
+    // 1. Ambil input pencarian
+    $kata = $_POST['q'] ?? '';
+
+    // 2. Base Query (Mencegah ngetik ulang)
+    $xquery = "SELECT PATI_MAST_CODE, PATI_MAIN_PIDN, PATI_MAIN_NAME, PATI_MAIN_GEND, PATI_MAIN_BIRT, 
+                  PATI_MAIN_BLOD, PATI_MAIN_ADDR, PATI_MAIN_PHNE, PATI_MAIN_PRNT 
+           FROM patimast 
+           WHERE PATI_VIEW_STAT = 'Y'";
+
+    $params = [];
+
+    // 3. Tambahkan kondisi LIKE jika panjang karakter lebih dari 1
+    if (strlen($kata) > 1) {
+      $xquery .= " AND (
+                    PATI_MAIN_PIDN LIKE :kata_mid 
+                    OR PATI_MAIN_NAME LIKE :kata_start 
+                    OR PATI_MAIN_BIRT LIKE :kata_start 
+                    OR PATI_MAIN_PRNT LIKE :kata_start
+                 )";
+
+      // Setup parameter untuk mencegah SQL Injection
+      $params[':kata_mid'] = "%$kata%";
+      $params[':kata_start'] = "$kata%";
     }
 
-    $q = $db->query($xquery) or die("Gagal ambil data !!");
-    while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
-      $outmastcode = $k['PATI_MAST_CODE'];
-      $outmainname = $k['PATI_MAIN_NAME'];
-      $outmaingend = $k['PATI_MAIN_GEND'];
-      $outmainbirt = formatTanggal($k['PATI_MAIN_BIRT']);
-      $outmainblod = $k['PATI_MAIN_BLOD'];
-      $outmainaddr = $k['PATI_MAIN_ADDR'];
-      $outmainphne = $k['PATI_MAIN_PHNE'];
+    // 4. Tambahkan pengurutan
+    $xquery .= " ORDER BY PATI_MAST_CODE";
 
-      echo '<tr onclick="isipaticode(
-      \'' . $outmastcode . '\',
-      \'' . $outmainname . '\',
-      \'' . $outmaingend . '\',
-      \'' . $outmainbirt . '\',
-      \'' . $outmainblod . '\',
-      \'' . $outmainaddr . '\',
-      \'' . $outmainphne . '\'
-      )">';
+    // 5. Eksekusi pakai Prepared Statement
+    $stmt = $db->prepare($xquery);
+    $stmt->execute($params);
 
-      echo '
-      <td>
+    // Kalau mau matiin script saat error (mirip 'or die' yang lu pake sebelumnya)
+    if (!$stmt) {
+      die("Gagal ambil data !!");
+    }
 
-      <div class="patient-name">
-      ' . $k['PATI_MAIN_NAME'] . '
-      </div>
+    // 6. Looping data
+    while ($k = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      // WAJIB: Pakai htmlspecialchars dengan ENT_QUOTES
+      // Biar tanda kutip satu (') di nama/alamat nggak bikin Javascript error
+      $outmastcode = htmlspecialchars($k['PATI_MAST_CODE'], ENT_QUOTES);
+      $outmainname = htmlspecialchars($k['PATI_MAIN_NAME'], ENT_QUOTES);
+      $outmaingend = htmlspecialchars($k['PATI_MAIN_GEND'], ENT_QUOTES);
+      $outmainbirt = htmlspecialchars(formatTanggal($k['PATI_MAIN_BIRT']), ENT_QUOTES);
+      $outmainblod = htmlspecialchars($k['PATI_MAIN_BLOD'], ENT_QUOTES);
+      $outmainaddr = htmlspecialchars($k['PATI_MAIN_ADDR'], ENT_QUOTES);
+      $outmainphne = htmlspecialchars($k['PATI_MAIN_PHNE'], ENT_QUOTES);
 
-      <div class="patient-rm">
-      RM : ' . $k['PATI_MAST_CODE'] . '
-      </div>
+      // Variabel untuk ditampilin di HTML
+      $disp_name = htmlspecialchars($k['PATI_MAIN_NAME']);
+      $disp_birt = htmlspecialchars($k['PATI_MAIN_BIRT']);
+      $disp_addr = htmlspecialchars($k['PATI_MAIN_ADDR']);
 
-      <div class="patient-birth">
-      ' . $k['PATI_MAIN_BIRT'] . '
-      </div>
-
-      </td>';
-      echo '</tr>';
+      // Cetak HTML pakai heredoc (<<<HTML) biar nggak pusing ngegabungin string pakai titik (.)
+      echo <<<HTML
+    <tr onclick="isipaticode(
+        '$outmastcode', 
+        '$outmainname', 
+        '$outmaingend', 
+        '$outmainbirt', 
+        '$outmainblod', 
+        '$outmainaddr', 
+        '$outmainphne'
+    )">
+        <td>
+            <div class="patient-name">
+                $disp_name
+            </div>
+            <div class="patient-birth">
+                $disp_birt
+            </div>
+            <div class="patient-addr">
+                $disp_addr
+            </div>
+        </td>
+    </tr>
+    HTML;
     }
     ?>
   </tbody>

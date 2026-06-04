@@ -129,6 +129,8 @@ if (isset($_SESSION['username'])) {
         border-radius: 12px;
         padding: 12px 14px;
         font-size: 14px;
+        font-weight: 500;
+        color: #000;
         background: white;
         box-sizing: border-box;
         transition: all .2s ease;
@@ -142,9 +144,20 @@ if (isset($_SESSION['username'])) {
         box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
       }
 
+      .form-group input[readonly],
+      .form-group textarea[readonly] {
+        color: #000 !important;
+        font-weight: 500 !important;
+        -webkit-text-fill-color: #000 !important;
+        opacity: 1 !important;
+      }
+
       .form-group textarea {
         min-height: 120px;
         resize: vertical;
+        color: #000;
+        font-size: 14px;
+        font-weight: 500;
       }
 
       .info-grid {
@@ -287,8 +300,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* ===============================
-                                                       MODERN MEDICAL LAYOUT
-                                                    ================================ */
+                                                         MODERN MEDICAL LAYOUT
+                                                      ================================ */
 
       .split-layout {
         display: grid;
@@ -325,8 +338,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                                               RIWAYAT PASIEN
-                                            ========================= */
+                                                 RIWAYAT PASIEN
+                                              ========================= */
 
       .history-grid {
         display: grid;
@@ -387,8 +400,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                                       PEMERIKSAAN
-                                    ========================= */
+                                         PEMERIKSAAN
+                                      ========================= */
 
       .exam-grid {
         display: grid;
@@ -418,7 +431,9 @@ if (isset($_SESSION['username'])) {
         border: 1px solid #d1d5db;
         border-radius: 12px;
         padding: 12px 14px;
-        font-size: 13px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #000;
         box-sizing: border-box;
       }
 
@@ -457,8 +472,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                                   DIAGNOSA
-                                ========================= */
+                                     DIAGNOSA
+                                  ========================= */
 
       .diagnosa-wrapper {
         position: relative;
@@ -501,8 +516,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                               SUBMIT SECTION
-                            ========================= */
+                                 SUBMIT SECTION
+                              ========================= */
 
       .submit-card {
         margin-top: 5px !important;
@@ -788,7 +803,7 @@ if (isset($_SESSION['username'])) {
                     </label>
 
                     <textarea id="txtexamcomp" name="txtexamcomp" rows="3" readonly="true">
-                                                              </textarea>
+                                                                </textarea>
                   </div>
 
                   <br>

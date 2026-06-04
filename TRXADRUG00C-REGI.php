@@ -12,7 +12,7 @@ include "conf/config.php";
     border-collapse: collapse;
     table-layout: fixed;
     border-spacing: 0;
-    font-size: 12px;
+    font-size: 13px;
     font-family: inherit;
   }
 
@@ -38,10 +38,12 @@ include "conf/config.php";
     padding: 8px 10px;
     border-bottom: 1px solid #f1f5f9;
     color: #0f172a;
+    font-size: 14px;
+    font-weight: 700;
   }
 
   #screen tbody tr:hover {
-    background: #f8fafc;
+    background: #91a1b186;
     cursor: pointer;
   }
 
