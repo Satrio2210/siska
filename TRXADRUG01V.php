@@ -109,7 +109,7 @@ include "inc/sanie.php";
 
   #screen th:nth-child(3),
   #screen td:nth-child(3) {
-    width: 120px;
+    width: 100px;
   }
 
   #screen th:nth-child(4),
@@ -129,7 +129,7 @@ include "inc/sanie.php";
 
   #screen th:nth-child(7),
   #screen td:nth-child(7) {
-    width: 50px;
+    width: 70px;
   }
 </style>
 <div class="card-modern">
@@ -261,7 +261,7 @@ include "inc/sanie.php";
         <button
             type="button"
             class="btn-cetak"
-            onclick="">
+            onclick="window.open(\'TRXADRUG01-ETIKET.php?prsccode=' . $k['TRXA_PRSC_CODE'] . '\')">
             E-Tiket
         </button>
       </td>';
