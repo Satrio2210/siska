@@ -231,7 +231,8 @@ $qdetail = $db->query($sqldetail);
             <hr class="garis">
 
             <div class="namaobat">
-                <?php echo $row['INVE_PART_NAME'] . ' ' . $row['TBLI_SPEC_NAME']; ?>
+                <!-- <?php echo $row['INVE_PART_NAME'] . ' ' . $row['TBLI_SPEC_NAME']; ?> -->
+                 <?php echo $row['INVE_PART_NAME']; ?>
             </div>
 
             <div class="jumlah">

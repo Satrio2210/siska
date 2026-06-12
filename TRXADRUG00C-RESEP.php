@@ -145,7 +145,7 @@ include "inc/sanie.php";
       $xint = (int) $xprice;
 
       $price = $xint;
-      $sub_total = ($price * $profit) * 1.30;
+      $sub_total = ($price * $profit);
 
       $finaltotal = pembulatan($sub_total);
 

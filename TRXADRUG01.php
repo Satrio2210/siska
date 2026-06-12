@@ -3,6 +3,7 @@
 //memulai session
 session_start();
 
+
 //cek adanya session
 if (isset($_SESSION['username'])) {
   $user = $_SESSION['username'];
@@ -325,7 +326,7 @@ if (isset($_SESSION['username'])) {
       setInterval(timestamp, 1000);
     });
     function timestamp() { $.ajax({ url: 'inc/timestamp.php', success: function (data) { $('#timestamp').html(data); }, }); }
-    ambilscreen('');
+
   </script>
 
   <body onLoad="periksaakses('PASS_DRUG_ENTR'); 

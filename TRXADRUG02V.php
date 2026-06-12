@@ -103,12 +103,13 @@ echo '<td style="width: 100px">'.$k['ITEM_STOCK_QUTY'].'</td>';
 //$sub_total = pembulatan($int); 
 
 //naik 40%
-$upharga = 0.4;
+// $upharga = 0.4;
 
 $stockquty = $k['ITEM_STOCK_QUTY'];
-$sub_tota = ($price * $stockquty);
-$sub_tota1 = ($sub_tota * $upharga);
-$sub_total = ($sub_tota + $sub_tota1);
+$sub_total = ($price * $stockquty);
+
+// $sub_tota1 = ($sub_tota * $upharga);
+// $sub_total = ($sub_tota + $sub_tota1);
 
 $viewtotal = number_format($sub_total, 0, '', '.');
 //$viewtotal = number_format($k['SUB_TOTAL'], 0, '', '.');
