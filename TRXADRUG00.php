@@ -194,12 +194,13 @@ if (isset($_SESSION['username'])) {
         margin-top: 10px;
         background: #f8fafc;
         border: 1px solid #e2e8f0;
-        /* color: #f8fafc; */
+        color: #000000;
         border-radius: 12px;
         padding: 10px;
-        /* font-family: monospace;
-                                                          line-height: 1.7; */
-        min-height: auto;
+        font-family: monospace;
+        font-weight: bold;
+        line-height: 1.7;
+        /* min-height: auto; */
         /* white-space: pre-wrap; */
       }
 
@@ -397,7 +398,8 @@ if (isset($_SESSION['username'])) {
         min-width: 500px;
         margin-top: 4px;
         background: #fff;
-        border: 1px solid #e2e8f0;
+        /* border: 1px solid #e2e8f0; */
+        border: 1px solid #a5a4a4;
         border-radius: 10px;
         box-shadow:
           0 8px 20px rgba(0, 0, 0, .08);
@@ -408,7 +410,7 @@ if (isset($_SESSION['username'])) {
 
       #tblresep table tbody {
         display: block;
-        max-height: 250px;
+        max-height: 200px;
         overflow: auto;
       }
 
@@ -420,22 +422,22 @@ if (isset($_SESSION['username'])) {
       }
 
       /* #tblsigna {
-                        width: 420px;
-                        top: 215px;
-                        right: 0;
-                      } */
+                              width: 420px;
+                              top: 215px;
+                              right: 0;
+                            } */
 
 
       /* #tblresep table, */
       /* #tblsigna table {
-                      font-size: 12px !important;
-                    } */
+                            font-size: 12px !important;
+                          } */
 
 
       /* #tblresep td, */
       /* #tblsigna td {
-                      padding: 6px 8px !important;
-                    } */
+                            padding: 6px 8px !important;
+                          } */
 
       /* ========================= RESPONSIVE ========================= */
       @media(max-width:1100px) {
@@ -482,6 +484,8 @@ if (isset($_SESSION['username'])) {
     <source src="audio/notif.mp3" type="audio/mpeg">
 
   </audio>
+
+
 
   <body onLoad="periksaakses('PASS_DRUG_ENTR');">
     <div id="layout">
@@ -632,7 +636,7 @@ if (isset($_SESSION['username'])) {
 
                     <!-- resep dokter -->
                     <div class="recipe-doctor">
-                      <div style=" font-size:12px; margin-bottom:10px; color:#86efac; font-weight:bold; "> RESEP DOKTER
+                      <div> RESEP DOKTER
                       </div> <textarea id="txtexamprsc" readonly class="modern-textarea"
                         style=" min-height:220px; background:#0f172a; color:white; border:none; font-family:monospace; "></textarea>
                     </div>
@@ -661,7 +665,7 @@ if (isset($_SESSION['username'])) {
                           <input type="text" name="txtsigna" id="txtsigna" autocomplete="off" class="input-modern"
                             placeholder="Aturan makan..."
                             onkeyup="if (value.length > 0) { ambilsignacode(this.value); } else { document.getElementById('tblsigna').style.display='none'; }">
-                          <div id="tblsigna"></div>
+                          <div id="tblsigna" style="display: none;"></div>
                         </div>
                       </div> <!-- cara pemakaian -->
                       <div class="full-width"> <label class="form-label"> Cara Pemakaian </label> <input name="txtusage"
@@ -685,7 +689,11 @@ if (isset($_SESSION['username'])) {
                         var instockpric = document.getElementById('hidstockpric').value; 
                         var instockpricbaru = parseFloat(instockpric) * 1.85;
                         var instockquty = document.getElementById('txtstockquty').value; 
-                        var inprscconc = document.getElementById('hidprscconc').value; var inprscsgna = document.getElementById('hidsigna').value; var inmediroom = document.getElementById('hidmediroom').value; input( inprsccode, inprscdoct, instockcode, instockbtch, instockpricbaru, instockquty, inprscconc, inprscsgna, inmediroom ); }">
+                        var inprscconc = document.getElementById('hidprscconc').value; 
+                        var inprscsgna = document.getElementById('hidsigna').value; 
+                        var inmediroom = document.getElementById('hidmediroom').value;
+                        var insgnausag = document.getElementById('txtusage').value;
+                        input( inprsccode, inprscdoct, instockcode, instockbtch, instockpricbaru, instockquty, inprscconc, inprscsgna, inmediroom, insgnausag ); }">
                         Input Resep </a> <a class="btn-modern btn-close"
                         onclick="javascript:location.href='TRXADRUG00.php'"> Close </a> </div>
                   </div>

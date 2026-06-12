@@ -47,7 +47,7 @@ include "inc/sanie.php";
         background: #f8fafc;
     }
 
-    /* scroll */
+    /* scroll
     #screen tbody {
         display: block;
         max-height: 260px;
@@ -59,7 +59,7 @@ include "inc/sanie.php";
         display: table;
         width: 100%;
         table-layout: fixed;
-    }
+    } */
 
     /* ========================= COLUMN WIDTH ========================= */
     #screen th:nth-child(1),
@@ -139,9 +139,9 @@ include "inc/sanie.php";
            TRXA_STOCK_PRIC, TRXA_STOCK_QUTY, (TRXA_STOCK_PRIC * TRXA_STOCK_QUTY) AS TOTAL_HNA,
            ((TRXA_STOCK_PRIC * '$profit') * TRXA_STOCK_QUTY) AS TOTAL_SALE
           FROM trxaprsc 
-          WHERE TRXA_PRSC_STAT='A' AND TRXA_PRSC_CODE='$prsccode' AND TRXA_VIEW_STAT='Y'
+          WHERE TRXA_PRSC_STAT IN ('A','I') AND TRXA_PRSC_CODE='$prsccode' AND TRXA_VIEW_STAT='Y'
           ORDER BY TRXA_STOCK_CODE";
-        $q = $db->query($xquery) or die("Gagal Maning!!");
+        $q = $db->query($xquery) or die("Gagal Ambil Daftar Item Resep!!");
 
         while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
 

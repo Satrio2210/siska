@@ -288,12 +288,12 @@ function isisigna(outsgnacode, outsgnaname, outsgnausag) {
 // Input Data Posisi dari form ke Tabel 
 //  inprsccode,inprscdoct,instockcode,instockbtch,instockpric,instockquty,inprscconc, inprscsgna, inprscusag, inmediroom
 var ajaxinput;
-function input(prsccode, prscdoct, stockcode, stockbtch, stockpric, stockquty, prscconc, prscsgna, mediroom) {
+function input(prsccode, prscdoct, stockcode, stockbtch, stockpric, stockquty, prscconc, prscsgna, mediroom, sgnausag) {
   ajaxinput = buatajaxinput();
   //var url="TRXAPOLI04E.php";
   var url = "TRXADRUG00E.php";
   ajaxinput.onreadystatechange = stateChangedInput;
-  var params = "q=" + prsccode + "|" + prscdoct + "|" + stockcode + "|" + stockbtch + "|" + stockpric + "|" + stockquty + "|" + prscconc + "|" + prscsgna + "|" + mediroom;
+  var params = "q=" + prsccode + "|" + prscdoct + "|" + stockcode + "|" + stockbtch + "|" + stockpric + "|" + stockquty + "|" + prscconc + "|" + prscsgna + "|" + mediroom + "|" + sgnausag;
   //alert(params);
   ajaxinput.open("POST", url, true);
   ajaxinput.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

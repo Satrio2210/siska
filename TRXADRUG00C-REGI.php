@@ -7,7 +7,7 @@ include "conf/config.php";
     overflow: auto;
   }
 
-  #screen {
+  #tblregiscreen {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
@@ -16,59 +16,60 @@ include "conf/config.php";
     font-family: inherit;
   }
 
-  #screen th,
-  #screen td {
+  #tblregiscreen th,
+  #tblregiscreen td {
     white-space: nowrap;
   }
 
-  #screen thead th {
+  #tblregiscreen thead th {
     position: sticky;
     top: 0;
     background: #f8fafc;
-    color: #334155;
+    color: #000000;
     padding: 9px 10px;
     border-bottom: 1px solid #e2e8f0;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     text-align: left;
     z-index: 5;
   }
 
-  #screen tbody td {
+  #tblregiscreen tbody td {
     padding: 8px 10px;
     border-bottom: 1px solid #f1f5f9;
-    color: #0f172a;
-    font-size: 14px;
+    color: #000000;
+    font-size: 13px;
     font-weight: 700;
+    text-transform: uppercase;
   }
 
-  #screen tbody tr:hover {
+  #tblregiscreen tbody tr:hover {
     background: #91a1b186;
     cursor: pointer;
   }
 
-  #screen th:nth-child(1),
-  #screen td:nth-child(1) {
-    width: 60px;
+  #tblregiscreen th:nth-child(1),
+  #tblregiscreen td:nth-child(1) {
+    width: 80px;
   }
 
-  #screen th:nth-child(2),
-  #screen td:nth-child(2) {
-    width: 40%;
+  #tblregiscreen th:nth-child(2),
+  #tblregiscreen td:nth-child(2) {
+    width: 250px;
   }
 
-  #screen th:nth-child(3),
-  #screen td:nth-child(3) {
+  #tblregiscreen th:nth-child(3),
+  #tblregiscreen td:nth-child(3) {
     width: 140px;
   }
 
-  #screen th:nth-child(4),
-  #screen td:nth-child(4) {
+  #tblregiscreen th:nth-child(4),
+  #tblregiscreen td:nth-child(4) {
     width: 170px;
   }
 
-  #screen th:nth-child(5),
-  #screen td:nth-child(5) {
+  #tblregiscreen th:nth-child(5),
+  #tblregiscreen td:nth-child(5) {
     width: 110px;
   }
 
@@ -95,7 +96,7 @@ include "conf/config.php";
     display: inline-block;
     padding: 3px 8px;
     border-radius: 12px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
   }
 
@@ -130,7 +131,7 @@ include "conf/config.php";
   }
 </style>
 <div class="table-wrapper">
-  <table id="screen">
+  <table id="tblregiscreen">
     <thead>
       <tr>
         <th>Antri</th>

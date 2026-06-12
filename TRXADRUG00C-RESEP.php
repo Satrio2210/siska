@@ -3,42 +3,43 @@ include "conf/config.php";
 include "inc/sanie.php";
 ?>
 <style>
-  #screen {
+  #tblrspscreen {
     width: 100%;
     border-collapse: collapse;
     table-layout: auto;
-    font-size: 12px;
+    font-size: 14px;
+    color: #000000;
   }
 
-  #screen th {
+  #tblrspscreen th {
     background: #f8fafc;
     padding: 8px;
     border-bottom: 1px solid #e2e8f0;
     text-align: left;
   }
 
-  #screen td {
+  #tblrspscreen td {
     padding: 8px;
     border-bottom: 1px solid #f1f5f9;
   }
 
-  #screen tr:hover {
+  #tblrspscreen tr:hover {
     background: #f8fafc;
     cursor: pointer;
   }
 
-  #screen th:nth-child(1),
-  #screen td:nth-child(1) {
-    width: 70%;
+  #tblrspscreen th:nth-child(1),
+  #tblrspscreen td:nth-child(1) {
+    width: 60%;
   }
 
-  #screen th:nth-child(2),
-  #screen td:nth-child(2) {
-    width: 10%;
+  #tblrspscreen th:nth-child(2),
+  #tblrspscreen td:nth-child(2) {
+    width: 20%;
   }
 
-  #screen th:nth-child(3),
-  #screen td:nth-child(3) {
+  #tblrspscreen th:nth-child(3),
+  #tblrspscreen td:nth-child(3) {
     width: 20%;
   }
 
@@ -58,7 +59,7 @@ include "inc/sanie.php";
     font-size: 11px;
   }
 </style>
-<table id="screen">
+<table id="tblrspscreen">
   <thead>
     <tr>
       <!-- <th style="width: 200px">Nama Obat</th>
@@ -68,7 +69,7 @@ include "inc/sanie.php";
 
       <th>Obat</th>
       <th>Stock</th>
-      <th>Harga</th>
+      <th>Harga/Tab/Btl</th>
   </thead>
   
   <tbody>
