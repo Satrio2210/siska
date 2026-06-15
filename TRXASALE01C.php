@@ -41,7 +41,7 @@ if (isset($_POST['q']) && ($_POST['q'] != ''))
         $total_tret = "$rtret[TOTA_TRET]";
 
         // Hitung nilai BHP
-        $query_csbl = "SELECT SUM((TRXA_STOCK_PRIC * $profit) * TRXA_STOCK_QUTY) AS TOTA_CSBL 
+        $query_csbl = "SELECT SUM(TRXA_STOCK_PRIC * TRXA_STOCK_QUTY) AS TOTA_CSBL 
                        FROM trxacsbl 
                        WHERE TRXA_CSBL_CODE = '$regicode'
                        AND TRXA_CSBL_STAT = 'I'
@@ -54,7 +54,7 @@ if (isset($_POST['q']) && ($_POST['q'] != ''))
         //$total_csbl = $xtotal_csbl * $profit;
         
         //test_hitung nilai Obat
-        $query_prsc = "SELECT SUM((TRXA_STOCK_PRIC * $profit) * TRXA_STOCK_QUTY) AS TOTA_PRSC,
+        $query_prsc = "SELECT SUM(TRXA_STOCK_PRIC * TRXA_STOCK_QUTY) AS TOTA_PRSC,
                       (SELECT TRXA_REGI_PAYM FROM trxaregi WHERE TRXA_REGI_CODE=TRXA_PRSC_CODE) AS PAYM_TYPE
                        FROM trxaprsc 
                        WHERE TRXA_PRSC_CODE = '$regicode'

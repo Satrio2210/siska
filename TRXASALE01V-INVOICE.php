@@ -334,7 +334,7 @@ while ($row_prsc = $qprsc->fetch(PDO::FETCH_ASSOC))
   echo '<td style="width: 100px; text-align: center;">'.$row_prsc['TRXA_STOCK_QUTY'].'</td>';
 
   $xstockpric = $row_prsc['TRXA_STOCK_PRIC'];
-  $stockpric = $xstockpric * $profit;
+  $stockpric = $xstockpric;
   
   // Jika PAYM_TYPE adalah 'B', set total harga menjadi 0
   if ($row_prsc['PAYM_TYPE'] === 'B') {
@@ -347,7 +347,7 @@ while ($row_prsc = $qprsc->fetch(PDO::FETCH_ASSOC))
   echo '<td style="width: 100px; text-align: right;">0</td>';
 
   $xtotapric = $row_prsc['SUB_TOTAL_PRIC'];
-  $totapric = $xtotapric * $profit;
+  $totapric = $xtotapric;
   
         // Jika PAYM_TYPE adalah 'B', set total harga menjadi 0
   if ($row_prsc['PAYM_TYPE'] === 'B') {

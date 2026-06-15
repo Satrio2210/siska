@@ -156,7 +156,7 @@ if (ISSET($_POST['hidregicode']))
 	$drug_name = $row_prsc['STOCK_NAME'];
 	$drug_qty = $row_prsc['TRXA_STOCK_QUTY'];
 	$drug_unit = $row_prsc['UNIT_NAME'];
-	$drug_amount = ($row_prsc['SUB_TOTAL_PRIC'] * $profit);
+	$drug_amount = $row_prsc['SUB_TOTAL_PRIC'];
 	
 	if ($row_prsc['PAYM_TYPE'] === 'B') {
     $drug_amount = 0;
@@ -272,7 +272,7 @@ if (ISSET($_POST['hidregicode']))
 
 	$csbl_name = $row_csbl['STOCK_NAME'];
 	$csbl_qty = $row_csbl['TRXA_STOCK_QUTY'];
-	$csbl_amount = ($row_csbl['SUB_TOTAL_PRIC'] * $profit);
+	$csbl_amount = $row_csbl['SUB_TOTAL_PRIC'];
 	$view_csbl_amount = number_format($csbl_amount, 0, '', '.');	
 
 	$no++;
