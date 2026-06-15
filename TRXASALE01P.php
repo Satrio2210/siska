@@ -411,6 +411,8 @@ if (ISSET($_POST['hidregicode']))
   	$qfooter = $db->query($query_footer) or die("Gagal Ambil data Footer!!");
   	$row_footer = $qfooter->fetch(PDO::FETCH_ASSOC);
 
+	$paymmode = '';
+
   	if ($row_footer['TRXA_PAYM_MODE'] == 'TUN')
   		{ $paymmode = 'Cash'; }
   	else if ($row_footer['TRXA_PAYM_MODE'] == 'BCA')

@@ -290,6 +290,8 @@ while ($row_csbl = $qcsbl->fetch(PDO::FETCH_ASSOC))
   $totapric = number_format($row_csbl['SUB_TOTAL_PRIC'], 0, '', '.');  
   echo '<td style="width: 200px; text-align: right;">'.$totapric.'</td>';
 
+  $paymtype3 = '';
+
   if ($row_csbl['PAYM_TYPE'] == 'U')
     { $paymtype3 = 'Umum';}
   else if ($row_csbl['PAYM_TYPE'] == 'B')
@@ -356,6 +358,8 @@ while ($row_prsc = $qprsc->fetch(PDO::FETCH_ASSOC))
    
   $view_totapric = number_format($totapric, 0, '', '.');
   echo '<td style="width: 200px; text-align: right;">'.$view_totapric.'</td>';
+
+  $paymtype4 = '';
 
   if ($row_prsc['PAYM_TYPE'] == 'U')
     { $paymtype4 = 'Umum';}
