@@ -22,6 +22,17 @@ if ($jenis == "B") {
     $where_jenis = " AND trxaregi.TRXA_REGI_PAYM = 'U' ";
 }
 
+$nama_jenis = "BPJS dan UMUM";
+
+if ($jenis == "B")
+{
+$nama_jenis = "BPJS";
+}
+elseif ($jenis == "U")
+{
+$nama_jenis = "UMUM";
+}
+
 $xquery = "SELECT
             TRXA_PRSC_CODE,
             trxaregi.TRXA_PATI_CODE AS PATI_CODE,
@@ -92,7 +103,8 @@ echo "
 <tr>
     <th colspan='7'>
         REPORT RESEP HARIAN<br>
-        $startdate s/d $enddate
+        $startdate s/d $enddate<br>
+        JENIS PASIEN - $nama_jenis
     </th>
 </tr>
 
