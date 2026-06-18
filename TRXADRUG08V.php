@@ -77,7 +77,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
         JOIN 
             tbliunit ON invemast.INVE_SALE_UNIT = tbliunit.TBLI_UNIT_CODE
         WHERE 
-            trxaprsc.TRXA_PRSC_STAT IN ('A', 'I') 
+            trxaprsc.TRXA_PRSC_STAT IN ('A', 'I', 'P') 
             AND trxaprsc.TRXA_VIEW_STAT = 'Y'
             $where_jenis 
             AND trxaprsc.TRXA_ENTR_DATE = '$startdate'
@@ -131,7 +131,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
         JOIN 
             tbliunit ON invemast.INVE_SALE_UNIT = tbliunit.TBLI_UNIT_CODE
         WHERE 
-            trxaprsc.TRXA_PRSC_STAT IN ('A', 'I') 
+            trxaprsc.TRXA_PRSC_STAT IN ('A', 'I', 'P') 
             AND trxaprsc.TRXA_VIEW_STAT = 'Y'
             $where_jenis 
             AND trxaprsc.TRXA_ENTR_DATE BETWEEN '$startdate' AND '$enddate'
