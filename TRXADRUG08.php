@@ -65,7 +65,12 @@ if (isset($_SESSION['username'])) {
     function timestamp() { $.ajax({ url: 'inc/timestamp.php', success: function (data) { $('#timestamp').html(data); }, }); }
   </script>
 
-  <body onLoad="periksaakses('PASS_DRUG_VIEW');
+  <body onLoad="
+        periksaakses('PASS_DRUG_VIEW');
+        ambilviewrepo(
+          document.getElementById('tglstartdate').value,
+          document.getElementById('tglenddate').value
+        );
 ">
     <div id="layout">
       <!-- Menu toggle -->
@@ -174,33 +179,17 @@ if (isset($_SESSION['username'])) {
             </fieldset>
 
             <fieldset>
-              <input 
-              type="radio" 
-              id="semua" 
-              name="jenispasien" 
-              value=""  
-              onchange="ambilviewrepo(
+              <input type="radio" id="semua" name="jenispasien" value="" onchange="ambilviewrepo(
               document.getElementById('tglstartdate').value,
-              document.getElementById('tglenddate').value);"
-              checked>
+              document.getElementById('tglenddate').value);" checked>
               <label for="semua">SEMUA</label>
 
-              <input 
-              type="radio" 
-              id="bpjs" 
-              name="jenispasien" 
-              value="B" 
-              onchange="ambilviewrepo(
+              <input type="radio" id="bpjs" name="jenispasien" value="B" onchange="ambilviewrepo(
               document.getElementById('tglstartdate').value,
               document.getElementById('tglenddate').value);">
               <label for="bpjs">BPJS</label>
 
-              <input 
-              type="radio" 
-              id="umum" 
-              name="jenispasien" 
-              value="U"
-              onchange="ambilviewrepo(
+              <input type="radio" id="umum" name="jenispasien" value="U" onchange="ambilviewrepo(
               document.getElementById('tglstartdate').value,
               document.getElementById('tglenddate').value);">
               <label for="umum">UMUM</label>

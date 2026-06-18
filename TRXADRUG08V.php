@@ -160,7 +160,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
             $tott = $price_ritel * $qtyy;
 
             $view_price_ritel = number_format($tott, 0, ',', '.');
-            $view_price = number_format($hargaa, 0, ',', '.');
+            $view_price = number_format($price_ritel, 0, ',', '.');
 
             echo '<td style="width: 150px">' . $tanggall . '</td>';
             echo '<td style="width: 200px; text-align: left;">' . $k['TITLE'] . ' ' . $k['PATI_NAME'] . '</td>';

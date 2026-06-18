@@ -111,7 +111,7 @@ $grandtotal = 0;
 while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
     $qtyy = $k['TRXA_STOCK_QUTY'];
 
-    $bulat = round(($k['TRXA_STOCK_PRIC'] / 1.30) * 1.45);
+    $bulat = round($k['TRXA_STOCK_PRIC']);
     $xint = (int) $bulat;
 
     $price_ritel = pembulatan($xint);
