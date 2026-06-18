@@ -6,28 +6,35 @@ include "conf/config.php";
 include "inc/sanie.php";
 
 $fulldate = $_POST['q'];
+$jenis = $_POST['jenis'];
 //$kode = 'ACC';
-list($startdate, $enddate) = explode("|",$fulldate);
+list($startdate, $enddate) = explode("|", $fulldate);
 ?>
-  <table class="pure-table pure-table-horizontal">
-  <thead>
-  <tr>
-  <th style="width: 150px">Tanggal</th>
-  <th style="width: 200px">Nama</th>
-  <th style="width: 150px">Obat</th>
-  <th style="width: 100px">Jumlah</th>
-  <th style="width: 100px">Harga Jual</th>
-  <th style="width: 100px">Sub Total</th>
-  <th style="width: 200px">Farmasi</th>
-  </tr>
-  </thead>
-  <tbody>
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th style="width: 150px">Tanggal</th>
+            <th style="width: 200px">Nama</th>
+            <th style="width: 150px">Obat</th>
+            <th style="width: 100px">Jumlah</th>
+            <th style="width: 100px">Harga Jual</th>
+            <th style="width: 100px">Sub Total</th>
+            <th style="width: 200px">Farmasi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        $where_jenis = "";
 
-<?php
-$no=0;
-if ($startdate == $enddate)
-{ 
-$xquery = "SELECT 
+        if ($jenis == "B") {
+            $where_jenis = " AND trxaregi.TRXA_REGI_PAYM = 'B' ";
+        } elseif ($jenis == "U") {
+            $where_jenis = " AND trxaregi.TRXA_REGI_PAYM = 'U' ";
+        }
+
+        $no = 0;
+        if ($startdate == $enddate) {
+            $xquery = "SELECT 
             TRXA_PRSC_CODE,
             trxaregi.TRXA_PATI_CODE AS PATI_CODE,
             CASE 
@@ -71,17 +78,17 @@ $xquery = "SELECT
             tbliunit ON invemast.INVE_SALE_UNIT = tbliunit.TBLI_UNIT_CODE
         WHERE 
             trxaprsc.TRXA_PRSC_STAT IN ('A', 'I') 
-            AND trxaprsc.TRXA_VIEW_STAT = 'Y' 
+            AND trxaprsc.TRXA_VIEW_STAT = 'Y'
+            $where_jenis 
             AND trxaprsc.TRXA_ENTR_DATE = '$startdate'
     
         ORDER BY
             trxaprsc.TRXA_ENTR_DATE ASC,
-            trxaprsc.TRXA_ENTR_TIME ASC";
+            trxaprsc.TRXA_ENTR_TIME ASC,
+            trxaprsc.TRXA_PRSC_CODE ASC";
 
-}
-else
-{
-$xquery = "SELECT 
+        } else {
+            $xquery = "SELECT 
             TRXA_PRSC_CODE,
             trxaregi.TRXA_PATI_CODE AS PATI_CODE,
             CASE 
@@ -125,46 +132,46 @@ $xquery = "SELECT
             tbliunit ON invemast.INVE_SALE_UNIT = tbliunit.TBLI_UNIT_CODE
         WHERE 
             trxaprsc.TRXA_PRSC_STAT IN ('A', 'I') 
-            AND trxaprsc.TRXA_VIEW_STAT = 'Y' 
+            AND trxaprsc.TRXA_VIEW_STAT = 'Y'
+            $where_jenis 
             AND trxaprsc.TRXA_ENTR_DATE BETWEEN '$startdate' AND '$enddate'
     
         ORDER BY
             trxaprsc.TRXA_ENTR_DATE ASC,
-            trxaprsc.TRXA_ENTR_TIME ASC";
-           
-}
+            trxaprsc.TRXA_ENTR_TIME ASC,
+            trxaprsc.TRXA_PRSC_CODE ASC";
 
-$q = $db->query($xquery) or die("Gagal Maning!!");
-while ($k = $q->fetch(PDO::FETCH_ASSOC))
-{ 
+        }
 
-echo '<tr>';
-$tanggall = $k['TRXA_ENTR_DATE'];
-$hargaa = ($k['TRXA_STOCK_PRIC'] / 1.30) * 1.45;
-$qtyy = $k['TRXA_STOCK_QUTY'];
+        $q = $db->query($xquery) or die("Gagal Maning!!");
+        while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
+
+            echo '<tr>';
+            $tanggall = $k['TRXA_ENTR_DATE'];
+            $hargaa = $k['TRXA_STOCK_PRIC'];
+            $qtyy = $k['TRXA_STOCK_QUTY'];
 
 
-   $bulat = round(($k['TRXA_STOCK_PRIC'] / 1.30) * 1.45);
-   $xint = (int)$bulat;
-   
-   $price_ritel = pembulatan($xint);
-   
-   $tott = $price_ritel * $qtyy;
+            $bulat = round($k['TRXA_STOCK_PRIC']);
+            $xint = (int) $bulat;
 
-$view_price_ritel = number_format($tott,0,',','.');
-$view_price = number_format($hargaa,0,',','.');
+            $price_ritel = pembulatan($xint);
 
-echo '<td style="width: 150px">'.$tanggall.'</td>';
-echo '<td style="width: 200px; text-align: left;">'.$k['TITLE'].' '.$k['PATI_NAME'].'</td>';
-echo '<td style="width: 150px; text-align: left;">'.$k['STOCK_NAME'].' '.$k['SPEC_NAME'].'</td>';
-echo '<td style="width: 100px; text-align: left;">'.$k['TRXA_STOCK_QUTY'].' '.$k['NAME_UNIT'].'</td>';
-echo '<td style="width: 100px; text-align: left;">'.$view_price.'</td>';
-echo '<td style="width: 100px; text-align: left;">'.$view_price_ritel.'</td>';
-echo '<td style="width: 200px; text-align: left;">'.$k['DOCT_NAME'].'</td>';
-}
+            $tott = $price_ritel * $qtyy;
 
-$query_tun = "SELECT
-                    TRXA_STOCK_PRIC,
+            $view_price_ritel = number_format($tott, 0, ',', '.');
+            $view_price = number_format($hargaa, 0, ',', '.');
+
+            echo '<td style="width: 150px">' . $tanggall . '</td>';
+            echo '<td style="width: 200px; text-align: left;">' . $k['TITLE'] . ' ' . $k['PATI_NAME'] . '</td>';
+            echo '<td style="width: 150px; text-align: left;">' . $k['STOCK_NAME'] . ' ' . $k['SPEC_NAME'] . '</td>';
+            echo '<td style="width: 100px; text-align: left;">' . $k['TRXA_STOCK_QUTY'] . ' ' . $k['NAME_UNIT'] . '</td>';
+            echo '<td style="width: 100px; text-align: left;">' . $view_price . '</td>';
+            echo '<td style="width: 100px; text-align: left;">' . $view_price_ritel . '</td>';
+            echo '<td style="width: 200px; text-align: left;">' . $k['DOCT_NAME'] . '</td>';
+        }
+
+        $query_tun = "SELECT
                     SUM(trxaprsc.TRXA_STOCK_PRIC) AS TOTAL_STOCK_PRICE
                 FROM 
                     trxaprsc
@@ -182,20 +189,21 @@ $query_tun = "SELECT
                     tbliunit ON invemast.INVE_SALE_UNIT = tbliunit.TBLI_UNIT_CODE
                 WHERE 
                     trxaprsc.TRXA_PRSC_STAT IN ('A', 'I') 
-                    AND trxaprsc.TRXA_VIEW_STAT = 'Y' 
+                    AND trxaprsc.TRXA_VIEW_STAT = 'Y'
+                    $where_jenis 
                     AND trxaprsc.TRXA_ENTR_DATE BETWEEN '$startdate' AND '$enddate'";
 
-$q_tun = $db->query($query_tun) or die("Gagal ambil Tunai");
-$r_tun = $q_tun->fetch(PDO::FETCH_ASSOC);
-$total_tun = number_format($r_tun['TOTAL_STOCK_PRICE'], 0, '', '.');
-?>
-  <tr>
-  <td colspan= "2" style="width: 200px; text-align: right;">TOTAL</td>  
-  <td style="width: 150px; text-align: right;">Rp. <?php echo $total_tun; ?></td>
-  <td colspan= "5" style="width: 480px; text-align: right;"></td>
-  </tr>
+        $q_tun = $db->query($query_tun) or die("Gagal ambil Tunai");
+        $r_tun = $q_tun->fetch(PDO::FETCH_ASSOC);
+        $total_tun = number_format($r_tun['TOTAL_STOCK_PRICE'], 0, '', '.');
+        ?>
+        <tr>
+            <td colspan="2" style="width: 200px; text-align: right;">TOTAL</td>
+            <td style="width: 150px; text-align: right;">Rp. <?php echo $total_tun; ?></td>
+            <td colspan="5" style="width: 480px; text-align: right;"></td>
+        </tr>
 
-<?php
-?>
-  </tbody>
-  </table>
+        <?php
+        ?>
+    </tbody>
+</table>
