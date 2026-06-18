@@ -278,9 +278,16 @@ function pembulatan($uang)
 {
   $sisa = $uang % 1000;
 
-  if ($sisa <= 500) {
+  // Jika uang sudah bulat ribuan (misal: 5000), kembalikan nilai aslinya
+  if ($sisa == 0) {
+    return $uang;
+  } 
+  // Jika sisa 1 - 500 (misal: 5001 sisa 1), bulatkan ke 500
+  elseif ($sisa <= 500) {
     return $uang + (500 - $sisa);
-  } else {
+  } 
+  // Jika sisa di atas 500 (misal: 5501 sisa 501), bulatkan ke 1000
+  else {
     return $uang + (1000 - $sisa);
   }
 }
