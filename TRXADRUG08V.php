@@ -144,13 +144,14 @@ list($startdate, $enddate) = explode("|", $fulldate);
         }
 
         $q = $db->query($xquery) or die("Gagal Maning!!");
+
+        $grandtotal = 0;
+
         while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
+            echo '';
 
-            echo '<tr>';
             $tanggall = $k['TRXA_ENTR_DATE'];
-            $hargaa = $k['TRXA_STOCK_PRIC'];
             $qtyy = $k['TRXA_STOCK_QUTY'];
-
 
             $bulat = round($k['TRXA_STOCK_PRIC']);
             $xint = (int) $bulat;
@@ -158,6 +159,8 @@ list($startdate, $enddate) = explode("|", $fulldate);
             $price_ritel = pembulatan($xint);
 
             $tott = $price_ritel * $qtyy;
+
+            $grandtotal += $tott;
 
             $view_price_ritel = number_format($tott, 0, ',', '.');
             $view_price = number_format($price_ritel, 0, ',', '.');
@@ -169,39 +172,17 @@ list($startdate, $enddate) = explode("|", $fulldate);
             echo '<td style="width: 100px; text-align: left;">' . $view_price . '</td>';
             echo '<td style="width: 100px; text-align: left;">' . $view_price_ritel . '</td>';
             echo '<td style="width: 200px; text-align: left;">' . $k['DOCT_NAME'] . '</td>';
+
+            echo '</tr>';
+
         }
-
-        $query_tun = "SELECT
-                    SUM(trxaprsc.TRXA_STOCK_PRIC) AS TOTAL_STOCK_PRICE
-                FROM 
-                    trxaprsc
-                JOIN 
-                    trxaregi ON trxaprsc.TRXA_PRSC_CODE = trxaregi.TRXA_REGI_CODE
-                JOIN 
-                    patimast ON trxaregi.TRXA_PATI_CODE = patimast.PATI_MAST_CODE
-                JOIN 
-                    passiden ON trxaprsc.TRXA_PRSC_DOCT = passiden.PASS_USER_IDEN
-                JOIN 
-                    invemast ON trxaprsc.TRXA_STOCK_CODE = invemast.INVE_MAST_CODE
-                JOIN 
-                    tblispec ON invemast.INVE_MAIN_SPEC = tblispec.TBLI_SPEC_CODE
-                JOIN 
-                    tbliunit ON invemast.INVE_SALE_UNIT = tbliunit.TBLI_UNIT_CODE
-                WHERE 
-                    trxaprsc.TRXA_PRSC_STAT IN ('A', 'I') 
-                    AND trxaprsc.TRXA_VIEW_STAT = 'Y'
-                    $where_jenis 
-                    AND trxaprsc.TRXA_ENTR_DATE BETWEEN '$startdate' AND '$enddate'";
-
-        $q_tun = $db->query($query_tun) or die("Gagal ambil Tunai");
-        $r_tun = $q_tun->fetch(PDO::FETCH_ASSOC);
-        $total_tun = number_format($r_tun['TOTAL_STOCK_PRICE'], 0, '', '.');
         ?>
-        <tr>
-            <td colspan="2" style="width: 200px; text-align: right;">TOTAL</td>
-            <td style="width: 150px; text-align: right;">Rp. <?php echo $total_tun; ?></td>
-            <td colspan="5" style="width: 480px; text-align: right;"></td>
-        </tr>
+
+        <td style="text-align:right;">
+             <b>Total - Rp. <?php echo number_format($grandtotal, 0, ',', '.'); ?></b>
+        </td>
+
+        <td></td>
 
         <?php
         ?>

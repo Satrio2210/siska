@@ -12,6 +12,7 @@ header("Expires: 0");
 $startdate = $_POST['tglstartdate'];
 $enddate = $_POST['tglenddate'];
 $jenis = $_POST['jenispasien'];
+// die('JENIS = ['.$jenis.']');
 
 $where_jenis = "";
 

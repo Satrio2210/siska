@@ -173,8 +173,8 @@ if (isset($_SESSION['username'])) {
                         document.getElementById('txtstockcode').focus()
                         }"> -->
 
-              <a class="pure-button button-print" onclick="javascript: document.frmreport.submit();">Export Excel</a>
-
+              <!-- <a class="pure-button button-print" onclick="javascript: document.frmreport.submit();">Export Excel</a> -->
+              <button type="submit" class="pure-button button-print">Export Excel</button>
 
             </fieldset>
 
