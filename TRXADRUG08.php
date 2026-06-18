@@ -127,7 +127,7 @@ $(document).ready(function()
                 Resep Harian
               </li>
 
-              <li class="pure-menu-item pure-menu-selected" onclick="javascript: location.href = 'TRXADRUG05.php'">
+              <!-- <li class="pure-menu-item pure-menu-selected" onclick="javascript: location.href = 'TRXADRUG05.php'">
                 <a class="pure-menu-link">
                 Pemakaian Obat
                 </a>
@@ -143,7 +143,7 @@ $(document).ready(function()
                 <a class="pure-menu-link">
                 Harga Obat
                 </a>
-              </li>
+              </li> -->
 
             </ul>
           </div>
