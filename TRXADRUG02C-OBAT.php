@@ -64,6 +64,7 @@ include "inc/sanie.php";
       $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_NAME, INVE_STOCK_PRIC, 
               (INVE_STOCK_PRIC * '$profit') AS PRICE_RITEL, INVE_STOCK_QUTY, INVE_ENTR_DATE,
               (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
+              (SELECT INVE_PART_ALAS FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS PROD_NAME,
               (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC  
               FROM investock 
               WHERE INVE_WARE_CODE = '$gudang_farmasi'
@@ -79,6 +80,7 @@ include "inc/sanie.php";
       $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_NAME, INVE_STOCK_PRIC, 
              (INVE_STOCK_PRIC * '$profit') AS PRICE_RITEL, INVE_STOCK_QUTY, INVE_ENTR_DATE,
               (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
+              (SELECT INVE_PART_ALAS FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS PROD_NAME,
               (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC  
               FROM investock 
               WHERE INVE_STOCK_NAME LIKE '$kata%'
@@ -106,23 +108,34 @@ include "inc/sanie.php";
     while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
       $outstockcode = $k['INVE_STOCK_CODE'];
       $outstockname = $k['INVE_STOCK_NAME'];
+      $harga = $k['PRICE_RITEL'];
 
       $xharga = round($k['PRICE_RITEL']);
       $int = (int) $xharga;
 
       $price_ritel = pembulatan($int);
 
+      // var_dump("Nama Obat: ", $outstockname);
+      // var_dump("NILAI PRICE RITEL: ", $price_ritel);
+      // var_dump("NILAI RITEL: ", $harga); 
+      //       die(); // <-- script berhenti di sini
+
       $view_price_ritel = number_format($price_ritel, 0, ',', '.');
 
       //$outstockpric = number_format($k['INVE_STOCK_PRIC'], 0, '', '.');
       $outstockquty = $k['INVE_STOCK_QUTY'];
+
+      $prodname = $k['PROD_NAME'];
 
       echo '<tr>';
       //echo '<td style="width: 500px;" onClick="isiobat(\''.$outstockcode.'\',\''.$outstockname.'\',\''.$view_price_ritel.'\',\''.$outstockquty.'\');" 
 //      style="cursor:pointer">'.$k['INVE_STOCK_NAME'].' ' .$k['NAME_SPEC']. '</td>';
     
       echo '<td style="width: 250px;" onClick="isiobat(\'' . $outstockcode . '\',\'' . $outstockname . '\');" 
-      style="cursor:pointer">' . $k['INVE_STOCK_NAME'] . ' ' . $k['NAME_SPEC'] . '</td>';
+      style="cursor:pointer">
+      <b>' . $k['INVE_STOCK_NAME'] . ' ' . $k['NAME_SPEC'] . '</b></br>
+      <small>' . $k['PROD_NAME'] . '</small>
+      </td>';
       echo '<td style="width: 250px;" onClick="isiobat(\'' . $outstockcode . '\',\'' . $outstockname . '\');" 
       style="cursor:pointer">Rp. ' . $view_price_ritel . '</td>';
 

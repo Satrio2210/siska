@@ -149,10 +149,13 @@ include "inc/sanie.php";
             $stockcode = $k['TRXA_STOCK_CODE'];
             echo '<td>' . $k['STOCK_NAME'] . ' ' . $k['SPEC_NAME'] . ' ' . $k['UNIT_NAME'] . '</td>';
             echo '<td>' . $k['TRXA_STOCK_QUTY'] . '</td>';
-            $viewprice = number_format($k['TRXA_STOCK_PRIC'], 0, '', '.');
+
+            $harga_bulat = pembulatan($k['TRXA_STOCK_PRIC']);
+            $viewprice = number_format($harga_bulat, 0, '', '.');
             echo '<td>' . $viewprice . '</td>';
 
-            $viewtotalhna = number_format($k['TOTAL_HNA'], 0, '', '.');
+            $tothna_bulat = pembulatan($k['TOTAL_HNA']);
+            $viewtotalhna = number_format($tothna_bulat, 0, '', '.');
             echo '<td>' . $viewtotalhna . '</td>';
 
             // $viewtotalsale = number_format($k['TOTAL_SALE'], 0, '', '.');

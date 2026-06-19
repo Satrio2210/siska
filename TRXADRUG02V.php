@@ -111,7 +111,8 @@ $sub_total = ($price * $stockquty);
 // $sub_tota1 = ($sub_tota * $upharga);
 // $sub_total = ($sub_tota + $sub_tota1);
 
-$viewtotal = number_format($sub_total, 0, '', '.');
+$subtot_bulat = pembulatan($sub_total);
+$viewtotal = number_format($subtot_bulat, 0, '', '.');
 //$viewtotal = number_format($k['SUB_TOTAL'], 0, '', '.');
 
 echo '<td style="width: 100px; text-align: right;">'.$viewtotal.'</td>';

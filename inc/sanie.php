@@ -274,21 +274,37 @@ function kadaluarsa($todays_date, $end_date)
 //  $akhir = $uang + (100-$ratusan);
 //  return $akhir;
 // }
+// function pembulatan($uang)
+// {
+//   $sisa = $uang % 1000;
+
+//   // Jika uang sudah bulat ribuan (misal: 5000), kembalikan nilai aslinya
+//   if ($sisa == 0) {
+//     return $uang;
+//   } 
+//   // Jika sisa 1 - 500 (misal: 5001 sisa 1), bulatkan ke 500
+//   elseif ($sisa <= 500) {
+//     return $uang + (500 - $sisa);
+//   } 
+//   // Jika sisa di atas 500 (misal: 5501 sisa 501), bulatkan ke 1000
+//   else {
+//     return $uang + (1000 - $sisa);
+//   }
+// }
+
 function pembulatan($uang)
 {
-  $sisa = $uang % 1000;
-
-  // Jika uang sudah bulat ribuan (misal: 5000), kembalikan nilai aslinya
-  if ($sisa == 0) {
-    return $uang;
-  } 
-  // Jika sisa 1 - 500 (misal: 5001 sisa 1), bulatkan ke 500
-  elseif ($sisa <= 500) {
-    return $uang + (500 - $sisa);
-  } 
-  // Jika sisa di atas 500 (misal: 5501 sisa 501), bulatkan ke 1000
-  else {
-    return $uang + (1000 - $sisa);
-  }
+    // Aturan 1: Jika uang di bawah 1.000
+    if ($uang < 1000) {
+        // Membulatkan ke ratusan terdekat
+        // (misal: 870 -> 900, 375 -> 400, 325 -> 300)
+        return round($uang / 100) * 100;
+    } 
+    // Aturan 2: Jika uang 1.000 ke atas
+    else {
+        // Selalu membulatkan KE ATAS untuk kelipatan 500
+        // (misal: 1001 -> 1500, 1501 -> 2000, 1000 -> 1000)
+        return ceil($uang / 500) * 500;
+    }
 }
 ?>

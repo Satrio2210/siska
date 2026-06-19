@@ -158,12 +158,17 @@ list($startdate, $enddate) = explode("|", $fulldate);
 
             $price_ritel = pembulatan($xint);
 
+            // var_dump("NILAI PRICE RITEL: ", $price_ritel); 
+            // die(); // <-- script berhenti di sini
+
             $tott = $price_ritel * $qtyy;
 
-            $grandtotal += $tott;
-
-            $view_price_ritel = number_format($tott, 0, ',', '.');
             $view_price = number_format($price_ritel, 0, ',', '.');
+
+            $tott_bulat = pembulatan($tott);
+            $view_price_ritel = number_format($tott_bulat, 0, ',', '.');
+
+            $grandtotal += $tott_bulat;
 
             echo '<td style="width: 150px">' . $tanggall . '</td>';
             echo '<td style="width: 200px; text-align: left;">' . $k['TITLE'] . ' ' . $k['PATI_NAME'] . '</td>';
@@ -176,10 +181,13 @@ list($startdate, $enddate) = explode("|", $fulldate);
             echo '</tr>';
 
         }
+
         ?>
 
+        
+
         <td style="text-align:right;">
-             <b>Total - Rp. <?php echo number_format($grandtotal, 0, ',', '.'); ?></b>
+            <b>Total - Rp. <?php echo number_format($grandtotal, 0, ',', '.'); ?></b>
         </td>
 
         <td></td>

@@ -272,7 +272,8 @@ while ($row_prsc = $qprsc->fetch(PDO::FETCH_ASSOC))
       $stockpric = 0;
   }
 
-  $view_stockpric = number_format($stockpric, 0, '', '.');
+  $stockpric_bulat = pembulatan($row_prsc['STOCK_PRIC']);
+  $view_stockpric = number_format($stockpric_bulat, 0, '', '.');
 
   echo '<td style="width: 200px; text-align: right;">'.$view_stockpric.'</td>';
 

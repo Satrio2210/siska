@@ -82,6 +82,7 @@ include "inc/sanie.php";
       if ($regipaym == 'U') {
         $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY, INVE_UPDT_DATE,
                     (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
+                    (SELECT INVE_PART_ALAS FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS PROD_NAME,
                     (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC 
                     FROM investock 
                     WHERE INVE_WARE_CODE = '$gudang_farmasi' 
@@ -93,6 +94,7 @@ include "inc/sanie.php";
       } else {
         $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY,  INVE_UPDT_DATE,
                   (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
+                  (SELECT INVE_PART_ALAS FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS PROD_NAME,
                   (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC 
                   FROM investock 
                   WHERE INVE_WARE_CODE = '$gudang_farmasi' 
@@ -107,6 +109,7 @@ include "inc/sanie.php";
       if ($regipaym == 'U') {
         $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY,  INVE_UPDT_DATE,
               (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
+              (SELECT INVE_PART_ALAS FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS PROD_NAME,
               (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC   
               FROM investock 
               WHERE INVE_STOCK_NAME LIKE '$kata%'
@@ -119,6 +122,7 @@ include "inc/sanie.php";
       } else {
         $xquery = "SELECT DISTINCT INVE_STOCK_CODE, INVE_STOCK_BTCH, INVE_STOCK_NAME, INVE_STOCK_PRIC, INVE_STOCK_QUTY,  INVE_UPDT_DATE,
               (SELECT INVE_MAIN_SPEC FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS CODE_SPEC,
+              (SELECT INVE_PART_ALAS FROM invemast WHERE INVE_MAST_CODE=INVE_STOCK_CODE) AS PROD_NAME,
               (SELECT TBLI_SPEC_NAME FROM tblispec WHERE TBLI_SPEC_CODE=CODE_SPEC) AS NAME_SPEC   
               FROM investock 
               WHERE INVE_STOCK_NAME LIKE '$kata%'
@@ -141,6 +145,7 @@ include "inc/sanie.php";
       $outstockname = $k['INVE_STOCK_NAME'];
       $outstockpric = $k['INVE_STOCK_PRIC'];
       $outstockquty = $k['INVE_STOCK_QUTY'];
+      $prodname = $k['PROD_NAME'];
 
       $xprice = round($k['INVE_STOCK_PRIC']);
       $xint = (int) $xprice;
@@ -151,7 +156,7 @@ include "inc/sanie.php";
       $finaltotal = pembulatan($sub_total);
 
       $viewprice = number_format(pembulatan($price), 0, '', '.');
-      $viewtotal = number_format($sub_total, 0, '', '.');
+      $viewtotal = number_format($finaltotal, 0, '', '.');
 
 
       echo '<tr  onClick="isiresep(\'' . $outstockcode . '\',\'' . $outstockbtch . '\',\'' . $outstockname . '\',\'' . $outstockpric . '\',\'' . $outstockquty . '\');" style="cursor:pointer">';
@@ -163,8 +168,9 @@ include "inc/sanie.php";
     
       echo '<td>';
 
-      echo '<b>' . $k['INVE_STOCK_NAME'] . '</b><br>';
-      echo '<small>' . $k['NAME_SPEC'] . '</small>';
+      echo '<b>' . $k['INVE_STOCK_NAME'] . ' - ' . $k['NAME_SPEC'] . '</b><br>';
+      echo '<small>' . $k['PROD_NAME'] . '</small><br>';
+      // echo '<small>' . $k['NAME_SPEC'] . '</small>';
 
       echo '</td>';
 
