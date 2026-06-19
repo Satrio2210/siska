@@ -687,13 +687,13 @@ if (isset($_SESSION['username'])) {
                         var tersedia = parseInt(document.getElementById('hidstockamnt').value); if (document.getElementById('txtstockcode').value == '') { swal({ title:'Item Obat Kosong', text:'Anda belum memilih item obat', icon:'warning' }); } else { var inprsccode = document.getElementById('txtprsccode').value; 
                         var inprscdoct = document.getElementById('hidprscdoct').value; var instockcode = document.getElementById('hidstockcode').value; var instockbtch = document.getElementById('hidstockbtch').value; 
                         var instockpric = document.getElementById('hidstockpric').value; 
-                        var instockpricbaru = parseFloat(instockpric) * 1.85;
+                        // var instockpricbaru = parseFloat(instockpric) * 1.85;
                         var instockquty = document.getElementById('txtstockquty').value; 
                         var inprscconc = document.getElementById('hidprscconc').value; 
                         var inprscsgna = document.getElementById('hidsigna').value; 
                         var inmediroom = document.getElementById('hidmediroom').value;
                         var insgnausag = document.getElementById('txtusage').value;
-                        input( inprsccode, inprscdoct, instockcode, instockbtch, instockpricbaru, instockquty, inprscconc, inprscsgna, inmediroom, insgnausag ); }">
+                        input( inprsccode, inprscdoct, instockcode, instockbtch, instockpric, instockquty, inprscconc, inprscsgna, inmediroom, insgnausag ); }">
                         Input Resep </a> <a class="btn-modern btn-close"
                         onclick="javascript:location.href='TRXADRUG00.php'"> Close </a> </div>
                   </div>

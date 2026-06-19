@@ -108,23 +108,32 @@ include "inc/sanie.php";
     while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
       $outstockcode = $k['INVE_STOCK_CODE'];
       $outstockname = $k['INVE_STOCK_NAME'];
-      $harga = $k['PRICE_RITEL'];
 
-      $xharga = round($k['PRICE_RITEL']);
-      $int = (int) $xharga;
+      $harga_asli = $k['PRICE_RITEL'];
+      $qty = $k['INVE_STOCK_QUTY'];
 
-      $price_ritel = pembulatan($int);
+      // $xharga = round($k['PRICE_RITEL']);
+      // $int = (int) $xharga;
+
+      // $price_ritel = pembulatan($int);
 
       // var_dump("Nama Obat: ", $outstockname);
       // var_dump("NILAI PRICE RITEL: ", $price_ritel);
       // var_dump("NILAI RITEL: ", $harga); 
       //       die(); // <-- script berhenti di sini
 
-      $view_price_ritel = number_format($price_ritel, 0, ',', '.');
+      // $view_price_ritel = number_format($price_ritel, 0, ',', '.');
 
       //$outstockpric = number_format($k['INVE_STOCK_PRIC'], 0, '', '.');
-      $outstockquty = $k['INVE_STOCK_QUTY'];
+      // $outstockquty = $k['INVE_STOCK_QUTY'];
 
+      // 1. Langsung pembulatan karena PRICE_RITEL sudah fix
+      $price_ritel = pembulatan((int)round($harga_asli));
+
+      // 3. Format View
+      $view_price_ritel = number_format($price_ritel, 0, ',', '.');
+      
+      $outstockquty = $qty;
       $prodname = $k['PROD_NAME'];
 
       echo '<tr>';

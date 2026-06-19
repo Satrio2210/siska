@@ -150,12 +150,25 @@ include "inc/sanie.php";
             echo '<td>' . $k['STOCK_NAME'] . ' ' . $k['SPEC_NAME'] . ' ' . $k['UNIT_NAME'] . '</td>';
             echo '<td>' . $k['TRXA_STOCK_QUTY'] . '</td>';
 
-            $harga_bulat = pembulatan($k['TRXA_STOCK_PRIC']);
-            $viewprice = number_format($harga_bulat, 0, '', '.');
+            $harga_asli = $k['TRXA_STOCK_PRIC'];
+            $qty = $k['TRXA_STOCK_QUTY'];
+
+            // 1. (Harga Asli * Profit) lalu Pembulatan
+            $price_prsc = pembulatan((int)round($harga_asli * $profit));
+
+            // 2. Harga Satuan x Qty = Total
+            $total_prsc = $harga_asli * $qty;
+
+            // 3. Format View
+            $viewprice = number_format($harga_asli, 0, '', '.');
+            $viewtotalhna = number_format($total_prsc, 0, '', '.');
+            // $harga_bulat = pembulatan($k['TRXA_STOCK_PRIC']);
+            // $viewprice = number_format($harga_bulat, 0, '', '.');
+
             echo '<td>' . $viewprice . '</td>';
 
-            $tothna_bulat = pembulatan($k['TOTAL_HNA']);
-            $viewtotalhna = number_format($tothna_bulat, 0, '', '.');
+            // $tothna_bulat = pembulatan($k['TOTAL_HNA']);
+            // $viewtotalhna = number_format($tothna_bulat, 0, '', '.');
             echo '<td>' . $viewtotalhna . '</td>';
 
             // $viewtotalsale = number_format($k['TOTAL_SALE'], 0, '', '.');

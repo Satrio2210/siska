@@ -143,21 +143,33 @@ include "inc/sanie.php";
       $outstockcode = $k['INVE_STOCK_CODE'];
       $outstockbtch = $k['INVE_STOCK_BTCH'];
       $outstockname = $k['INVE_STOCK_NAME'];
-      $outstockpric = $k['INVE_STOCK_PRIC'];
-      $outstockquty = $k['INVE_STOCK_QUTY'];
+      // $outstockpric = $k['INVE_STOCK_PRIC'];
+      // $outstockquty = $k['INVE_STOCK_QUTY'];
       $prodname = $k['PROD_NAME'];
 
-      $xprice = round($k['INVE_STOCK_PRIC']);
-      $xint = (int) $xprice;
+      // $xprice = round($k['INVE_STOCK_PRIC']);
+      // $xint = (int) $xprice;
 
-      $price = $xint;
-      $sub_total = ($price * $profit);
+      // $price = $xint;
+      // $sub_total = ($price * $profit);
 
-      $finaltotal = pembulatan($sub_total);
+      // $finaltotal = pembulatan($sub_total);
 
-      $viewprice = number_format(pembulatan($price), 0, '', '.');
-      $viewtotal = number_format($finaltotal, 0, '', '.');
+      // $viewprice = number_format(pembulatan($price), 0, '', '.');
+      // $viewtotal = number_format($finaltotal, 0, '', '.');
 
+      $harga_asli = $k['INVE_STOCK_PRIC'];
+      $qty = $k['INVE_STOCK_QUTY'];
+
+      // 1. (Harga Asli * Profit) lalu Pembulatan
+      $outstockpric = pembulatan((int)round($harga_asli * $profit));
+      // 2. Harga Satuan x Qty = Total
+      $tott = $outstockpric * $qty;
+      // 3. Format View
+      $view_outstockpric = number_format($outstockpric, 0, ',', '.');
+      $viewtotal = number_format($tott, 0, '', '.');
+      
+      $outstockquty = $qty;
 
       echo '<tr  onClick="isiresep(\'' . $outstockcode . '\',\'' . $outstockbtch . '\',\'' . $outstockname . '\',\'' . $outstockpric . '\',\'' . $outstockquty . '\');" style="cursor:pointer">';
 
@@ -188,7 +200,7 @@ include "inc/sanie.php";
 
       echo '<td>' . $stokbadge . '</td>';
 
-      echo '<td style="text-align:right;">Rp ' . $viewtotal . '</td>';
+      echo '<td style="text-align:right;">Rp ' . $view_outstockpric . '</td>';
 
       echo '</tr>';
     }

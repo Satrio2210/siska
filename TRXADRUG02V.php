@@ -3,65 +3,69 @@ include "conf/config.php";
 include "inc/sanie.php";
 ?>
 <style>
-#screen {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size:11;
-    border-collapse: collapse;
-    width: 100%;
-}
+    #screen {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11;
+        border-collapse: collapse;
+        width: 100%;
+    }
 
 
-#screen th {
-    border: 1px solid #ddd;
-    padding: 8px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    text-align: center;
-    background-color: #4CAF50;
-    color: black;
-}
+    #screen th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        text-align: center;
+        background-color: #4CAF50;
+        color: black;
+    }
 
-#screen td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    text-align: center;
-}
+    #screen td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        text-align: center;
+    }
 
-#screen tr:nth-child(even){background-color: #f3f2f2;}
+    #screen tr:nth-child(even) {
+        background-color: #f3f2f2;
+    }
 
-#screen tr:hover {background-color: #ddd;}
+    #screen tr:hover {
+        background-color: #ddd;
+    }
 
-table tbody, table thead
-{
-    display: block;
-}
-table tbody 
-{
-  overflow: auto;
-  height: 300px;
-}
+    table tbody,
+    table thead {
+        display: block;
+    }
+
+    table tbody {
+        overflow: auto;
+        height: 300px;
+    }
 </style>
-  <table id="screen">
-  <thead>
-  <tr>
+<table id="screen">
+    <thead>
+        <tr>
 
-  <th style="width: 300px">Nama Obat</th>
-  <th style="width: 100px">Batch</th>
-  <th style="width: 100px">Satuan</th>
-  <th style="width: 100px">Harga</th>
-  <th style="width: 100px">Qty</th>
-  <th style="width: 100px">Sub Total.</th>
-  <th style="width: 200px">Action</th>
+            <th style="width: 300px">Nama Obat</th>
+            <th style="width: 100px">Batch</th>
+            <th style="width: 100px">Satuan</th>
+            <th style="width: 100px">Harga</th>
+            <th style="width: 100px">Qty</th>
+            <th style="width: 100px">Sub Total.</th>
+            <th style="width: 200px">Action</th>
 
-  </tr>
-  </thead>
-  <tbody>
-<?php
-$drugcode = $_POST['q'];
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        $drugcode = $_POST['q'];
 
-$xquery = "SELECT ITEM_STOCK_CODE AS STOCK_CODE, ITEM_STOCK_BTCH,
+        $xquery = "SELECT ITEM_STOCK_CODE AS STOCK_CODE, ITEM_STOCK_BTCH,
           (SELECT INVE_PART_NAME FROM invemast WHERE INVE_MAST_CODE = STOCK_CODE) AS STOCK_NAME,
           (SELECT INVE_SALE_UNIT FROM invemast WHERE INVE_MAST_CODE = STOCK_CODE) AS UNIT_CODE,
           (SELECT TBLI_UNIT_NAME FROM tbliunit WHERE TBLI_UNIT_CODE= UNIT_CODE) AS UNIT_NAME,
@@ -76,62 +80,74 @@ $xquery = "SELECT ITEM_STOCK_CODE AS STOCK_CODE, ITEM_STOCK_BTCH,
           ORDER BY ITEM_UPDT_TIME";
 
 
-$q = $db->query($xquery) or die("Gagal Maning!!");
+        $q = $db->query($xquery) or die("Gagal Maning!!");
 
-while ($k = $q->fetch(PDO::FETCH_ASSOC))
-{ 
-//  nama obat | satuan | harga | qty | sub
-echo '<tr>';
-$stockcode = $k['STOCK_CODE'];
-echo '<td style="width: 300px">'.$k['STOCK_NAME']. ' ' .$k['SPEC_NAME'].'</td>';
-echo '<td style="width: 100px">'.$k['ITEM_STOCK_BTCH'].'</td>';
-echo '<td style="width: 100px">'.$k['UNIT_NAME'].'</td>';
+        while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
+            //  nama obat | satuan | harga | qty | sub
+            echo '<tr>';
+            $stockcode = $k['STOCK_CODE'];
+            echo '<td style="width: 300px">' . $k['STOCK_NAME'] . ' ' . $k['SPEC_NAME'] . '</td>';
+            echo '<td style="width: 100px">' . $k['ITEM_STOCK_BTCH'] . '</td>';
+            echo '<td style="width: 100px">' . $k['UNIT_NAME'] . '</td>';
 
-$xprice = round($k['ITEM_STOCK_PRIC']);
-$xint = (int)$xprice;
+            // $xprice = round($k['ITEM_STOCK_PRIC']);
+// $xint = (int)$xprice;
+        
+            // $price = pembulatan($xint);
+        
+            // $viewprice = number_format($price, 0, '', '.');
+        
+            $harga_asli = $k['ITEM_STOCK_PRIC'];
+            $qty = $k['ITEM_STOCK_QUTY'];
 
-$price = pembulatan($xint);
+            // 1. (Harga Asli * Profit) lalu Pembulatan
+            $price = pembulatan($harga_asli * $profit);
+            // var_dump($harga_asli, $qty, $price, $profit);
+            // die;
 
-$viewprice = number_format($price, 0, '', '.');
-echo '<td style="width: 100px; text-align: right;">'.$viewprice.'</td>';
+            // 2. Harga Satuan x Qty = Total
+            $sub_total = $harga_asli * $qty;
 
-echo '<td style="width: 100px">'.$k['ITEM_STOCK_QUTY'].'</td>';
+            // 3. Format View
+            $viewprice = number_format($harga_asli, 0, '', '.');
+            $viewsubtotal = number_format($sub_total, 0, '', '.');
+            echo '<td style="width: 100px; text-align: right;">' . $viewprice . '</td>';
 
-//$xharga = round($k['SUB_TOTAL']);
+            echo '<td style="width: 100px">' . $k['ITEM_STOCK_QUTY'] . '</td>';
+
+            //$xharga = round($k['SUB_TOTAL']);
 //$int = (int)$xharga;
-
-//$sub_total = pembulatan($int); 
-
-//naik 40%
+        
+            //$sub_total = pembulatan($int); 
+        
+            //naik 40%
 // $upharga = 0.4;
+        
+            // $stockquty = $k['ITEM_STOCK_QUTY'];
+            // $sub_total = ($price * $stockquty);
 
-$stockquty = $k['ITEM_STOCK_QUTY'];
-$sub_total = ($price * $stockquty);
-
-// $sub_tota1 = ($sub_tota * $upharga);
+            // $sub_tota1 = ($sub_tota * $upharga);
 // $sub_total = ($sub_tota + $sub_tota1);
+        
+            // $subtot_bulat = pembulatan($sub_total);
+            // $viewtotal = number_format($subtot_bulat, 0, '', '.');
+            //$viewtotal = number_format($k['SUB_TOTAL'], 0, '', '.');
+        
+            echo '<td style="width: 100px; text-align: right;">' . $viewsubtotal . '</td>';
 
-$subtot_bulat = pembulatan($sub_total);
-$viewtotal = number_format($subtot_bulat, 0, '', '.');
-//$viewtotal = number_format($k['SUB_TOTAL'], 0, '', '.');
+            echo '<td style="width: 200px">';
 
-echo '<td style="width: 100px; text-align: right;">'.$viewtotal.'</td>';
-
-echo '<td style="width: 200px">';
-
-echo '<a class="button-delete pure-button" 
+            echo '<a class="button-delete pure-button" 
               onclick="if (confirm (\'Are You Sure To Delete ?\'))
-              { hapuscode(\''.$drugcode.'\',\''.$stockcode.'\');}
+              { hapuscode(\'' . $drugcode . '\',\'' . $stockcode . '\');}
               else
               { document.getElementById(\'txtstockcode\').focus();}
               ">Delete</a>';
 
-echo '</td>';
+            echo '</td>';
 
-echo '</tr>';
-}
-?>
-  </tbody>
-  </table>
-
-
+            echo '</tr>';
+        }
+        ?>
+    </tbody>
+</table>
