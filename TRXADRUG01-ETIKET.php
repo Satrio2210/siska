@@ -16,10 +16,10 @@ if ($prsccode == '') {
 /*
 HEADER PASIEN
 */
-$sqlhead = "
-SELECT
+$sqlhead = "SELECT
 r.TRXA_REGI_CODE,
 r.TRXA_REGI_LIST,
+r.TRXA_REGI_DATE,
 pm.PATI_MAIN_TITL,
 pm.PATI_MAIN_NAME,
 pm.PATI_MAST_CODE
@@ -36,8 +36,7 @@ $head = $qhead->fetch(PDO::FETCH_ASSOC);
 /*
 DETAIL OBAT
 */
-$sqldetail = "
-SELECT
+$sqldetail = "SELECT
 p.TRXA_STOCK_CODE,
 p.TRXA_STOCK_QUTY,
 p.TRXA_PRSC_SGNA,
@@ -123,7 +122,7 @@ $qdetail = $db->query($sqldetail);
         }
 
         .info {
-            font-size: 9px;
+            font-size: 7px;
             line-height: 1.2;
             margin-top: 1px;
         }
@@ -133,6 +132,8 @@ $qdetail = $db->query($sqldetail);
             font-size: 9px;
             line-height: 1.2;
             text-transform: uppercase;
+            text-align: center;
+            margin-top: 5px;
         }
 
         /* Buat bikin sebaris */
@@ -149,7 +150,8 @@ $qdetail = $db->query($sqldetail);
 
         
         .namaobat {
-            margin-top: 10px;
+            margin-top: 15px;
+            margin-bottom: 15px;
             font-size: 10px;
             font-weight: bold;
             text-align: center;
@@ -217,36 +219,36 @@ $qdetail = $db->query($sqldetail);
 
             <div class="header">INSTALASI FARMASI KPRJ YEMIMA MEDIKA</div>
 
-            <div class="judul">ETIKET OBAT</div>
-
             <div class="flex-row info">
                 <!-- <span>No: <?php echo $head['TRXA_REGI_LIST']; ?></span> -->
                 <span>RM: <?php echo $head['PATI_MAST_CODE']; ?></span>
+                <span>Tgl: <?php echo $head['TRXA_REGI_DATE']; ?></span>
             </div>
 
             <div class="namapasien">
-                Pasien: <?php echo $head['PATI_MAIN_TITL'] . ' ' . $head['PATI_MAIN_NAME']; ?>
+                <?php echo $head['PATI_MAIN_TITL'] . ' ' . $head['PATI_MAIN_NAME']; ?>
             </div>
 
             <hr class="garis">
 
             <div class="namaobat">
                 <!-- <?php echo $row['INVE_PART_NAME'] . ' ' . $row['TBLI_SPEC_NAME']; ?> -->
-                 <?php echo $row['INVE_PART_NAME']; ?>
+                <?php echo $row['INVE_PART_NAME']; ?>
             </div>
 
-            <div class="jumlah">
+            <!-- <div class="jumlah">
                 Jumlah: <?php echo $row['TRXA_STOCK_QUTY'] . ' ' . $row['TBLI_UNIT_NAME']; ?>
-            </div>
+            </div> -->
 
             <div class="signa">
                 ATURAN PAKAI:<br>
-                <?php echo $row['TBLP_SGNA_NAME']; ?>
+                <?php echo $row['TBLP_SGNA_NAME']; ?><br>
+                <small><?php echo $row['TBLP_SGNA_USAG']; ?></small>
             </div>
 
-            <div class="footer">
+            <!-- <div class="footer">
                 SEMOGA LEKAS SEMBUH
-            </div>
+            </div> -->
 
         </div>
 

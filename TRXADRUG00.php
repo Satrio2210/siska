@@ -204,6 +204,11 @@ if (isset($_SESSION['username'])) {
         /* white-space: pre-wrap; */
       }
 
+      /* .recipe-dokisi {
+              white-space: pre-wrap;
+              word-wrap: break-word;
+            } */
+
       /* ========================= PAYMENT BADGE ========================= */
       .payment-badge {
         display: inline-flex;
@@ -343,16 +348,6 @@ if (isset($_SESSION['username'])) {
         position: relative;
       }
 
-      #tblsigna {
-        position: absolute;
-        background: white;
-        border-radius: 10px;
-        overflow: auto;
-        box-shadow: 0 8px 10px rgba(0, 0, 0, .10);
-        border: 1px solid #e2e8f0;
-        z-index: 9999;
-      }
-
       #tblregi {
         position: relative !important;
         width: 100%;
@@ -371,17 +366,28 @@ if (isset($_SESSION['username'])) {
 
       #tblsigna {
         position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        margin-top: 4px;
-        z-index: 999;
+        background: white;
+        border-radius: 10px;
+        overflow: auto;
+        box-shadow: 0 8px 10px rgba(0, 0, 0, .10);
+        border: 1px solid #e2e8f0;
+        z-index: 9999;
       }
+
+      /* #tblsigna {
+                      position: absolute;
+                      top: 100%;
+                      left: 0;
+                      width: 100%;
+                      margin-top: 4px;
+                      z-index: 999;
+                    } */
 
       #tblsigna table tbody {
         display: block;
-        max-height: 120px;
-        overflow: auto;
+        max-height: 140px;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
 
       #tblsigna table thead,
@@ -422,22 +428,22 @@ if (isset($_SESSION['username'])) {
       }
 
       /* #tblsigna {
-                              width: 420px;
-                              top: 215px;
-                              right: 0;
-                            } */
+                                            width: 420px;
+                                            top: 215px;
+                                            right: 0;
+                                          } */
 
 
       /* #tblresep table, */
       /* #tblsigna table {
-                            font-size: 12px !important;
-                          } */
+                                          font-size: 12px !important;
+                                        } */
 
 
       /* #tblresep td, */
       /* #tblsigna td {
-                            padding: 6px 8px !important;
-                          } */
+                                          padding: 6px 8px !important;
+                                        } */
 
       /* ========================= RESPONSIVE ========================= */
       @media(max-width:1100px) {
@@ -479,13 +485,62 @@ if (isset($_SESSION['username'])) {
     function timestamp() { $.ajax({ url: 'inc/timestamp.php', success: function (data) { $('#timestamp').html(data); }, }); }
   </script>
 
+  <!-- <script>
+    setInterval(function () {
+      var textarea = document.getElementById('txtexamprsc');
+      if (textarea) {
+        var val = textarea.value;
+        // Ganti tanda pemisah (jika ada) atau pastikan formatnya dibaca sebagai baris
+        if (val.includes('--NL--')) {
+          textarea.value = val.split('--NL--').join('\n');
+        }
+      }
+    }, 500);
+  </script> -->
+
+  <script>
+    $(document).ready(function () {
+      // Kita buat variabel penanda
+      var sudahRapi = false;
+
+      function rapikanResep() {
+        var prscBox = document.getElementById('txtexamprsc');
+
+        // Cek jika elemen ada, ada isinya, dan BELUM PERNAH dirapikan
+        if (prscBox && prscBox.value.length > 0 && !sudahRapi) {
+          var rawText = prscBox.value;
+
+          // Cek apakah memang perlu dirapikan (ada tanda '-' tapi belum ada '\n')
+          if (rawText.includes('-') && !rawText.includes('\n')) {
+            var cleanText = rawText.replace(/-/g, '\n-');
+            prscBox.value = cleanText.trim();
+
+            // Tandai bahwa proses sudah selesai
+            sudahRapi = true;
+            console.log("Resep sudah dirapikan, fungsi berhenti.");
+          }
+        }
+      }
+
+      // Jalankan pertama kali
+      rapikanResep();
+
+      // Interval tetap ada untuk jaga-jaga kalau data lambat loading
+      var interval = setInterval(function () {
+        if (sudahRapi) {
+          clearInterval(interval); // Hentikan interval kalau sudah rapi
+        } else {
+          rapikanResep();
+        }
+      }, 1000);
+    });
+  </script>
+
   <audio id="notifAudio" preload="auto">
 
     <source src="audio/notif.mp3" type="audio/mpeg">
 
   </audio>
-
-
 
   <body onLoad="periksaakses('PASS_DRUG_ENTR');">
     <div id="layout">
@@ -636,10 +691,11 @@ if (isset($_SESSION['username'])) {
 
                     <!-- resep dokter -->
                     <div class="recipe-doctor">
-                      <div> RESEP DOKTER
-                      </div> <textarea id="txtexamprsc" readonly class="modern-textarea"
+                      <div> RESEP DOKTER </div>
+                      <textarea id="txtexamprsc" readonly class="modern-textarea"
                         style=" min-height:220px; background:#0f172a; color:white; border:none; font-family:monospace; "></textarea>
                     </div>
+
                   </div>
                 </div>
               </div>

@@ -2,23 +2,31 @@
 include "conf/config.php";
 ?>
 <style>
-  #screen {
+  #screensgna {
     width: 100%;
     border-collapse: collapse;
     font-size: 12px;
   }
 
-  #screen td {
+  #screensgna td {
+    color: black;
     padding: 8px 10px;
     border-bottom: 1px solid #f1f5f9;
   }
 
-  #screen tr:hover {
+  #screensgna tr:hover {
     background: #f8fafc;
     cursor: pointer;
   }
+
+  #screensgna thead th {
+    padding: 5px;
+    font-size: 12px;
+    text-align: left;
+    color: black;
+  }
 </style>
-<table id="screen">
+<table id="screensgna">
   <thead>
     <tr>
       <th>SIGNA</th>
@@ -39,7 +47,7 @@ include "conf/config.php";
     } else {
       $xquery = "SELECT TBLP_SGNA_CODE, TBLP_SGNA_NAME, TBLP_SGNA_USAG
               FROM tblpsgna 
-              WHERE TBLP_SGNA_NAME LIKE '$kata%'
+              WHERE TBLP_SGNA_NAME LIKE '%$kata%'
               AND TBLP_SGNA_STAT ='Y'
               ORDER by TBLP_SGNA_CODE";
     }
@@ -52,7 +60,9 @@ include "conf/config.php";
 
       echo '<tr onClick="isisigna(\'' . $outsgnacode . '\',\'' . $outsgnaname . '\',\'' . $outsgnausag . '\');" 
       style="cursor:pointer">';
-      echo '<td>' . $k['TBLP_SGNA_NAME'] . '</td>';
+      echo '<td>' . $k['TBLP_SGNA_NAME'] . '<br>
+      <small>' . $k['TBLP_SGNA_USAG'] . '</small>
+      </td>';
       echo '</tr>';
     }
     ?>

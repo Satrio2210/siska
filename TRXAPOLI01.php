@@ -300,8 +300,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* ===============================
-                                                         MODERN MEDICAL LAYOUT
-                                                      ================================ */
+                                                                 MODERN MEDICAL LAYOUT
+                                                              ================================ */
 
       .split-layout {
         display: grid;
@@ -338,8 +338,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                                                 RIWAYAT PASIEN
-                                              ========================= */
+                                                         RIWAYAT PASIEN
+                                                      ========================= */
 
       .history-grid {
         display: grid;
@@ -400,8 +400,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                                         PEMERIKSAAN
-                                      ========================= */
+                                                 PEMERIKSAAN
+                                              ========================= */
 
       .exam-grid {
         display: grid;
@@ -472,8 +472,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                                     DIAGNOSA
-                                  ========================= */
+                                             DIAGNOSA
+                                          ========================= */
 
       .diagnosa-wrapper {
         position: relative;
@@ -516,8 +516,8 @@ if (isset($_SESSION['username'])) {
       }
 
       /* =========================
-                                 SUBMIT SECTION
-                              ========================= */
+                                         SUBMIT SECTION
+                                      ========================= */
 
       .submit-card {
         margin-top: 5px !important;
@@ -803,7 +803,7 @@ if (isset($_SESSION['username'])) {
                     </label>
 
                     <textarea id="txtexamcomp" name="txtexamcomp" rows="3" readonly="true">
-                                                                </textarea>
+                                                                        </textarea>
                   </div>
 
                   <br>
@@ -1284,7 +1284,19 @@ if (isset($_SESSION['username'])) {
                       Terapi Obat / Resep
                     </div>
 
-                    <textarea id="txtexamprsc" name="txtexamprsc" rows="3"></textarea>
+                    <textarea id="txtexamprsc" name="txtexamprsc" rows="3" onblur="
+                    var lines = this.value.split(/\r?\n/);var out = [];
+                    for(var i=0; i<lines.length; i++) {
+                      var line = lines[i].trim();
+                        if(line !== '') {
+                        if(!line.startsWith('-')) {
+                          line = '-' + line;
+                        }
+                        out.push(line);
+                      }
+                    }
+                        this.value = out.join('\n');
+                    "></textarea>
 
                   </div>
                 </div>
@@ -1293,7 +1305,7 @@ if (isset($_SESSION['username'])) {
 
             <fieldset>
 
-              <div class="medical-card submit-card">
+              <div class=" medical-card submit-card">
 
                 <div class="medical-title">
                   Submit Pemeriksaan
