@@ -148,7 +148,7 @@ $qdetail = $db->query($sqldetail);
             border-top: 1px dashed #000;
         }
 
-        
+
         .namaobat {
             margin-top: 15px;
             margin-bottom: 15px;
@@ -180,7 +180,16 @@ $qdetail = $db->query($sqldetail);
             line-height: 1.1;
         }
 
-        .footer{
+        .signa small {
+            font: 9px;
+            font-size: 8px;
+            font-weight: normal;
+            display: block;
+            margin-top: 2px;
+            color: #272727;
+        }
+
+        .footer {
             font-size: 8px;
             line-height: 1.2;
             margin-top: 1px;
