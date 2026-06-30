@@ -12,9 +12,15 @@ header("Expires: 0");
 $startdate = $_POST['tglstartdate'];
 $enddate = $_POST['tglenddate'];
 $jenis = $_POST['jenispasien'];
+$dokter = $_POST['dokter'];
 // die('JENIS = ['.$jenis.']');
 
 $where_jenis = "";
+$where_dokter = "";
+
+if ($dokter != "") {
+    $where_dokter = " AND trxaprsc.TRXA_PRSC_DOCT = '$dokter' ";
+}
 
 if ($jenis == "B") {
     $where_jenis = " AND trxaregi.TRXA_REGI_PAYM = 'B' ";
@@ -24,26 +30,22 @@ if ($jenis == "B") {
 
 $nama_jenis = "BPJS dan UMUM";
 
-if ($jenis == "B")
-{
-$nama_jenis = "BPJS";
-}
-elseif ($jenis == "U")
-{
-$nama_jenis = "UMUM";
+if ($jenis == "B") {
+    $nama_jenis = "BPJS";
+} elseif ($jenis == "U") {
+    $nama_jenis = "UMUM";
 }
 
 $xquery = "SELECT
             TRXA_PRSC_CODE,
             trxaregi.TRXA_PATI_CODE AS PATI_CODE,
-
+            trxaregi.TRXA_REGI_PAYM AS PATI_PAYM,
             CASE
                 WHEN patimast.PATI_MAIN_TITL = 'Tn.' THEN 'Tuan'
                 WHEN patimast.PATI_MAIN_TITL = 'Ny.' THEN 'Nyonya'
                 WHEN patimast.PATI_MAIN_TITL = 'Nn.' THEN 'Nona'
                 WHEN patimast.PATI_MAIN_TITL = 'An.' THEN 'Anak'
             END AS TITLE,
-
             patimast.PATI_MAIN_NAME AS PATI_NAME,
 
             trxaprsc.TRXA_PRSC_DOCT AS DOCT_CODE,
@@ -88,7 +90,7 @@ $xquery = "SELECT
         WHERE
             trxaprsc.TRXA_PRSC_STAT IN ('A','I', 'P')
             AND trxaprsc.TRXA_VIEW_STAT = 'Y'
-            $where_jenis
+            $where_jenis $where_dokter
             AND trxaprsc.TRXA_ENTR_DATE BETWEEN '$startdate' AND '$enddate'
 
         ORDER BY
@@ -104,13 +106,14 @@ echo "
     <th colspan='7'>
         REPORT RESEP HARIAN<br>
         $startdate s/d $enddate<br>
-        JENIS PASIEN - $nama_jenis
+        JENIS PASIEN - $nama_jenis<?php echo $dokter != '' ? ' | DOKTER: ' . $dokter : ''; ?>
     </th>
 </tr>
 
 <tr>
     <th>Tanggal</th>
     <th>Nama Pasien</th>
+    <th>Payment</th>
     <th>Obat</th>
     <th>Jumlah</th>
     <th>Harga Jual</th>
@@ -122,6 +125,15 @@ echo "
 $grandtotal = 0;
 
 while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
+    $jenispym = $k['PATI_PAYM'];
+    $paym = '';
+
+    if ($jenispym == "B") {
+        $paym = "BPJS";
+    } elseif ($jenispym == "U") {
+        $paym = "UMUM";
+    }
+
     $qtyy = $k['TRXA_STOCK_QUTY'];
 
     $bulat = round($k['TRXA_STOCK_PRIC']);
@@ -138,6 +150,8 @@ while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
     echo "<td>" . $k['TRXA_ENTR_DATE'] . "</td>";
 
     echo "<td>" . $k['TITLE'] . " " . $k['PATI_NAME'] . "</td>";
+
+    echo "<td>" . $paym . "</td>";
 
     echo "<td>" . $k['STOCK_NAME'] . " " . $k['SPEC_NAME'] . "</td>";
 

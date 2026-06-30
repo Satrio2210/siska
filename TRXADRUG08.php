@@ -194,7 +194,26 @@ if (isset($_SESSION['username'])) {
               document.getElementById('tglenddate').value);">
               <label for="umum">UMUM</label>
 
-              <br>
+              <br><br>
+
+              <label for="dokter">DOKTER:</label>
+              <select id="dokter" name="dokter" onchange="ambilviewrepo(
+              document.getElementById('tglstartdate').value,
+              document.getElementById('tglenddate').value);">
+                <option value="">- SEMUA DOKTER -</option>
+                <?php
+                $q_doct = $db->query("SELECT DISTINCT 
+                    passiden.PASS_USER_IDEN AS DOCT_CODE,
+                    passiden.PASS_USER_NAME AS DOCT_NAME
+                FROM trxaprsc 
+                JOIN passiden ON trxaprsc.TRXA_PRSC_DOCT = passiden.PASS_USER_IDEN
+                WHERE trxaprsc.TRXA_PRSC_STAT IN ('A', 'I', 'P')
+                ORDER BY passiden.PASS_USER_NAME ASC");
+                while ($d = $q_doct->fetch(PDO::FETCH_ASSOC)) {
+                    echo '<option value="' . $d['DOCT_CODE'] . '">' . $d['DOCT_NAME'] . '</option>';
+                }
+                ?>
+              </select>
             </fieldset>
 
             <fieldset>

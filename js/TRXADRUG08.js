@@ -55,15 +55,19 @@ function ambilviewrepo(startdate, enddate) {
     jenispasien = radio.value;
   }
 
+  var dokter = "";
+  var dokterSelect = document.getElementById("dokter");
+  if (dokterSelect) {
+    dokter = dokterSelect.value;
+  }
+
   var params = 
-      "q=" + startdate + '|' + enddate + "&jenis=" + jenispasien;
+      "q=" + startdate + '|' + enddate + "&jenis=" + jenispasien + "&dokter=" + dokter;
   drz.open("POST", url, true);
-  //beberapa http header harus kita set kalau menggunakan POST
   drz.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   drz.setRequestHeader("Content-length", params.length);
   drz.setRequestHeader("Connection", "close");
   drz.send(params);
-  //}
 }
 
 function buatajaxrepo() {

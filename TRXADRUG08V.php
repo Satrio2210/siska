@@ -7,6 +7,7 @@ include "inc/sanie.php";
 
 $fulldate = $_POST['q'];
 $jenis = $_POST['jenis'];
+$dokter = $_POST['dokter'];
 //$kode = 'ACC';
 list($startdate, $enddate) = explode("|", $fulldate);
 ?>
@@ -15,6 +16,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
         <tr>
             <th style="width: 150px">Tanggal</th>
             <th style="width: 200px">Nama</th>
+            <th style="width: 100px">Payment</th>
             <th style="width: 150px">Obat</th>
             <th style="width: 100px">Jumlah</th>
             <th style="width: 100px">Harga Jual</th>
@@ -37,6 +39,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
             $xquery = "SELECT 
             TRXA_PRSC_CODE,
             trxaregi.TRXA_PATI_CODE AS PATI_CODE,
+            trxaregi.TRXA_REGI_PAYM AS PATI_PAYM,
             CASE 
                 WHEN patimast.PATI_MAIN_TITL = 'Tn.' THEN 'Tuan'
                 WHEN patimast.PATI_MAIN_TITL = 'Ny.' THEN 'Nyonya'
@@ -79,7 +82,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
         WHERE 
             trxaprsc.TRXA_PRSC_STAT IN ('A', 'I', 'P') 
             AND trxaprsc.TRXA_VIEW_STAT = 'Y'
-            $where_jenis 
+            $where_jenis $where_dokter
             AND trxaprsc.TRXA_ENTR_DATE = '$startdate'
     
         ORDER BY
@@ -91,6 +94,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
             $xquery = "SELECT 
             TRXA_PRSC_CODE,
             trxaregi.TRXA_PATI_CODE AS PATI_CODE,
+            trxaregi.TRXA_REGI_PAYM AS PATI_PAYM,
             CASE 
                 WHEN patimast.PATI_MAIN_TITL = 'Tn.' THEN 'Tuan'
                 WHEN patimast.PATI_MAIN_TITL = 'Ny.' THEN 'Nyonya'
@@ -133,7 +137,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
         WHERE 
             trxaprsc.TRXA_PRSC_STAT IN ('A', 'I', 'P') 
             AND trxaprsc.TRXA_VIEW_STAT = 'Y'
-            $where_jenis 
+            $where_jenis $where_dokter
             AND trxaprsc.TRXA_ENTR_DATE BETWEEN '$startdate' AND '$enddate'
     
         ORDER BY
@@ -150,6 +154,15 @@ list($startdate, $enddate) = explode("|", $fulldate);
         while ($k = $q->fetch(PDO::FETCH_ASSOC)) {
             echo '';
 
+            $jenispym = $k['PATI_PAYM'];
+            $paym = '';
+
+            if ($jenispym == "B") {
+                $paym = "BPJS";
+            } elseif ($jenispym == "U") {
+                $paym = "UMUM";
+            }
+
             $tanggall = $k['TRXA_ENTR_DATE'];
             $qtyy = $k['TRXA_STOCK_QUTY'];
 
@@ -160,7 +173,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
 
             // var_dump("NILAI PRICE RITEL: ", $price_ritel); 
             // die(); // <-- script berhenti di sini
-
+        
             $tott = $price_ritel * $qtyy;
 
             $view_price = number_format($price_ritel, 0, ',', '.');
@@ -172,6 +185,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
 
             echo '<td style="width: 150px">' . $tanggall . '</td>';
             echo '<td style="width: 200px; text-align: left;">' . $k['TITLE'] . ' ' . $k['PATI_NAME'] . '</td>';
+            echo '<td style="width: 200px; text-align: left;">' . $paym . '</td>';
             echo '<td style="width: 150px; text-align: left;">' . $k['STOCK_NAME'] . ' ' . $k['SPEC_NAME'] . '</td>';
             echo '<td style="width: 100px; text-align: left;">' . $k['TRXA_STOCK_QUTY'] . ' ' . $k['NAME_UNIT'] . '</td>';
             echo '<td style="width: 100px; text-align: left;">' . $view_price . '</td>';
@@ -184,7 +198,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
 
         ?>
 
-        
+
 
         <td style="text-align:right;">
             <b>Total - Rp. <?php echo number_format($grandtotal, 0, ',', '.'); ?></b>
