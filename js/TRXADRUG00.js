@@ -1,3 +1,8 @@
+﻿// Request push Notification permission
+if (window.Notification && Notification.permission !== "granted" && Notification.permission !== "denied") {
+  Notification.requestPermission();
+}
+
 var lastExamCode = '';
 var notifku;
 
@@ -128,6 +133,14 @@ function isiregi(outprsccode, outpaticode, outmainname, outmaingend, outmainage,
 
     ambilscreen(outprsccode);
 
+    // Inisialisasi racikan
+    try {
+      loadRacikanHead();
+      document.getElementById('section_racik_detail').style.display = 'none';
+      document.getElementById('hidselectedracikid').value = '';
+      document.getElementById('lblSelectedRacik').innerHTML = 'Racikan Terpilih: -';
+    } catch(e) {}
+
     document.getElementById("txtstockcode").removeAttribute('disabled');
     document.getElementById("txtstockquty").removeAttribute('disabled');
 
@@ -152,22 +165,15 @@ function isiregi(outprsccode, outpaticode, outmainname, outmaingend, outmainage,
 
 var resepku;
 function ambilresep(kata, regipoli, regipaym) {
-  if (kata.length > 7) {
-    document.getElementById("tblresep").innerHTML = "";
-    document.getElementById("tblresep").style.display = "none";
-  }
-  else {
-    resepku = buatajaxresep();
-    //var url="TRXAPOLI04C-RESEP.php";
-    var url = "TRXADRUG00C-RESEP.php";
-    resepku.onreadystatechange = stateChangedResep;
-    var params = "q=" + kata + "|" + regipoli + "|" + regipaym;
-    resepku.open("POST", url, true);
-    resepku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    resepku.setRequestHeader("Content-length", params.length);
-    resepku.setRequestHeader("Connection", "close");
-    resepku.send(params);
-  }
+  resepku = buatajaxresep();
+  var url = "TRXADRUG00C-RESEP.php";
+  resepku.onreadystatechange = stateChangedResep;
+  var params = "q=" + kata + "|" + regipoli + "|" + regipaym;
+  resepku.open("POST", url, true);
+  resepku.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  resepku.setRequestHeader("Content-length", params.length);
+  resepku.setRequestHeader("Connection", "close");
+  resepku.send(params);
 }
 
 function buatajaxresep() {
@@ -520,6 +526,32 @@ function cekResepBaru() {
 
           playNotif();
 
+          // Push Notification ke Windows Desktop
+          if (window.Notification && Notification.permission === "granted") {
+            try {
+              var parts = examCode.split("|");
+              var regCode = parts[0] || "";
+              var patientName = parts[1] || "Pasien";
+              
+              var options = {
+                body: "Ada resep dokter baru masuk untuk pasien:\n" + patientName + " (" + regCode + ")",
+                icon: "img/icon.png",
+                tag: "resep-baru-" + regCode,
+                requireInteraction: true // Notif tetap tampil di layar windows sampai diklik
+              };
+              var notif = new Notification("SISKA - Resep Baru Masuk!", options);
+              notif.onclick = function() {
+                window.focus();
+                try {
+                  ambilregicode('X');
+                } catch(err){}
+                notif.close();
+              };
+            } catch(e) {
+              console.log("Gagal memunculkan push notification: " + e.message);
+            }
+          }
+
           ambilregicode('X');
         }
       }
@@ -542,6 +574,313 @@ setInterval(
   2000
 );
 
+
+
+
+
+
+/* =========================================================================
+   LAJU BARU: LOGIC UNTUK FORM INPUT RESEP RACIKAN
+   ========================================================================= */
+
+// Autocomplete Signa Racikan
+var signaku_racik;
+function ambilsignacode_racik(kata) {
+  if (kata.length > 30) {
+    document.getElementById("tblsigna_racik").innerHTML = "";
+    document.getElementById("tblsigna_racik").style.display = "none";
+  } else {
+    signaku_racik = buatajaxsigna_racik();
+    var url = "TRXADRUG00C-SIGNA-RACIK.php";
+    signaku_racik.onreadystatechange = stateChangedsigna_racik;
+    var params = "q=" + kata;
+    signaku_racik.open("POST", url, true);
+    signaku_racik.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    signaku_racik.setRequestHeader("Content-length", params.length);
+    signaku_racik.setRequestHeader("Connection", "close");
+    signaku_racik.send(params);
+  }
+}
+
+function buatajaxsigna_racik() {
+  if (window.XMLHttpRequest) return new XMLHttpRequest();
+  if (window.ActiveXObject) return new ActiveXObject("Microsoft.XMLHTTP");
+  return null;
+}
+
+function stateChangedsigna_racik() {
+  if (signaku_racik.readyState == 4 && signaku_racik.status == 200) {
+    var data = signaku_racik.responseText;
+    if (data.length > 3) {
+      // Perbaiki pemanggilan javascript dengan unescape kutipan jika ada
+      data = data.split('isisigna_racik(\'').join('isisigna_racik_clean(\'');
+      document.getElementById("tblsigna_racik").innerHTML = data;
+      document.getElementById("tblsigna_racik").style.display = "block";
+    } else {
+      document.getElementById("tblsigna_racik").innerHTML = "";
+      document.getElementById("tblsigna_racik").style.display = "none";
+    }
+  }
+}
+
+// Fungsi pembantu agar pemanggilan string aman
+function isisigna_racik_clean(code, name, usag) {
+  isisigna_racik(code, name, usag);
+}
+
+function isisigna_racik(outsgnacode, outsgnaname, outsgnausag) {
+  try {
+    document.getElementById("txtraciksigna").value = outsgnaname;
+    document.getElementById("hidraciksignacode").value = outsgnacode;
+    document.getElementById("hidracikusage").value = outsgnausag;
+    document.getElementById("tblsigna_racik").style.display = "none";
+    document.getElementById("tblsigna_racik").innerHTML = "";
+  } catch (err) { alert(err.message); }
+}
+
+// Autocomplete Obat Racikan Compositions
+var resepku_racik;
+function ambilresep_racik(kata, regipoli, regipaym) {
+  resepku_racik = buatajaxresep_racik();
+  var url = "TRXADRUG00C-RESEP-RACIK.php";
+  resepku_racik.onreadystatechange = stateChangedResep_racik;
+  var params = "q=" + kata + "|" + regipoli + "|" + regipaym;
+  resepku_racik.open("POST", url, true);
+  resepku_racik.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  resepku_racik.setRequestHeader("Content-length", params.length);
+  resepku_racik.setRequestHeader("Connection", "close");
+  resepku_racik.send(params);
+}
+
+function buatajaxresep_racik() {
+  if (window.XMLHttpRequest) return new XMLHttpRequest();
+  if (window.ActiveXObject) return new ActiveXObject("Microsoft.XMLHTTP");
+  return null;
+}
+
+function stateChangedResep_racik() {
+  if (resepku_racik.readyState == 4 && resepku_racik.status == 200) {
+    var data = resepku_racik.responseText;
+    if (data.length > 3) {
+      document.getElementById("tblresep_racik").innerHTML = data;
+      document.getElementById("tblresep_racik").style.display = "block";
+    } else {
+      document.getElementById("tblresep_racik").innerHTML = "";
+      document.getElementById("tblresep_racik").style.display = "none";
+    }
+  }
+}
+
+function isiresep_racik(outstockcode, outstockbtch, outstockname, outstockpric, outstockamnt) {
+  try {
+    document.getElementById("txtracikstockname").value = outstockname;
+    document.getElementById("hidracikstockcode").value = outstockcode;
+    document.getElementById("hidracikstockbtch").value = outstockbtch;
+    document.getElementById("hidracikstockpric").value = outstockpric;
+    document.getElementById("hidracikstockamnt").value = outstockamnt;
+    document.getElementById("tblresep_racik").style.display = "none";
+    document.getElementById("tblresep_racik").innerHTML = "";
+    document.getElementById("txtracikstockqty").focus();
+  } catch (err) { alert(err.message); }
+}
+
+// Logic load list kepala racikan
+function loadRacikanHead() {
+  var prsccode = document.getElementById("txtprsccode").value;
+  if (prsccode == "") return;
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "TRXADRUG00_RACIK.php?action=tmpl_head", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      document.getElementById("tblracikhead").innerHTML = xhr.responseText;
+    }
+  };
+  xhr.send("prsccode=" + prsccode);
+}
+
+// Logic add kepala racikan
+function tambahRacikanHead() {
+  var prsccode = document.getElementById("txtprsccode").value;
+  var nama = document.getElementById("txtracikname").value;
+  var signa = document.getElementById("txtraciksigna").value;
+  var qty = document.getElementById("txtracikqty").value;
+  
+  if (prsccode == "") {
+    swal({ title: "Gagal", text: "Pilih pasien terlebih dahulu", icon: "warning" });
+    return;
+  }
+  if (nama == "") {
+    swal({ title: "Gagal", text: "Nama racikan wajib diisi", icon: "warning" });
+    return;
+  }
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "TRXADRUG00_RACIK.php?action=add_head", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      var res = xhr.responseText.split("|");
+      if (res[0] === "OK") {
+        document.getElementById("txtracikname").value = "";
+        document.getElementById("txtraciksigna").value = "";
+        document.getElementById("hidraciksignacode").value = "";
+        document.getElementById("hidracikusage").value = "";
+        document.getElementById("txtracikqty").value = "1";
+        
+        loadRacikanHead();
+        
+        // Otomatis select racikan yang baru dibuat
+        var newId = res[1];
+        setTimeout(function() {
+          selectRacikanRow(newId, nama);
+        }, 300);
+      } else {
+        alert(xhr.responseText);
+      }
+    }
+  };
+  var params = "prsccode=" + prsccode + "&nama=" + encodeURIComponent(nama) + "&signa=" + encodeURIComponent(signa) + "&qty=" + qty;
+  xhr.send(params);
+}
+
+// Logic hapus kepala racikan
+function hapusRacikan(id) {
+  if (!confirm("Hapus racikan beserta seluruh obat di dalamnya?")) return;
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "TRXADRUG00_RACIK.php?action=del_head", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      if (xhr.responseText.trim() === "OK") {
+        // Reset selection if the deleted one was selected
+        var curSelected = document.getElementById("hidselectedracikid").value;
+        if (curSelected == id) {
+          document.getElementById("section_racik_detail").style.display = "none";
+          document.getElementById("hidselectedracikid").value = "";
+          document.getElementById("lblSelectedRacik").innerHTML = "Racikan Terpilih: -";
+        }
+        loadRacikanHead();
+        var prsccode = document.getElementById("txtprsccode").value;
+        ambilscreen(prsccode); // Refresh list resep total
+      } else {
+        alert(xhr.responseText);
+      }
+    }
+  };
+  xhr.send("id=" + id);
+}
+
+// Logic pilih kepala racikan
+function selectRacikanRow(id, nama) {
+  // Remove active class from all rows
+  var rows = document.querySelectorAll(".tbl-racik tbody tr");
+  rows.forEach(function(r) {
+    r.classList.remove("active-row");
+  });
+  
+  var activeRow = document.getElementById("row_racik_" + id);
+  if (activeRow) {
+    activeRow.classList.add("active-row");
+  }
+  
+  document.getElementById("hidselectedracikid").value = id;
+  document.getElementById("lblSelectedRacik").innerHTML = "Racikan Terpilih: " + nama;
+  document.getElementById("section_racik_detail").style.display = "block";
+  
+  loadRacikanDetail(id);
+}
+
+// Logic load obat-obat racikan
+function loadRacikanDetail(id) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "TRXADRUG00_RACIK.php?action=tmpl_detail", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      document.getElementById("tblracikdetail").innerHTML = xhr.responseText;
+    }
+  };
+  xhr.send("racik_id=" + id);
+}
+
+// Logic add obat ke racikan
+function tambahObatKeRacikan() {
+  var prsccode = document.getElementById("txtprsccode").value;
+  var racik_id = document.getElementById("hidselectedracikid").value;
+  
+  var stockcode = document.getElementById("hidracikstockcode").value;
+  var stockname = document.getElementById("txtracikstockname").value;
+  var stockbtch = document.getElementById("hidracikstockbtch").value;
+  var stockpric = document.getElementById("hidracikstockpric").value;
+  var qty = document.getElementById("txtracikstockqty").value;
+  var tersedia = parseInt(document.getElementById("hidracikstockamnt").value || 0);
+  
+  if (prsccode == "" || racik_id == "") {
+    swal({ title: "Gagal", text: "Pilih racikan terlebih dahulu", icon: "warning" });
+    return;
+  }
+  if (stockcode == "" || stockname == "") {
+    swal({ title: "Gagal", text: "Pilih obat terlebih dahulu", icon: "warning" });
+    return;
+  }
+  if (parseInt(qty) <= 0 || qty == "") {
+    swal({ title: "Gagal", text: "Qty obat tidak valid", icon: "warning" });
+    return;
+  }
+  if (parseInt(qty) > tersedia) {
+    swal({ title: "Stok Kurang", text: "Stok obat hanya tersedia " + tersedia, icon: "warning" });
+    return;
+  }
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "TRXADRUG00_RACIK.php?action=add_detail", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      if (xhr.responseText.trim() === "OK") {
+        // Reset input fields
+        document.getElementById("txtracikstockname").value = "";
+        document.getElementById("hidracikstockcode").value = "";
+        document.getElementById("hidracikstockbtch").value = "";
+        document.getElementById("hidracikstockpric").value = "";
+        document.getElementById("txtracikstockqty").value = "1";
+        
+        loadRacikanDetail(racik_id);
+        ambilscreen(prsccode); // Refresh list resep total
+      } else {
+        alert(xhr.responseText);
+      }
+    }
+  };
+  var params = "prsccode=" + prsccode + "&racik_id=" + racik_id + "&stockcode=" + stockcode + "&stockbtch=" + stockbtch + "&stockpric=" + stockpric + "&stockqty=" + qty;
+  xhr.send(params);
+}
+
+// Logic hapus obat dari racikan
+function hapusObatKomposisi(prsccode, stockcode) {
+  var racik_id = document.getElementById("hidselectedracikid").value;
+  if (racik_id == "") return;
+  if (!confirm("Hapus obat ini dari racikan?")) return;
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "TRXADRUG00_RACIK.php?action=del_detail", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      if (xhr.responseText.trim() === "OK") {
+        loadRacikanDetail(racik_id);
+        ambilscreen(prsccode); // Refresh list resep total
+      } else {
+        alert(xhr.responseText);
+      }
+    }
+  };
+  var params = "prsccode=" + prsccode + "&stockcode=" + stockcode + "&racik_id=" + racik_id;
+  xhr.send(params);
+}
 
 
 

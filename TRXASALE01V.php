@@ -68,36 +68,34 @@ include "inc/sanie.php";
     $kata = $_POST['q'];
     //$kata = '';
     $panjangkata = strlen($kata);
-    if ($panjangkata == 0) {
-      $xquery = "SELECT TRXA_REGI_CODE, TRXA_PATI_CODE, 
-          (SELECT CONCAT(PATI_MAIN_TITL,' ',PATI_MAIN_NAME) FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) AS PATI_NAME,
-          (SELECT PATI_MAIN_GEND FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) AS MAIN_GEND, 
-          TRXA_REGI_LIST, TRXA_REGI_DATE, TRXA_REGI_PAYM, 
-          TRXA_REGI_DOCT, (SELECT PASS_USER_NAME FROM passiden WHERE PASS_USER_IDEN = TRXA_REGI_DOCT) AS REGI_DOCT,
-          TRXA_REGI_POLI, (SELECT TBLA_POLI_NAME FROM tblapoli WHERE TBLA_POLI_CODE=TRXA_REGI_POLI) AS REGI_POLI,
-          TRXA_ENTR_DATE   
-          FROM trxaregi 
-          WHERE TRXA_REGI_STAT IN ('C','P')
-          AND (TRXA_REGI_PAYM = 'U' OR (TRXA_REGI_PAYM = 'B' AND TRXA_REGI_POLI = 'PG'))
-          AND DATE(TRXA_ENTR_DATE) >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
-          ORDER BY TRXA_ENTR_DATE DESC, 
-          TRXA_ENTR_TIME DESC";
-    } else {
-      $xquery = "SELECT TRXA_REGI_CODE, TRXA_PATI_CODE, 
-          (SELECT CONCAT(PATI_MAIN_TITL,' ',PATI_MAIN_NAME) FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) AS PATI_NAME,
-          (SELECT PATI_MAIN_GEND FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) AS MAIN_GEND, 
-          TRXA_REGI_LIST, TRXA_REGI_DATE, TRXA_REGI_PAYM, 
-          TRXA_REGI_DOCT, (SELECT PASS_USER_NAME FROM passiden WHERE PASS_USER_IDEN = TRXA_REGI_DOCT) AS REGI_DOCT,
-          TRXA_REGI_POLI, (SELECT TBLA_POLI_NAME FROM tblapoli WHERE TBLA_POLI_CODE=TRXA_REGI_POLI) AS REGI_POLI,
-          TRXA_ENTR_DATE   
-          FROM trxaregi 
-          WHERE TRXA_REGI_STAT IN ('C','P')
-          AND (TRXA_REGI_PAYM = 'U' OR (TRXA_REGI_PAYM = 'B' AND TRXA_REGI_POLI = 'PG'))
-          AND DATE(TRXA_ENTR_DATE) >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
-          AND (SELECT PATI_MAIN_NAME FROM patimast WHERE PATI_MAST_CODE = TRXA_PATI_CODE) LIKE '%$kata%'
-          ORDER BY TRXA_ENTR_DATE DESC, 
-          TRXA_ENTR_TIME DESC";
+
+    $xquery = "SELECT 
+          t.TRXA_REGI_CODE, 
+          t.TRXA_PATI_CODE, 
+          CONCAT(p.PATI_MAIN_TITL, ' ', p.PATI_MAIN_NAME) AS PATI_NAME,
+          p.PATI_MAIN_GEND AS MAIN_GEND, 
+          t.TRXA_REGI_LIST, 
+          t.TRXA_REGI_DATE, 
+          t.TRXA_REGI_PAYM, 
+          t.TRXA_REGI_DOCT, 
+          u.PASS_USER_NAME AS REGI_DOCT,
+          t.TRXA_REGI_POLI, 
+          pl.TBLA_POLI_NAME AS REGI_POLI,
+          t.TRXA_ENTR_DATE   
+      FROM trxaregi t
+      LEFT JOIN patimast p ON p.PATI_MAST_CODE = t.TRXA_PATI_CODE
+      LEFT JOIN passiden u ON u.PASS_USER_IDEN = t.TRXA_REGI_DOCT
+      LEFT JOIN tblapoli pl ON pl.TBLA_POLI_CODE = t.TRXA_REGI_POLI
+      WHERE t.TRXA_REGI_STAT IN ('C', 'P')
+        AND t.TRXA_REGI_PAYM IN ('U', 'B') 
+        AND DATE(t.TRXA_ENTR_DATE) >= DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+  ";
+
+    if ($panjangkata > 0) {
+      $xquery .= " AND p.PATI_MAIN_NAME LIKE '%$kata%' ";
     }
+
+    $xquery .= " ORDER BY t.TRXA_ENTR_DATE DESC, t.TRXA_ENTR_TIME DESC";
 
     $prefixMap = [
       'PU' => 'A', // Poli Umum
@@ -152,7 +150,7 @@ include "inc/sanie.php";
       $regicode = $k['TRXA_REGI_CODE'];
       $paticode = $k['TRXA_PATI_CODE'];
       $pati_name = htmlspecialchars($k['PATI_NAME'], ENT_QUOTES);
-      
+
       // hitung nomor antrian full (A001, B005, dst)
       $kodePoli = $k['TRXA_REGI_POLI'];       // misal: PU / PG / PK / LB
       $prefix = isset($prefixMap[$kodePoli]) ? $prefixMap[$kodePoli] : '';
@@ -179,7 +177,7 @@ include "inc/sanie.php";
       echo '</tr>';
     }
 
-    
+
 
     ?>
   </tbody>

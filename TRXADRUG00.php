@@ -1,4 +1,4 @@
-<!-- TRXADRUG00.php -->
+﻿<!-- TRXADRUG00.php -->
 
 <!doctype html>
 <?php include "conf/config.php";
@@ -99,7 +99,7 @@ if (isset($_SESSION['username'])) {
         border-radius: var(--radius);
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
-        overflow: hidden;
+        overflow: visible;
       }
 
       .card-title {
@@ -200,7 +200,8 @@ if (isset($_SESSION['username'])) {
         font-family: monospace;
         font-weight: bold;
         line-height: 1.7;
-        /* min-height: auto; */
+        min-height: auto;
+        overflow: auto;
         /* white-space: pre-wrap; */
       }
 
@@ -364,7 +365,8 @@ if (isset($_SESSION['username'])) {
         left: 0;
       }
 
-      #tblsigna {
+      #tblsigna,
+      #tblsigna_racik {
         position: absolute;
         background: white;
         border-radius: 10px;
@@ -383,7 +385,9 @@ if (isset($_SESSION['username'])) {
                       z-index: 999;
                     } */
 
-      #tblsigna table tbody {
+      #tblsigna table tbody,
+      #tblsigna_racik table tbody 
+      {
         display: block;
         max-height: 140px;
         overflow-y: auto;
@@ -391,40 +395,31 @@ if (isset($_SESSION['username'])) {
       }
 
       #tblsigna table thead,
-      #tblsigna table tbody tr {
+      #tblsigna table tbody tr,
+      #tblsigna_racik table thead,
+      #tblsigna_racik table tbody tr
+      {
         display: table;
-        width: 100%;
+        width: auto;
         table-layout: fixed;
       }
 
-      #tblresep {
+      #tblresep,
+      #tblresep_racik {
         position: absolute;
         top: 100%;
         left: 0;
         min-width: 500px;
+        max-height: 220px;
         margin-top: 4px;
         background: #fff;
-        /* border: 1px solid #e2e8f0; */
         border: 1px solid #a5a4a4;
         border-radius: 10px;
-        box-shadow:
-          0 8px 20px rgba(0, 0, 0, .08);
-        overflow: hidden;
-        z-index: 999;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        z-index: 9999;
         display: none;
-      }
-
-      #tblresep table tbody {
-        display: block;
-        max-height: 200px;
-        overflow: auto;
-      }
-
-      #tblresep table thead,
-      #tblresep table tbody tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
+        overflow-y: auto;
+        overflow-x: hidden;
       }
 
       /* #tblsigna {
@@ -457,7 +452,7 @@ if (isset($_SESSION['username'])) {
       }
 
       #txtexamprsc {
-        min-height: 120px !important;
+        height: auto !important;
         padding: 10px !important;
         font-size: 13px;
         line-height: 1.6;
@@ -693,7 +688,7 @@ if (isset($_SESSION['username'])) {
                     <div class="recipe-doctor">
                       <div> RESEP DOKTER </div>
                       <textarea id="txtexamprsc" readonly class="modern-textarea"
-                        style=" min-height:220px; background:#0f172a; color:white; border:none; font-family:monospace; "></textarea>
+                        style=" min-height:150px; background:#0f172a; color:white; border:none; font-family:monospace; "></textarea>
                     </div>
 
                   </div>
@@ -702,7 +697,7 @@ if (isset($_SESSION['username'])) {
               <!-- ================================================= RIGHT : INPUT RESEP ================================================== -->
               <div>
                 <div class="card-modern">
-                  <div class="card-title" id="inputresep"> Input Resep Farmasi </div>
+                  <div class="card-title" id="inputresep"> Input Resep Non Racikan </div>
                   <div class="card-body">
                     <div class="form-grid"> <!-- obat -->
                       <div class="full-width"> <label class="form-label"> Cari Obat </label>
@@ -728,7 +723,7 @@ if (isset($_SESSION['username'])) {
                           id="txtusage" class="input-modern" placeholder="Contoh: diminum sesudah makan..."
                           readonly></input> </div> <!-- checkbox -->
                       <div class="full-width">
-                        <div class="checkbox-row"> <label class="checkbox-modern"> <input type="checkbox"
+                        <div class="checkbox-row" style="display:none;"> <label class="checkbox-modern"> <input type="checkbox"
                               name="optnonracikan" id="optnonracikan"
                               onclick="if (checked == true) { document.getElementById('optracikan').checked=false; document.getElementById('hidprscconc').value='N'; }">
                             Non Racikan </label> <label class="checkbox-modern"> <input type="checkbox" name="optracikan"
@@ -745,7 +740,7 @@ if (isset($_SESSION['username'])) {
                         var instockpric = document.getElementById('hidstockpric').value; 
                         // var instockpricbaru = parseFloat(instockpric) * 1.85;
                         var instockquty = document.getElementById('txtstockquty').value; 
-                        var inprscconc = document.getElementById('hidprscconc').value; 
+                        var inprscconc = 'N'; 
                         var inprscsgna = document.getElementById('hidsigna').value; 
                         var inmediroom = document.getElementById('hidmediroom').value;
                         var insgnausag = document.getElementById('txtusage').value;
@@ -754,6 +749,77 @@ if (isset($_SESSION['username'])) {
                         onclick="javascript:location.href='TRXADRUG00.php'"> Close </a> </div>
                   </div>
                 </div>
+                                  <div class="card-modern" style="margin-top: 16px;">
+                    <div class="card-title"> Input Resep Racikan </div>
+                    <div class="card-body">
+                      <!-- Form input kepala racikan -->
+                      <div class="form-grid" style="display: grid; grid-template-columns: 2fr 2fr 1fr; gap: 10px; align-items: end;">
+                        <div>
+                          <label class="form-label"> Nama Racikan </label>
+                          <input type="text" id="txtracikname" class="input-modern" placeholder="Nama Racikan" autocomplete="off">
+                        </div>
+                        <div>
+                          <label class="form-label"> Signa </label>
+                          <div class="autocomplete-wrapper">
+                            <input type="text" id="txtraciksigna" class="input-modern" placeholder="Aturan makan..." autocomplete="off"
+                              onkeyup="if (value.length > 0) { ambilsignacode_racik(value); } else { document.getElementById('tblsigna_racik').style.display='none'; }">
+                            <div id="tblsigna_racik" style="position: absolute; background: white; border-radius: 10px; overflow: auto; box-shadow: 0 8px 10px rgba(0,0,0,.15); border: 1px solid #cbd5e1; z-index: 9999; display:none; width: 100%;"></div>
+                            <input type="hidden" id="hidraciksignacode">
+                            <input type="hidden" id="hidracikusage">
+                          </div>
+                        </div>
+                        <div>
+                          <label class="form-label"> Qty </label>
+                          <input type="number" id="txtracikqty" class="input-modern" value="1" min="1">
+                        </div>
+                      </div>
+                      <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+                        <button type="button" class="btn-modern btn-save" onclick="tambahRacikanHead()">Tambah Racikan</button>
+                      </div>
+
+                      <!-- List Kepala Racikan -->
+                      <div style="margin-top: 15px;">
+                        <div id="tblracikhead" style="max-height: 150px; overflow: auto;"></div>
+                      </div>
+
+                      <!-- Area Komposisi / Detail Obat untuk Racikan Terpilih -->
+                      <div id="section_racik_detail" style="margin-top: 15px; border-top: 1px solid #cbd5e1; padding-top: 15px; display: none;">
+                        <input type="hidden" id="hidselectedracikid">
+                        <div style="font-weight: 700; font-size: 13px; margin-bottom: 10px; color: #166534;" id="lblSelectedRacik">
+                          Racikan Terpilih: -
+                        </div>
+                        
+                        <!-- Input Obat ke Racikan -->
+                        <div class="form-grid" style="display: grid; grid-template-columns: 3fr 1.5fr; gap: 10px; align-items: end;">
+                          <div>
+                            <label class="form-label"> Cari Obat </label>
+                            <div class="autocomplete-wrapper">
+                              <input type="text" id="txtracikstockname" class="input-modern" placeholder="Ketik nama obat..." autocomplete="off"
+                                onkeyup="if (value.length > 0) { var regipoli = document.getElementById('hidmediroom').value; var regipaym = document.getElementById('hidregipaym').value; ambilresep_racik(this.value,regipoli,regipaym); } else { document.getElementById('tblresep_racik').innerHTML=''; document.getElementById('tblresep_racik').style.display='none'; }">
+                              <div id="tblresep_racik"></div>
+                              <input type="hidden" id="hidracikstockcode">
+                              <input type="hidden" id="hidracikstockbtch">
+                              <input type="hidden" id="hidracikstockpric">
+                              <input type="hidden" id="hidracikstockamnt">
+                            </div>
+                          </div>
+                          <div>
+                            <label class="form-label"> Qty </label>
+                            <input type="text" id="txtracikstockqty" class="input-modern" value="1">
+                          </div>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+                          <button type="button" class="btn-modern btn-save" onclick="tambahObatKeRacikan()">Tambah Obat Ke Racikan</button>
+                        </div>
+
+                        <!-- List Detail Obat dalam Racikan Terpilih -->
+                        <div style="margin-top: 15px;">
+                          <div id="tblracikdetail" style="max-height: 150px; overflow: auto;"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 <!-- ============================================= DAFTAR ITEM RESEP ============================================== -->
                 <div class="card-modern recipe-table-wrapper">
                   <div class="card-title"> Daftar Item Resep </div>
@@ -810,3 +876,5 @@ if (isset($_SESSION['username'])) {
   header("Location: " . "signin.php");
 }
 ?>
+
+

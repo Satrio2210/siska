@@ -27,6 +27,11 @@ list($startdate, $enddate) = explode("|", $fulldate);
     <tbody>
         <?php
         $where_jenis = "";
+        $where_dokter = "";
+
+        if ($dokter != "") {
+            $where_dokter = " AND trxaprsc.TRXA_PRSC_DOCT = '$dokter' ";
+        }
 
         if ($jenis == "B") {
             $where_jenis = " AND trxaregi.TRXA_REGI_PAYM = 'B' ";
@@ -182,6 +187,7 @@ list($startdate, $enddate) = explode("|", $fulldate);
             $view_price_ritel = number_format($tott_bulat, 0, ',', '.');
 
             $grandtotal += $tott_bulat;
+
 
             echo '<td style="width: 150px">' . $tanggall . '</td>';
             echo '<td style="width: 200px; text-align: left;">' . $k['TITLE'] . ' ' . $k['PATI_NAME'] . '</td>';

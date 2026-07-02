@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 error_reporting(E_ALL ^ E_DEPRECATED);
 error_reporting(E_ALL & ~E_NOTICE);
 
@@ -28,6 +28,8 @@ $xdetail = "SELECT
             p.TRXA_STOCK_CODE,
             p.TRXA_STOCK_BTCH,
             p.TRXA_PRSC_CONC,
+            p.TRXA_RACIK_ID,
+            (SELECT TRXAR_NAMA FROM trxaracik_head WHERE TRXAR_ID = p.TRXA_RACIK_ID) AS RACIK_NAMA,
             i.INVE_PART_NAME,
             s.TBLI_SPEC_NAME,
             u.TBLI_UNIT_NAME,
@@ -120,8 +122,13 @@ while ($d = $qdetail->fetch(PDO::FETCH_ASSOC)) {
         . $d['BTCH']
         . '</td>';
 
+    $jenis = $d['JENIS'];
+    if ($d['TRXA_PRSC_CONC'] == 'Y' && !empty($d['RACIK_NAMA'])) {
+        $jenis .= ' (' . $d['RACIK_NAMA'] . ')';
+    }
+
     echo '<td>'
-        . $d['JENIS']
+        . htmlspecialchars($jenis)
         . '</td>';
 
     echo '<td>';
@@ -158,4 +165,4 @@ echo '
 </div>
 
 ';
-
+?>

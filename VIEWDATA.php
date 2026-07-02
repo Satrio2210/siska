@@ -73,20 +73,15 @@ if (empty($latest_date)) {
 }
 
 $latest_time = strtotime($latest_date);
-$month_start = date('Y-m-01', $latest_time);
-$month_end = date('Y-m-t', $latest_time);
-$month_label = sk_month_name($latest_date) . ' ' . date('Y', $latest_time);
+$current_time = strtotime($datenow);
+$month_start = date('Y-m-01', $current_time);
+$month_end = date('Y-m-t', $current_time);
+$month_label = sk_month_name($datenow) . ' ' . date('Y', $current_time);
 
 $total_antrian = sk_value(
     $db,
     "SELECT COUNT(*) AS TOTAL FROM trxaregi
      WHERE TRXA_REGI_DATE = '$latest_date' AND TRXA_VIEW_STAT = 'Y'",
-    'TOTAL'
-);
-
-$total_pasien = sk_value(
-    $db,
-    "SELECT COUNT(*) AS TOTAL FROM patimast WHERE PATI_VIEW_STAT = 'Y'",
     'TOTAL'
 );
 
@@ -123,6 +118,13 @@ $pendapatan_bulan_obat = sk_value(
 
 $pendapatan_bulan = (float) $pendapatan_bulan_rajal + (float) $pendapatan_bulan_obat;
 
+$poli_umum = sk_value($db, "SELECT COUNT(*) AS TOTAL FROM trxaregi WHERE TRXA_VIEW_STAT = 'Y' AND TRXA_REGI_POLI = 'PU' AND TRXA_REGI_DATE BETWEEN '$month_start' AND '$month_end'", 'TOTAL');
+$poli_kia = sk_value($db, "SELECT COUNT(*) AS TOTAL FROM trxaregi WHERE TRXA_VIEW_STAT = 'Y' AND TRXA_REGI_POLI = 'KB' AND TRXA_REGI_DATE BETWEEN '$month_start' AND '$month_end'", 'TOTAL');
+$poli_lab = sk_value($db, "SELECT COUNT(*) AS TOTAL FROM trxaregi WHERE TRXA_VIEW_STAT = 'Y' AND TRXA_REGI_POLI = 'LB' AND TRXA_REGI_DATE BETWEEN '$month_start' AND '$month_end'", 'TOTAL');
+$poli_gigi = sk_value($db, "SELECT COUNT(*) AS TOTAL FROM trxaregi WHERE TRXA_VIEW_STAT = 'Y' AND TRXA_REGI_POLI = 'PG' AND TRXA_REGI_DATE BETWEEN '$month_start' AND '$month_end'", 'TOTAL');
+$total_poli = (int) $poli_umum + (int) $poli_kia + (int) $poli_lab + (int) $poli_gigi;
+$total_pasien_bulan = $total_poli;
+
 $kunjungan_rows = sk_rows(
     $db,
     "SELECT DATE_FORMAT(TRXA_REGI_DATE, '%Y-%m') AS BULAN, COUNT(*) AS TOTAL
@@ -151,16 +153,13 @@ for ($i = 5; $i >= 0; $i--) {
     );
 }
 
-$poli_umum = sk_value($db, "SELECT COUNT(*) AS TOTAL FROM trxaregi WHERE TRXA_VIEW_STAT = 'Y' AND TRXA_REGI_POLI = 'PU' AND TRXA_REGI_DATE BETWEEN '$month_start' AND '$month_end'", 'TOTAL');
-$poli_kia = sk_value($db, "SELECT COUNT(*) AS TOTAL FROM trxaregi WHERE TRXA_VIEW_STAT = 'Y' AND TRXA_REGI_POLI = 'KB' AND TRXA_REGI_DATE BETWEEN '$month_start' AND '$month_end'", 'TOTAL');
-$poli_lab = sk_value($db, "SELECT COUNT(*) AS TOTAL FROM trxaregi WHERE TRXA_VIEW_STAT = 'Y' AND TRXA_REGI_POLI = 'LB' AND TRXA_REGI_DATE BETWEEN '$month_start' AND '$month_end'", 'TOTAL');
-$poli_gigi = sk_value($db, "SELECT COUNT(*) AS TOTAL FROM trxaregi WHERE TRXA_VIEW_STAT = 'Y' AND TRXA_REGI_POLI = 'PG' AND TRXA_REGI_DATE BETWEEN '$month_start' AND '$month_end'", 'TOTAL');
-$total_poli = (int) $poli_umum + (int) $poli_kia + (int) $poli_lab + (int) $poli_gigi;
-
-$pie_umum = sk_percent($poli_umum, max($total_poli, 1));
-$pie_kia = sk_percent($poli_kia, max($total_poli, 1));
-$pie_lab = sk_percent($poli_lab, max($total_poli, 1));
-$pie_gigi = max(0, 100 - $pie_umum - $pie_kia - $pie_lab);
+$pie_umum = $total_poli > 0 ? sk_percent($poli_umum, $total_poli) : 0;
+$pie_kia = $total_poli > 0 ? sk_percent($poli_kia, $total_poli) : 0;
+$pie_lab = $total_poli > 0 ? sk_percent($poli_lab, $total_poli) : 0;
+$pie_gigi = $total_poli > 0 ? max(0, 100 - $pie_umum - $pie_kia - $pie_lab) : 0;
+$pie_background = $total_poli > 0
+    ? "radial-gradient(circle, #ffffff 0 38%, transparent 39%), conic-gradient(#4f97ca 0 $pie_umum%, #4fb48f $pie_umum% " . ($pie_umum + $pie_kia) . "%, #b8ad46 " . ($pie_umum + $pie_kia) . "% " . ($pie_umum + $pie_kia + $pie_lab) . "%, #f19a4e " . ($pie_umum + $pie_kia + $pie_lab) . "% 100%)"
+    : "radial-gradient(circle, #ffffff 0 38%, transparent 39%), conic-gradient(#e5eaf0 0 100%)";
 
 $top_obat = sk_rows(
     $db,
@@ -169,6 +168,7 @@ $top_obat = sk_rows(
      FROM trxaprsc p
      LEFT JOIN invemast i ON i.INVE_MAST_CODE = p.TRXA_STOCK_CODE
      WHERE p.TRXA_VIEW_STAT = 'Y'
+     AND p.TRXA_ENTR_DATE BETWEEN '$month_start' AND '$month_end'
      GROUP BY COALESCE(i.INVE_PART_NAME, p.TRXA_STOCK_CODE)
      ORDER BY TOTAL DESC
      LIMIT 5"
@@ -179,6 +179,7 @@ $top_diagnosis = sk_rows(
     "SELECT TRXA_DIAG_NAME AS NAME, COUNT(*) AS TOTAL
      FROM trxadiag
      WHERE TRXA_VIEW_STAT = 'Y'
+     AND TRXA_ENTR_DATE BETWEEN '$month_start' AND '$month_end'
      GROUP BY TRXA_DIAG_NAME
      ORDER BY TOTAL DESC
      LIMIT 5"
@@ -571,9 +572,9 @@ $persen_bpjs_hari = max(0, 100 - $persen_umum_hari);
         </div>
 
         <div class="simdash-card simdash-kpi">
-            <p class="simdash-label">Jumlah Total Pasien</p>
-            <div class="simdash-value"><?php echo sk_number($total_pasien); ?></div>
-            <div class="simdash-note">Pasien terdaftar</div>
+            <p class="simdash-label">Jumlah Kunjungan Bulan Ini</p>
+            <div class="simdash-value"><?php echo sk_number($total_pasien_bulan); ?></div>
+            <div class="simdash-note">Umum: <?php echo sk_number($poli_umum); ?> | Gigi: <?php echo sk_number($poli_gigi); ?> | KIA: <?php echo sk_number($poli_kia); ?> | Lab: <?php echo sk_number($poli_lab); ?></div>
         </div>
 
         <div class="simdash-card simdash-kpi">
@@ -585,7 +586,7 @@ $persen_bpjs_hari = max(0, 100 - $persen_umum_hari);
         <div class="simdash-card simdash-kpi">
             <p class="simdash-label">Total Pendapatan Bulan Ini</p>
             <!-- <div class="simdash-value simdash-value-money"><?php echo sk_money($pendapatan_bulan); ?></div> -->
-            <div class="simdash-value simdash-value-money">-</div>
+            <div class="simdash-value simdash-value-money"><?php echo sk_money($pendapatan_bulan); ?></div>
             <div class="simdash-note"><?php echo $month_label; ?></div>
         </div>
 
@@ -595,6 +596,7 @@ $persen_bpjs_hari = max(0, 100 - $persen_umum_hari);
                 <div class="simdash-bars">
                     <?php foreach ($monthly_visits as $visit) { ?>
                         <div class="simdash-bar-item">
+                            <div style="position:absolute;bottom:calc(<?php echo max(5, round(($visit['total'] / $max_visit) * 100)); ?>% + 6px);font-size:11px;font-weight:700;color:#374151;"><?php echo sk_number($visit['total']); ?></div>
                             <div class="simdash-bar"
                                 style="height: <?php echo max(5, round(($visit['total'] / $max_visit) * 100)); ?>%;"></div>
                         </div>
@@ -609,7 +611,7 @@ $persen_bpjs_hari = max(0, 100 - $persen_umum_hari);
         </div>
 
         <div class="simdash-card simdash-chart">
-            <p class="simdash-card-title">Kunjungan Poliklinik</p>
+            <p class="simdash-card-title">Kunjungan Poliklinik (<?php echo date("F Y",$latest_time); ?>)</p>
             <div class="simdash-pie-area">
                 <div class="simdash-pie" style="background: radial-gradient(circle, #ffffff 0 38%, transparent 39%), conic-gradient(#4f97ca 0 <?php echo $pie_umum; ?>%, #4fb48f <?php echo $pie_umum; ?>% <?php echo $pie_umum + $pie_kia; ?>%, #b8ad46 <?php echo $pie_umum + $pie_kia; ?>% <?php echo $pie_umum + $pie_kia + $pie_lab; ?>%, #f19a4e <?php echo $pie_umum + $pie_kia + $pie_lab; ?>% 100%);"></div>
                 <div class="simdash-legend">
@@ -636,7 +638,7 @@ $persen_bpjs_hari = max(0, 100 - $persen_umum_hari);
         </div>
 
         <div class="simdash-card simdash-bottom">
-            <p class="simdash-card-title">Pemakaian Obat</p>
+            <p class="simdash-card-title">Pemakaian Obat (<?php echo date("F Y",$latest_time); ?>)</p>
             <div class="simdash-note">Top 5 pemakaian obat tertinggi</div>
             <table class="simdash-table">
                 <thead>
@@ -657,7 +659,7 @@ $persen_bpjs_hari = max(0, 100 - $persen_umum_hari);
         </div>
 
         <div class="simdash-card simdash-bottom">
-            <p class="simdash-card-title">Top 5 Diagnosis</p>
+            <p class="simdash-card-title">Top 5 Diagnosis (<?php echo date("F Y",$latest_time); ?>)</p>
             <div class="simdash-note">Top 5 diagnosis tertinggi</div>
             <table class="simdash-table">
                 <thead>

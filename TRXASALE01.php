@@ -220,8 +220,15 @@ if (isset($_SESSION['username'])) {
                   <option value="BCA">Debit BCA</option>
                   <option value="MAN">Debit Mandiri</option>
                   <option value="BNI">Debit BNI</option>
+                  <option value="BRI">Debit BRI</option>
                   <option value="BCM">Transfer BCA</option>
-                  <option value="LIN">Transfer Link Aja</option>
+                  <option value="MAM">Transfer Mandiri</option>
+                  <option value="BIM">Transfer BNI</option>
+                  <option value="BRM">Transfer BRI</option>
+                  <option value="qrBCA">Qris BCA</option>
+                  <option value="qrMAN">Qris Mandiri</option>
+                  <option value="qrBNI">Qris BNI</option>
+                  <option value="qrBRI">Qris BRI</option>
                 </select>
 
                 <a class="pure-button pure-button-primary" onclick="javascript:

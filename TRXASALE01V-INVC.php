@@ -83,42 +83,46 @@ if ($row_regi['TRXA_REGI_STAT'] == 'C') {
     echo '<td style="width: 200px; text-align: right;">Biaya Admin</td>';
     echo '<td style="width: 100px; text-align: center;">  </td>';
 
-    // Periksa apakah ada obat racikan
-    $periksaracikan = "SELECT COUNT(*) FROM trxaprsc WHERE TRXA_PRSC_CODE='$regicode' 
-                     AND TRXA_PRSC_CONC='Y'
-                     AND TRXA_PRSC_STAT='I'
-                     AND TRXA_VIEW_STAT='Y'";
+    //1. Periksa Fee Register
+    $q_regi = "SELECT TRXA_REGI_FEE, TRXA_REGI_PAYM FROM trxaregi WHERE TRXA_REGI_CODE='$regicode' LIMIT 1";
+    $data_regi = $db->query($q_regi)->fetch(PDO::FETCH_ASSOC);
 
-    $periksaracikan_di_query = $db->query($periksaracikan) or die("Cek Fail");
-    $ketersediaan_racikan = $periksaracikan_di_query->fetchColumn();
+    $fee_admin_aktif = ($data_regi && $data_regi['TRXA_REGI_FEE'] == 'Y') ? true : false;
+    $tipe_pembayaran = $data_regi ? $data_regi['TRXA_REGI_PAYM'] : '';
+
+
+    // 2. Periksa ketersediaan racikan
+    $periksaracikan = "SELECT COUNT(*) FROM trxaprsc WHERE TRXA_PRSC_CODE='$regicode' 
+                       AND TRXA_PRSC_CONC='Y'
+                       AND TRXA_PRSC_STAT='I'
+                       AND TRXA_VIEW_STAT='Y'";
+    $ketersediaan_racikan = $db->query($periksaracikan)->fetchColumn();
 
     if ($ketersediaan_racikan == 0) {
 
-      // Periksa apakah ada resep yang diberikan
       $periksaresep = "SELECT COUNT(*) FROM trxaprsc WHERE TRXA_PRSC_CODE='$regicode'
-                     AND TRXA_PRSC_STAT='I'
-                     AND TRXA_VIEW_STAT='Y'";
-
-      $periksaresep_di_query = $db->query($periksaresep) or die("Cek Fail");
-      $ketersediaan_resep = $periksaresep_di_query->fetchColumn();
+                       AND TRXA_PRSC_STAT='I'
+                       AND TRXA_VIEW_STAT='Y'";
+      $ketersediaan_resep = $db->query($periksaresep)->fetchColumn();
 
       if ($ketersediaan_resep == 0) {
-        // periksa di data register apakah di kenakan biaya admin
-        $periksabiayaadmin = "SELECT COUNT(*) FROM trxaregi WHERE TRXA_REGI_CODE='$regicode' AND TRXA_REGI_FEE='Y'";
-        $periksabiayaadmin_di_query = $db->query($periksabiayaadmin) or die("Cek Fail");
-        $ketersediaan_biayaadmin = $periksabiayaadmin_di_query->fetchColumn();
 
-        if ($ketersediaan_biayaadmin == 0) {
+        if (!$fee_admin_aktif) {
           $total_admin = 0;
         } else {
           $total_admin = $fee_admin;
         }
+
       } else {
         $total_admin = ($fee_admin + $fee_resep);
       }
 
     } else {
       $total_admin = ($fee_admin + ($fee_resep + $fee_racikan));
+    }
+
+    if ($tipe_pembayaran == 'B') {
+      $total_admin = 0;
     }
 
     $biaya_admin = number_format($total_admin, 0, '', '.');
@@ -217,33 +221,61 @@ if ($row_regi['TRXA_REGI_STAT'] == 'C') {
 
     <?php
     // Obat
+    if (!function_exists('get_mapped_signa')) {
+      function get_mapped_signa($signa)
+      {
+        if ($signa == '01')
+          return '1x1 Sebelum Makan';
+        if ($signa == '02')
+          return '2x1 Sebelum Makan';
+        if ($signa == '03')
+          return '3x1 Sebelum Makan';
+        if ($signa == '04')
+          return '1x1 Sesudah Makan';
+        if ($signa == '05')
+          return '2x1 Sesudah Makan';
+        if ($signa == '06')
+          return '3x1 Sesudah Makan';
+        if ($signa == '07')
+          return '4x1 Sesudah Makan';
+        if ($signa == '08')
+          return '5x1 Sesudah Makan';
+        if ($signa == '09')
+          return '3x1 Oles Tipis';
+        if ($signa == '10')
+          return '3x1 Tetes Pada Mata Yang Sakit';
+        return $signa;
+      }
+    }
+
     $query_prsc = "SELECT TRXA_PRSC_CODE, TRXA_STOCK_CODE, 
               (SELECT INVE_PART_NAME FROM invemast WHERE INVE_MAST_CODE=TRXA_STOCK_CODE) AS STOCK_NAME, 
               TRXA_STOCK_PRIC AS STOCK_PRIC, TRXA_STOCK_QUTY, 
               (TRXA_STOCK_PRIC * TRXA_STOCK_QUTY) AS SUB_TOTAL_PRIC, 
-              (SELECT TRXA_REGI_PAYM FROM trxaregi WHERE TRXA_REGI_CODE=TRXA_PRSC_CODE) AS PAYM_TYPE
-
+              (SELECT TRXA_REGI_PAYM FROM trxaregi WHERE TRXA_REGI_CODE=TRXA_PRSC_CODE) AS PAYM_TYPE,
+              TRXA_PRSC_CONC, TRXA_RACIK_ID
               FROM trxaprsc WHERE TRXA_PRSC_CODE = '$regicode' AND TRXA_PRSC_STAT = 'I' AND TRXA_VIEW_STAT='Y'";
 
     $qprsc = $db->query($query_prsc) or die("Gagal Ambil data obat!!");
+    $all_prsc_rows = [];
     while ($row_prsc = $qprsc->fetch(PDO::FETCH_ASSOC)) {
-      echo '<tr>';
-      echo '<td style="width: 200px; text-align: right;">' . $row_prsc['STOCK_NAME'] . '</td>';
-      echo '<td style="width: 100px; text-align: center;">' . $row_prsc['TRXA_STOCK_QUTY'] . '</td>';
+      $all_prsc_rows[] = $row_prsc;
+    }
 
-      $qty_prsc = $row_prsc['TRXA_STOCK_QUTY'];
-      $raw_pric_prsc = $row_prsc['STOCK_PRIC'];
+    $final_items = [];
+    $racik_indices = [];
+
+    foreach ($all_prsc_rows as $row) {
+      $qty_prsc = $row['TRXA_STOCK_QUTY'];
+      $raw_pric_prsc = $row['STOCK_PRIC'];
 
       // PERBAIKAN: Bulatkan Harga Satuan dulu seperti di TRXADRUG08V
       $stockpric_bulat = pembulatan((int) round($raw_pric_prsc));
 
       // Jika PAYM_TYPE adalah 'B', set harga satuan menjadi 0
-      if ($row_prsc['PAYM_TYPE'] === 'B') {
+      if ($row['PAYM_TYPE'] === 'B') {
         $stockpric_bulat = 0;
       }
-
-      $view_stockpric = number_format($stockpric_bulat, 0, '', '.');
-      echo '<td style="width: 200px; text-align: right;">' . $view_stockpric . '</td>';
 
       // PERBAIKAN: Kalikan Harga Satuan yang sudah DIBULATKAN dengan Qty
       $tott = $stockpric_bulat * $qty_prsc;
@@ -252,12 +284,66 @@ if ($row_regi['TRXA_REGI_STAT'] == 'C') {
       $totapric = pembulatan($tott);
 
       // Jika PAYM_TYPE adalah 'B', set total harga menjadi 0
-      if ($row_prsc['PAYM_TYPE'] === 'B') {
+      if ($row['PAYM_TYPE'] === 'B') {
         $totapric = 0;
       }
 
-      $view_totapric = number_format($totapric, 0, '', '.');
+      $is_racikan = ($row['TRXA_PRSC_CONC'] === 'Y' && !empty($row['TRXA_RACIK_ID']) && $row['TRXA_RACIK_ID'] > 0);
 
+      if ($is_racikan) {
+        $racik_id = $row['TRXA_RACIK_ID'];
+        if (!isset($racik_indices[$racik_id])) {
+          $qhead = $db->query("SELECT TRXAR_NAMA, TRXAR_QTY FROM trxaracik_head WHERE TRXAR_ID = " . (int) $racik_id . " LIMIT 1");
+          $head_row = $qhead ? $qhead->fetch(PDO::FETCH_ASSOC) : null;
+
+          $racik_nama = ($head_row && !empty($head_row['TRXAR_NAMA'])) ? $head_row['TRXAR_NAMA'] : 'Obat';
+          $racik_qty = ($head_row && isset($head_row['TRXAR_QTY'])) ? $head_row['TRXAR_QTY'] : 1;
+
+          $final_items[] = [
+            'is_racikan' => true,
+            'racik_id' => $racik_id,
+            'name' => $racik_nama . ' (Racikan)',
+            'qty' => $racik_qty,
+            'total_price' => 0,
+            'paym_type' => $row['PAYM_TYPE']
+          ];
+          $racik_indices[$racik_id] = count($final_items) - 1;
+        }
+        $final_items[$racik_indices[$racik_id]]['total_price'] += $totapric;
+      } else {
+        $final_items[] = [
+          'is_racikan' => false,
+          'name' => $row['STOCK_NAME'],
+          'qty' => $qty_prsc,
+          'stock_pric' => $stockpric_bulat,
+          'total_price' => $totapric,
+          'paym_type' => $row['PAYM_TYPE']
+        ];
+      }
+    }
+
+    foreach ($final_items as &$f_item) {
+      if ($f_item['is_racikan']) {
+        if ($f_item['paym_type'] === 'B') {
+          $f_item['total_price'] = 0;
+        } else {
+          $f_item['total_price'] += 30000;
+        }
+        $f_item['total_price'] = pembulatan($f_item['total_price']);
+        $f_item['stock_pric'] = pembulatan((int) round($f_item['total_price'] / $f_item['qty']));
+      }
+    }
+    unset($f_item);
+
+    foreach ($final_items as $item) {
+      echo '<tr>';
+      echo '<td style="width: 200px; text-align: right;">' . htmlspecialchars($item['name']) . '</td>';
+      echo '<td style="width: 100px; text-align: center;">' . htmlspecialchars($item['qty']) . '</td>';
+
+      $view_stockpric = number_format($item['stock_pric'], 0, '', '.');
+      echo '<td style="width: 200px; text-align: right;">' . $view_stockpric . '</td>';
+
+      $view_totapric = number_format($item['total_price'], 0, '', '.');
       echo '<td style="width: 200px; text-align: right;">' . $view_totapric . '</td>';
 
       echo '</tr>';

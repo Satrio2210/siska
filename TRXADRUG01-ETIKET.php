@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 error_reporting(E_ALL & ~E_NOTICE);
@@ -34,7 +34,7 @@ $qhead = $db->query($sqlhead);
 $head = $qhead->fetch(PDO::FETCH_ASSOC);
 
 /*
-DETAIL OBAT
+DETAIL OBAT NON RACIKAN
 */
 $sqldetail = "SELECT
 p.TRXA_STOCK_CODE,
@@ -64,12 +64,19 @@ ON sg.TBLP_SGNA_CODE=p.TRXA_PRSC_SGNA
 
 WHERE
 p.TRXA_PRSC_CODE='$prsccode'
+AND p.TRXA_PRSC_CONC='N'
 AND p.TRXA_VIEW_STAT='Y'
 
 ORDER BY i.INVE_PART_NAME
 ";
 
 $qdetail = $db->query($sqldetail);
+
+/*
+DETAIL RACIKAN HEADERS
+*/
+$sqlracik = "SELECT * FROM trxaracik_head WHERE TRXAR_CODE='$prsccode' AND TRXAR_VIEW_STAT='Y' ORDER BY TRXAR_ID";
+$qracik = $db->query($sqlracik);
 
 ?>
 
@@ -221,6 +228,7 @@ $qdetail = $db->query($sqldetail);
 <body onload="window.print();">
 
     <?php
+    // 1. Loop etiket Obat Non-Racikan
     while ($row = $qdetail->fetch(PDO::FETCH_ASSOC)) {
         ?>
 
@@ -258,6 +266,40 @@ $qdetail = $db->query($sqldetail);
             <!-- <div class="footer">
                 SEMOGA LEKAS SEMBUH
             </div> -->
+
+        </div>
+
+        <?php
+    }
+
+    // 2. Loop etiket Resep Racikan
+    while ($racik = $qracik->fetch(PDO::FETCH_ASSOC)) {
+        ?>
+
+        <div class="etiket">
+
+            <div class="header">INSTALASI FARMASI KPRJ YEMIMA MEDIKA</div>
+
+            <div class="flex-row info">
+                <span>RM: <?php echo $head['PATI_MAST_CODE']; ?></span>
+                <span>Tgl: <?php echo $head['TRXA_REGI_DATE']; ?></span>
+            </div>
+
+            <div class="namapasien">
+                <?php echo $head['PATI_MAIN_TITL'] . ' ' . $head['PATI_MAIN_NAME']; ?>
+            </div>
+
+            <hr class="garis">
+
+            <div class="namaobat">
+                <?php echo $racik['TRXAR_NAMA']; ?> (<?php echo $racik['TRXAR_QTY']; ?> Pcs)
+            </div>
+
+            <div class="signa">
+                ATURAN PAKAI:<br>
+                <?php echo $racik['TRXAR_SGNA']; ?><br>
+                <small><?php echo $racik['TRXAR_USAG']; ?></small>
+            </div>
 
         </div>
 
