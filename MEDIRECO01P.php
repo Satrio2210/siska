@@ -102,10 +102,10 @@ if (ISSET($_POST['txtmastcode']))
 	$pdf->SetFont('Arial','',9);
 	$pdf->Ln(8);
 
-	$query_regi = "SELECT TRXA_REGI_CODE, DATE_FORMAT(TRXA_REGI_DATE,'%d/%m/%Y') AS REGI_DATE, TRXA_REGI_DOCT, 
+ 	$query_regi = "SELECT TRXA_REGI_CODE, DATE_FORMAT(TRXA_REGI_DATE,'%d/%m/%Y') AS REGI_DATE, TRXA_REGI_DOCT, 
                (SELECT PASS_USER_NAME FROM passiden WHERE PASS_USER_IDEN = TRXA_REGI_DOCT) AS DOCT_NAME  
               FROM trxaregi WHERE TRXA_PATI_CODE = '$mastcode' 
-              AND TRXA_REGI_STAT = 'X' AND TRXA_VIEW_STAT='Y'
+              AND TRXA_REGI_STAT IN ('C','P','X') AND TRXA_VIEW_STAT='Y'
               ORDER BY TRXA_REGI_DATE DESC";
     
 	$qregi = $db->query($query_regi) or die("Gagal Ambil data Pasien!!");
@@ -130,34 +130,35 @@ if (ISSET($_POST['txtmastcode']))
   	$query_exam = "SELECT TRXA_EXAM_HGHT, TRXA_EXAM_WGHT,
 					TRXA_EXAM_BLOD, TRXA_EXAM_TEMP, TRXA_EXAM_ANAM, 
 					TRXA_EXAM_BODY, TRXA_EXAM_PRSC 
-    	            FROM trxaexam WHERE TRXA_EXAM_CODE = '$regicode'";
+    	            FROM trxaexam WHERE TRXA_EXAM_CODE = '$regicode' AND TRXA_VIEW_STAT='Y'";
 
   	$qexam = $db->query($query_exam) or die ("Gagal ambil anamnesa");
   	$row_exam = $qexam->fetch(PDO::FETCH_ASSOC);
+  	if (!$row_exam) { $row_exam = array(); }
 
-	$tinggi = $row_exam['TRXA_EXAM_HGHT'];
-	$berat = $row_exam['TRXA_EXAM_WGHT'];
-	$tensi = $row_exam['TRXA_EXAM_BLOD'];
-    $suhu = $row_exam['TRXA_EXAM_TEMP'];
+	$tinggi = isset($row_exam['TRXA_EXAM_HGHT']) ? $row_exam['TRXA_EXAM_HGHT'] : '';
+	$berat = isset($row_exam['TRXA_EXAM_WGHT']) ? $row_exam['TRXA_EXAM_WGHT'] : '';
+	$tensi = isset($row_exam['TRXA_EXAM_BLOD']) ? $row_exam['TRXA_EXAM_BLOD'] : '';
+    $suhu = isset($row_exam['TRXA_EXAM_TEMP']) ? $row_exam['TRXA_EXAM_TEMP'] : '';
 
-  	$anamnesa = $row_exam['TRXA_EXAM_ANAM'];
-  	$exambody = $row_exam['TRXA_EXAM_BODY'];
-  	$examprsc = $row_exam['TRXA_EXAM_PRSC'];
+  	$anamnesa = isset($row_exam['TRXA_EXAM_ANAM']) ? $row_exam['TRXA_EXAM_ANAM'] : '';
+  	$exambody = isset($row_exam['TRXA_EXAM_BODY']) ? $row_exam['TRXA_EXAM_BODY'] : '';
+  	$examprsc = isset($row_exam['TRXA_EXAM_PRSC']) ? $row_exam['TRXA_EXAM_PRSC'] : '';
 
-    //new
-    $query_diag = "SELECT TRXA_DIAG_NAME FROM trxadiag WHERE TRXA_EXAM_CODE = '$regicode'";
+    //new - ambil SEMUA diagnosa (satu kunjungan bisa punya banyak diagnosa)
+    $query_diag = "SELECT GROUP_CONCAT(CONCAT(TRXA_DIAG_CODE,' - ',TRXA_DIAG_NAME) SEPARATOR '; ') AS DIAG_ALL FROM trxadiag WHERE TRXA_EXAM_CODE = '$regicode' AND TRXA_VIEW_STAT='Y'";
 
   	$qdiag = $db->query($query_diag) or die ("Gagal ambil diagnosa");
   	$row_diag = $qdiag->fetch(PDO::FETCH_ASSOC);
 
-	$diag = $row_diag['TRXA_DIAG_NAME'];
+	$diag = isset($row_diag['DIAG_ALL']) ? $row_diag['DIAG_ALL'] : '';
 
 
     $pdf->SetFont('Arial','B',9);
     $pdf->Cell(190,6,'ANAMNESA: ','LTR',1,'L');
     
     $pdf->SetFont('Arial','',9);
-    $pdf->MultiCell(190,6,''.$anamnesa.'','LR',1);
+    $pdf->MultiCell(190,6,''.($anamnesa !== '' ? $anamnesa : '-').'','LR',1);
 
   	$pdf->SetFont('Arial','B',9);
     $pdf->Cell(190,6,'OBJEKTIF: ','LR',1,'L');
@@ -169,24 +170,29 @@ if (ISSET($_POST['txtmastcode']))
     $pdf->Cell(190,6,'Suhu :'.$suhu.' C','LR',1,'L');
 
     $pdf->SetFont('Arial','B',9);
+    $pdf->Cell(190,6,'PEMERIKSAAN FISIK: ','LR',1,'L');
+    $pdf->SetFont('Arial','',9);
+    $pdf->MultiCell(190,6,''.($exambody !== '' ? $exambody : '-').'','LR',1);
+
+    $pdf->SetFont('Arial','B',9);
     $pdf->Cell(190,6,'DIAGNOSA: ','LTR',1,'L');
     $pdf->SetFont('Arial','',9);
-    $pdf->MultiCell(190,6,''.$diag.'','LR',1);
+    $pdf->MultiCell(190,6,''.($diag !== '' && $diag !== null ? $diag : '-').'','LR',1);
 
     $pdf->SetFont('Arial','B',9);
     $pdf->Cell(190,6,'THERAPI: ','LTR',1,'L');
     $pdf->SetFont('Arial','',9);
-    $pdf->MultiCell(190,6,''.$examprsc.'','LR',1);
+    $pdf->MultiCell(190,6,''.($examprsc !== '' ? $examprsc : '-').'','LR',1);
 
-	// Ambil data tindakan dan resep yang diberikan
-  	$query_tret = "SELECT TRXA_MEDI_CODE, 
-                (SELECT TBLF_MEDI_NAME FROM tblfmedi WHERE TBLF_MEDI_CODE = TRXA_MEDI_CODE AND TBLF_MEDI_TYPE IN('J','O','N')) AS MEDI_NAME
-                 FROM trxatret WHERE TRXA_TRET_CODE = '$regicode'";
+	// Ambil data tindakan dan resep yang diberikan (bisa banyak baris -> gabung semua)
+  	$query_tret = "SELECT GROUP_CONCAT(
+                (SELECT TBLF_MEDI_NAME FROM tblfmedi WHERE TBLF_MEDI_CODE = trxatret.TRXA_MEDI_CODE AND TBLF_MEDI_TYPE IN('J','O','N')) SEPARATOR '; ') AS TRET_ALL
+                 FROM trxatret WHERE TRXA_TRET_CODE = '$regicode' AND TRXA_VIEW_STAT='Y'";
 
   	$qtret = $db->query($query_tret) or die ("Gagal ambil Treatment");
   	$row_tret = $qtret->fetch(PDO::FETCH_ASSOC);
 
-  	$tindakan = $row_tret['MEDI_NAME'];
+  	$tindakan = isset($row_tret['TRET_ALL']) ? $row_tret['TRET_ALL'] : '';
 
 	$pdf->MultiCell(190,6,''.$tindakan.'','LBR',1); 
 
