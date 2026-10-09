@@ -92,30 +92,39 @@ if (isset($_GET['regicode'])) {
 		$pdf->SetAutoPageBreak(true);
 		// membuat halaman baru
 		$pdf->AddPage();
-		$pdf->Ln(5);
+		// --- KOP SURAT: logo | KUITANSI + alamat | barcode ---
 		// setting jenis font yang akan digunakan 
 		$pdf->SetFont('Arial', 'B', 18);
 		//Cell(float w [, float h [, string txt [, mixed border [, int ln [, string align [, boolean fill [, mixed link]]]]]]])
-		$pdf->Image('img/logo.png', 10, 5, 20);
+		$pdf->Image('img/logo.png', 10, 5, 25);
 		$pdf->Image('img/qr-code.png', 175, 5, 20);
-		$pdf->Ln(5);
 
-		$pdf->Cell(190, 8, 'INVOICE', 0, 1, 'C');
-		$pdf->Ln(2);
+		$pdf->SetXY(35, 5);
+		$pdf->Cell(140, 8, 'KUITANSI', 0, 1, 'C');
+		$pdf->SetX(35);
+		$pdf->SetFont('Arial', '', 8);
+		$pdf->MultiCell(140, 4, "Jl. Cagar Alam No. 10, RT.005 RW.006 Kel. Pancoran Mas,\nKec. Pancoran Mas, Kota Depok, Provinsi Jawa Barat 16436\nTlp. : 0811-8385-108, e-mail : klinikpratama.yemimamedika@gmail.com", 0, 'C');
+
+		// garis pembatas kop surat
+		$pdf->SetDrawColor(0, 0, 0);
+		$pdf->SetLineWidth(0.6);
+		$pdf->Line(10, $pdf->GetY() + 1, 200, $pdf->GetY() + 1);
+		$pdf->SetLineWidth(0.2);
+		$pdf->Ln(4);
 		$pdf->SetFont('Arial', '', 10);
 
 		// line 1
 		$pdf->Cell(30, 5, 'Admission No/MR', 0, 0, 'L');
 		$pdf->Cell(90, 5, ': ' . $admission_no . '/' . $mr_no . '', 0, 0, 'L');
 
-		$pdf->Cell(30, 5, 'Invoice No', 0, 0, 'L');
+		$pdf->Cell(30, 5, 'Receipt No', 0, 0, 'L');
 		$pdf->Cell(35, 5, ': ' . $invoice_no . '', 0, 1, 'L');
 
 		// line 2
 		$pdf->Cell(30, 5, 'Name', 0, 0, 'L');
 		$pdf->Cell(90, 5, ': ' . $name . '', 0, 0, 'L');
 
-		$pdf->Cell(30, 5, 'Invoice Date', 0, 0, 'L');
+		$pdf->Cell(30, 5, 'Receipt Date', 0, 0, 'L');
 		$pdf->Cell(35, 5, ': ' . $invoice_date . '', 0, 1, 'L');
 
 		// line 3
@@ -720,27 +729,25 @@ if (isset($_GET['regicode'])) {
 		$view_balance = number_format($balance, 0, '', '.');
 		$pdf->Cell(25, 6, '' . $view_balance . '', 0, 1, 'R');
 
-		$pdf->Cell(60, 5, 'IN WORDS TOTAL :', 0, 0, 'L');
+		$pdf->Cell(35, 5, 'IN WORDS TOTAL :', 0, 0, 'L');
 		$pdf->SetFont('Arial', '', 8);
 
-		$words_patient = terbilang($view_sub_total);
-		$pdf->Cell(70, 5, '' . $words_patient . ' Rupiah', 0, 1, 'R');
+		$words_patient = terbilang($subbulat);
+		$pdf->MultiCell(155, 5, '' . $words_patient . ' Rupiah', 0, 'R');
 
 		$pdf->Ln(4);
 
 		$pdf->SetFont('Arial', '', 10);
+		$y_title = $pdf->GetY();
 		$pdf->Cell(60, 5, 'PATIENT RECEIPT / KUITANSI :', 0, 1, 'L');
 
 		$pdf->SetFont('Arial', '', 8);
 
-		$pdf->Cell(18, 5, 'Type', 'LTBR', 0, 'L');
-		$pdf->Cell(18, 5, 'Date', 'LTBR', 0, 'L');
-		$pdf->Cell(22, 5, 'Payment Mode', 'LTBR', 0, 'L');
-		$pdf->Cell(20, 5, 'Account No.', 'LTBR', 0, 'L');
-		$pdf->Cell(20, 5, 'Account Name', 'LTBR', 0, 'L');
-		$pdf->Cell(25, 5, 'Description', 'LTBR', 0, 'L');
-		$pdf->Cell(40, 5, 'Cashier', 'LTBR', 0, 'R');
-		$pdf->Cell(25, 5, 'Patient', 'LTBR', 1, 'R');
+		$y_receipt = $pdf->GetY();
+		$pdf->Cell(25, 5, 'Type', 'LTBR', 0, 'C');
+		$pdf->Cell(25, 5, 'Date', 'LTBR', 0, 'C');
+		$pdf->Cell(35, 5, 'Payment Mode', 'LTBR', 0, 'C');
+		$pdf->Cell(35, 5, 'Patient', 'LTBR', 0, 'R');
 
 		$sql_footer = "SELECT 
 				s.TRXA_PAYM_MODE, 
@@ -813,28 +820,29 @@ if (isset($_GET['regicode'])) {
 		$paymdate = date("d/m/Y", strtotime($row_footer['TRXA_ENTR_DATE']));
 		$cashier = $row_footer['CASHIER'];
 
-		$pdf->Cell(18, 5, 'Payment', 'LTBR', 0, 'L');
-		$pdf->Cell(18, 5, '' . $paymdate . '', 'LTBR', 0, 'L');
-		$pdf->Cell(22, 5, '' . $paymmode . '', 'LTBR', 0, 'L');
-		//$pdf->Cell(22,8,' ','LTBR',0,'L'); 
-		$pdf->Cell(20, 5, ' ', 'LTBR', 0, 'R');
-		$pdf->Cell(20, 5, ' ', 'LTBR', 0, 'L');
-		$pdf->Cell(25, 5, ' ', 'LTBR', 0, 'R');
-		$pdf->Cell(40, 5, '' . $cashier . '', 'LTBR', 0, 'R');
-		$pdf->Cell(25, 5, '' . $view_payment . '', 'LTBR', 1, 'R');
+		$y_data = $y_receipt + 5;
+		$pdf->SetXY(10, $y_data);
+		$pdf->Cell(25, 5, 'Payment', 'LTBR', 0, 'C');
+		$pdf->Cell(25, 5, '' . $paymdate . '', 'LTBR', 0, 'C');
+		$pdf->Cell(35, 5, '' . $paymmode . '', 'LTBR', 0, 'C');
+		$pdf->Cell(35, 5, '' . $view_payment . '', 'LTBR', 1, 'R');
 
-		//$pdf->Cell(163,6,'TOTAL :',0,0,'R'); 
-		//$pdf->Cell(25,6,''.$view_payment.'',0,1,'R');
+		// tanda tangan cashier sejajar judul di sebelah kanan
+		$pdf->SetXY(140, $y_title);
+		$pdf->SetFont('Arial', '', 10);
+		$pdf->Cell(50, 5, 'Cashier', 0, 1, 'C');
+		$pdf->SetX(140);
+		$pdf->Ln(10);
+		$pdf->SetX(140);
+		$pdf->SetFont('Arial', '', 9);
+		$pdf->Cell(50, 5, '(  ' . $cashier . '  )', 0, 1, 'C');
 
-		//$pdf->Ln(2);
-		//$pdf->Cell(150,6,' ',0,0,'R'); 
+		$pdf->Ln(4);
+		$pdf->SetFont('Arial', 'I', 7);
+		$cetak_tgl = date('d/m/Y, H:i');
+		$pdf->MultiCell(190, 4, 'dicetak pada ' . $cetak_tgl . ' WIB melalui Sistem Informasi Klinik. Kuitansi ini merupakan bukti pembayaran resmi dan sah.', 0, 'L');
 
-		//$pdf->Cell(30,6,'CASHIER',0,0,'C'); 
-		//$pdf->Ln(15);
-		//$pdf->Cell(150,6,' ',0,0,'R'); 
-		//$pdf->Cell(30,6,''.$cashier.'',0,0,'C'); 
-
-		$pdf->Output('I', 'KWITANSI-' . $invoice_no . '.pdf');
+		$pdf->Output('I', 'KUITANSI-' . $invoice_no . '.pdf');
 
 	}
 
